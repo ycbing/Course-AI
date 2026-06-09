@@ -24,13 +24,19 @@ export function StepBar({ currentStep, steps, labels }: StepBarProps) {
               {/* Step circle */}
               <div className="flex flex-col items-center">
                 <div
-                  className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-medium transition-all ${
+                  className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-200 ${
                     isCompleted
-                      ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/20"
+                      ? "text-white"
                       : isActive
-                      ? "bg-blue-600 text-white shadow-lg shadow-blue-500/30 ring-4 ring-blue-500/20"
-                      : "bg-slate-100 text-slate-500 border border-slate-200"
+                      ? "text-white"
+                      : ""
                   }`}
+                  style={isCompleted
+                    ? { background: "var(--accent)", boxShadow: "0 4px 12px oklch(0.65 0.2 150 / 0.3)" }
+                    : isActive
+                    ? { background: "var(--primary)", boxShadow: "0 4px 12px oklch(0.55 0.2 250 / 0.3), 0 0 0 4px oklch(0.55 0.2 250 / 0.15)" }
+                    : { backgroundColor: "var(--muted)", color: "var(--muted-foreground)", border: "1px solid var(--border)" }
+                  }
                 >
                   {isCompleted ? (
                     <Check className="w-4 h-4" />
@@ -41,16 +47,14 @@ export function StepBar({ currentStep, steps, labels }: StepBarProps) {
                   )}
                 </div>
                 <span
-                  className={`mt-1.5 text-[11px] font-medium whitespace-nowrap ${
-                    isActive ? "text-blue-400" : isCompleted ? "text-emerald-500" : "text-slate-400"
-                  }`}
+                  className="mt-1.5 text-[11px] font-medium whitespace-nowrap"
+                  style={{ color: isActive ? "var(--primary)" : isCompleted ? "var(--accent)" : "var(--muted-foreground)" }}
                 >
                   {labels[i]}
                 </span>
                 <span
-                  className={`text-[9px] whitespace-nowrap ${
-                    isActive ? "text-blue-400" : "text-slate-300"
-                  }`}
+                  className="text-[9px] whitespace-nowrap"
+                  style={{ color: isActive ? "var(--primary)" : "var(--muted-foreground)", opacity: isActive ? 1 : 0.6 }}
                 >
                   {STEP_TIMES[i]}
                 </span>
@@ -60,11 +64,12 @@ export function StepBar({ currentStep, steps, labels }: StepBarProps) {
               {i < steps.length - 1 && (
                 <div className="w-12 sm:w-20 h-px mx-2 mt-[-16px]">
                   <div
-                    className={`h-full transition-all duration-500 ${
-                      isCompleted
-                        ? "bg-gradient-to-r from-blue-400 to-blue-200"
-                        : "bg-slate-100"
-                    }`}
+                    className="h-full transition-all duration-500"
+                    style={{
+                      background: isCompleted
+                        ? "linear-gradient(90deg, oklch(0.65 0.2 150), oklch(0.65 0.15 200))"
+                        : "var(--border)"
+                    }}
                   />
                 </div>
               )}

@@ -45,7 +45,7 @@ export default function SharePage() {
         <div className="text-center">
           <div className="text-5xl mb-4">😔</div>
           <p className="text-lg font-medium mb-2">{error}</p>
-          <Link href="/" className="text-blue-400 hover:text-blue-600 text-sm">
+          <Link href="/" className="text-primary-400 hover:text-primary-600 text-sm">
             返回首页
           </Link>
         </div>
@@ -59,7 +59,7 @@ export default function SharePage() {
       <header className="border-b border-slate-200 py-8">
         <div className="mx-auto max-w-4xl px-4 sm:px-6">
           <div className="flex items-center gap-3 mb-2 animate-fade-up">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-blue-500/20">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-lg">
               C
             </div>
             <div>
@@ -114,7 +114,7 @@ export default function SharePage() {
                   <a
                     href={course.video_url}
                     download
-                    className="flex items-center gap-1.5 text-xs text-blue-400 hover:text-blue-600 transition"
+                    className="flex items-center gap-1.5 text-xs text-primary-400 hover:text-primary-600 transition"
                   >
                     <Download className="w-3 h-3" />
                     下载视频
@@ -142,7 +142,7 @@ export default function SharePage() {
         {sections.length > 0 && (
           <div className="mb-10">
             <h2 className="text-lg font-semibold mb-6 flex items-center gap-2">
-              <BookOpen className="w-5 h-5 text-blue-400" />
+              <BookOpen className="w-5 h-5 text-primary-400" />
               教学内容
               <span className="text-xs text-slate-400 font-normal">
                 共 {sections.length} 段
@@ -163,9 +163,9 @@ export default function SharePage() {
                     </div>
 
                     {/* Content card */}
-                    <div className="rounded-xl border border-slate-200 bg-white overflow-hidden hover:border-blue-200 transition-colors">
+                    <div className="rounded-xl border border-slate-200 bg-white overflow-hidden hover:border-primary-200 transition-colors">
                       <div className="flex items-center gap-3 px-4 py-3 border-b bg-slate-100/30 bg-white">
-                        <div className="w-7 h-7 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center text-xs font-bold">
+                        <div className="w-7 h-7 rounded-lg bg-primary-500/10 text-primary-400 flex items-center justify-center text-xs font-bold">
                           {s.section_number}
                         </div>
                         <h3 className="text-sm font-medium">{s.title}</h3>
@@ -201,7 +201,7 @@ export default function SharePage() {
             <a
               href={course.video_url}
               download
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-medium hover:from-blue-500 hover:to-indigo-500 transition-all shadow-lg shadow-blue-500/15"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-primary-600 to-primary-700 text-white text-sm font-medium hover:from-primary-500 hover:to-primary-700 transition-all shadow-lg shadow-md"
             >
               <Download className="w-4 h-4" />
               下载教学视频
@@ -215,7 +215,7 @@ export default function SharePage() {
         <div className="mx-auto max-w-4xl px-4 sm:px-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white font-bold text-[10px]">
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center text-white font-bold text-[10px]">
                 C
               </div>
               <span className="text-sm font-semibold text-slate-600">CourseAI</span>

@@ -323,7 +323,7 @@ export default function Step4({ courseId, onNext, onPrev }: Step4Props) {
       <div className="flex items-center justify-between animate-fade-up">
         <div>
           <h2 className="text-lg font-semibold mb-1 flex items-center gap-2">
-            <Palette className="w-5 h-5 text-purple-400" />
+            <Palette className="w-5 h-5 text-primary-400" />
             PPT 样式
           </h2>
           <p className="text-sm text-slate-500">选择主题配色和幻灯片布局</p>
@@ -341,12 +341,12 @@ export default function Step4({ courseId, onNext, onPrev }: Step4Props) {
               onClick={() => setSelectedTheme(theme.id)}
               className={`relative p-4 rounded-xl border text-left transition-all ${
                 selectedTheme === theme.id
-                  ? "border-blue-500/40 bg-blue-500/10 shadow-lg shadow-blue-500/10"
+                  ? "border-primary-500/40 bg-primary-500/10 shadow-lg shadow-md"
                   : "border-slate-200 bg-slate-100 hover:bg-slate-50"
               }`}
             >
               {selectedTheme === theme.id && (
-                <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
+                <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary-500 flex items-center justify-center">
                   <Check className="w-3 h-3 text-white" />
                 </div>
               )}
@@ -363,7 +363,7 @@ export default function Step4({ courseId, onNext, onPrev }: Step4Props) {
                 </div>
               </div>
 
-              <div className={`text-sm font-medium ${selectedTheme === theme.id ? "text-blue-400" : "text-slate-600"}`}>
+              <div className={`text-sm font-medium ${selectedTheme === theme.id ? "text-primary-400" : "text-slate-600"}`}>
                 {theme.name}
               </div>
               <div className="flex items-center gap-2 mt-1">
@@ -388,12 +388,12 @@ export default function Step4({ courseId, onNext, onPrev }: Step4Props) {
               onClick={() => setSelectedLayout(layout.id)}
               className={`p-3 rounded-xl border text-center transition-all ${
                 selectedLayout === layout.id
-                  ? "border-blue-500/40 bg-blue-500/10"
+                  ? "border-primary-500/40 bg-primary-500/10"
                   : "border-slate-200 bg-slate-100 hover:bg-slate-50"
               }`}
             >
               <div className="text-2xl mb-1">{layout.icon}</div>
-              <div className={`text-xs font-medium ${selectedLayout === layout.id ? "text-blue-400" : "text-slate-600"}`}>
+              <div className={`text-xs font-medium ${selectedLayout === layout.id ? "text-primary-400" : "text-slate-600"}`}>
                 {layout.name}
               </div>
               <div className="text-[10px] text-slate-400 mt-0.5">{layout.desc}</div>
@@ -461,7 +461,7 @@ export default function Step4({ courseId, onNext, onPrev }: Step4Props) {
         <button
           onClick={saveAndNext}
           disabled={saving}
-          className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium text-sm transition-all disabled:opacity-40 shadow-lg shadow-blue-500/15"
+          className="px-6 py-3 rounded-xl bg-gradient-to-r from-primary-600 to-primary-700 text-white font-medium text-sm transition-all disabled:opacity-40 shadow-lg shadow-md"
         >
           {saving ? "保存中..." : "下一步：导出 PPTX"}
         </button>

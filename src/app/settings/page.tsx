@@ -121,7 +121,7 @@ export default function SettingsPage() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
                   activeTab === tab.id
-                    ? "bg-blue-600 text-white shadow-sm"
+                    ? "bg-primary-600 text-white shadow-sm"
                     : "text-slate-500 hover:text-slate-600 hover:bg-slate-50"
                 }`}
               >
@@ -137,12 +137,12 @@ export default function SettingsPage() {
           <div className="space-y-6 page-transition">
             <div className="rounded-2xl border border-slate-200 bg-white p-6 animate-fade-up">
               <h3 className="text-sm font-semibold mb-6 flex items-center gap-2">
-                <User className="w-4 h-4 text-blue-400" />
+                <User className="w-4 h-4 text-primary-400" />
                 个人信息
               </h3>
 
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white text-xl font-bold">
+                <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center text-white text-xl font-bold">
                   {name ? name[0].toUpperCase() : "?"}
                 </div>
                 <div>
@@ -159,7 +159,7 @@ export default function SettingsPage() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="设置你的昵称"
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/40 transition-all"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500/40 transition-all"
                   />
                 </div>
 
@@ -173,12 +173,12 @@ export default function SettingsPage() {
                   />
                 </div>
 
-                <div className="flex items-center justify-between pt-2 p-3 rounded-xl bg-blue-500/5 border border-blue-500/10">
+                <div className="flex items-center justify-between pt-2 p-3 rounded-xl bg-primary-500/5 border border-primary-500/10">
                   <div>
                     <span className="text-sm font-medium">积分余额</span>
-                    <span className="ml-2 text-blue-400 font-bold text-lg">{credits}</span>
+                    <span className="ml-2 text-primary-400 font-bold text-lg">{credits}</span>
                   </div>
-                  <Zap className="w-5 h-5 text-blue-500/40" />
+                  <Zap className="w-5 h-5 text-primary-500/40" />
                 </div>
               </div>
 
@@ -186,7 +186,7 @@ export default function SettingsPage() {
                 <button
                   onClick={handleSaveProfile}
                   disabled={saving}
-                  className={`flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-medium hover:from-blue-500 hover:to-indigo-500 transition-all disabled:opacity-40 ${
+                  className={`flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-primary-600 to-primary-700 text-white text-sm font-medium hover:from-primary-500 hover:to-primary-700 transition-all disabled:opacity-40 ${
                     saving ? "btn-loading" : ""
                   }`}
                 >
@@ -223,14 +223,14 @@ export default function SettingsPage() {
             {/* LLM Config */}
             <div className="rounded-2xl border border-slate-200 bg-white p-6 animate-fade-up">
               <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
-                <Brain className="w-4 h-4 text-blue-400" />
+                <Brain className="w-4 h-4 text-primary-400" />
                 AI 文案模型
               </h3>
               <div className="space-y-3">
                 <select
                   value={llmModel}
                   onChange={(e) => setLlmModel(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/30 appearance-none"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary-500/30 appearance-none"
                 >
                   <option value="glm-4-flash">GLM-4 Flash（免费，推荐）</option>
                   <option value="glm-4-plus">GLM-4 Plus（更精准）</option>
@@ -252,7 +252,7 @@ export default function SettingsPage() {
                 <select
                   value={ttsEngine}
                   onChange={(e) => setTtsEngine(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/30 appearance-none"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary-500/30 appearance-none"
                 >
                   <option value="edge-tts">Edge-TTS（免费，推荐）</option>
                 </select>
@@ -282,14 +282,14 @@ export default function SettingsPage() {
             {/* Image Config */}
             <div className="rounded-2xl border border-slate-200 bg-white p-6 animate-fade-up-delay-2">
               <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
-                <ImageIcon className="w-4 h-4 text-indigo-400" />
+                <ImageIcon className="w-4 h-4 text-primary-400" />
                 配图模型
               </h3>
               <div className="space-y-3">
                 <select
                   value={imageModel}
                   onChange={(e) => setImageModel(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/30 appearance-none"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary-500/30 appearance-none"
                 >
                   <option value="cogview-3-plus">CogView-3-Plus（推荐）</option>
                   <option value="cogview-3-flash">CogView-3-Flash（更快）</option>
@@ -303,7 +303,7 @@ export default function SettingsPage() {
             {/* Video config */}
             <div className="rounded-2xl border border-slate-200 bg-white p-6 animate-fade-up-delay-3">
               <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
-                <Video className="w-4 h-4 text-purple-400" />
+                <Video className="w-4 h-4 text-primary-400" />
                 视频合成
               </h3>
               <div className="space-y-3 text-sm">
@@ -326,7 +326,7 @@ export default function SettingsPage() {
               <button
                 onClick={handleSaveModels}
                 disabled={saving}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-medium hover:from-blue-500 hover:to-indigo-500 transition-all disabled:opacity-40 ${
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-primary-600 to-primary-700 text-white text-sm font-medium hover:from-primary-500 hover:to-primary-700 transition-all disabled:opacity-40 ${
                   saving ? "btn-loading" : ""
                 }`}
               >
@@ -347,16 +347,16 @@ export default function SettingsPage() {
             {/* Summary */}
             <div className="rounded-2xl border border-slate-200 bg-white p-6 animate-fade-up">
               <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
-                <BarChart3 className="w-4 h-4 text-emerald-400" />
+                <BarChart3 className="w-4 h-4 text-accent-400" />
                 使用概览
               </h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-4 rounded-xl bg-slate-100 border border-slate-200">
-                  <div className="text-2xl font-bold text-blue-400">{credits}</div>
+                  <div className="text-2xl font-bold text-primary-400">{credits}</div>
                   <div className="text-xs text-slate-400 mt-1">积分余额</div>
                 </div>
                 <div className="p-4 rounded-xl bg-slate-100 border border-slate-200">
-                  <div className="text-2xl font-bold text-indigo-400">{usageLogs.length}</div>
+                  <div className="text-2xl font-bold text-primary-400">{usageLogs.length}</div>
                   <div className="text-xs text-slate-400 mt-1">总操作数</div>
                 </div>
               </div>
@@ -394,7 +394,7 @@ export default function SettingsPage() {
                       key={i}
                       className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition"
                     >
-                      <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center flex-shrink-0">
+                      <div className="w-8 h-8 rounded-lg bg-primary-500/10 text-primary-400 flex items-center justify-center flex-shrink-0">
                         {log.type === "script" ? (
                           <Brain className="w-4 h-4" />
                         ) : log.type === "image" ? (

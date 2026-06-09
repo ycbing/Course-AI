@@ -13,12 +13,16 @@ export async function GET(req: NextRequest) {
     const userId = await getSessionUserId();
     const rows = await query<any>(
       `SELECT c.id, c.title, c.subject, c.grade, c.status, c.progress_step, c.section_count,
-              COALESCE(c.cover_url,
-                (SELECT cs.image_url FROM course_sections cs WHERE cs.course_id = c.id AND cs.image_url IS NOT NULL AND cs.image_url != '' ORDER BY cs.section_number LIMIT 1)
-              ) as cover_url,
+              COALESCE(NULLIF(c.cover_url, ''), first_img.image_url) as cover_url,
               c.video_url, c.duration, c.share_token, c.share_count,
               c.created_at, c.updated_at
-       FROM courses c WHERE c.user_id = $1 ORDER BY c.created_at DESC`,
+       FROM courses c
+       LEFT JOIN LATERAL (
+         SELECT image_url FROM course_sections cs
+         WHERE cs.course_id = c.id AND cs.image_url IS NOT NULL AND cs.image_url != ''
+         ORDER BY cs.section_number LIMIT 1
+       ) first_img ON true
+       WHERE c.user_id = $1 ORDER BY c.created_at DESC`,
       [userId]
     );
     return NextResponse.json({ courses: rows });

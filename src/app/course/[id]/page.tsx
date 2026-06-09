@@ -144,7 +144,7 @@ export default function CourseDetailPage() {
   const statusConfig: Record<string, { label: string; color: string }> = {
     draft: { label: "草稿", color: "bg-slate-100 text-slate-500" },
     generating: { label: "生成中", color: "bg-amber-500/10 text-amber-400" },
-    completed: { label: "已完成", color: "bg-emerald-500/10 text-emerald-400" },
+    completed: { label: "已完成", color: "bg-accent-500/10 text-accent-400" },
     error: { label: "错误", color: "bg-red-500/10 text-red-400" },
   };
 
@@ -168,7 +168,7 @@ export default function CourseDetailPage() {
         <div className="text-center">
           <div className="text-5xl mb-4">😔</div>
           <p className="text-slate-500">课程不存在</p>
-          <Link href="/dashboard" className="text-blue-400 hover:text-blue-600 text-sm mt-2 inline-block">
+          <Link href="/dashboard" className="text-primary-400 hover:text-primary-600 text-sm mt-2 inline-block">
             返回课程列表
           </Link>
         </div>
@@ -240,7 +240,7 @@ export default function CourseDetailPage() {
               </div>
             </div>
           ) : (
-            <div className="aspect-video bg-gradient-to-br from-blue-900/40 to-indigo-900/40 flex items-center justify-center">
+            <div className="aspect-video bg-gradient-to-br from-primary-900/40 to-primary-900/40 flex items-center justify-center">
               <div className="text-center">
                 <div className="text-5xl mb-3">📖</div>
                 <h1 className="text-2xl font-bold mb-2">{course.title}</h1>
@@ -266,14 +266,14 @@ export default function CourseDetailPage() {
               onClick={() => setActiveTab(tab.key)}
               className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-all flex-1 justify-center ${
                 activeTab === tab.key
-                  ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
+                  ? "bg-primary-600 text-white shadow-lg shadow-lg"
                   : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
               }`}
             >
               <tab.icon className="w-3.5 h-3.5" />
               {tab.label}
               {tab.key === "quiz" && quizCount > 0 && (
-                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300">
+                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary-500/20 text-primary-300">
                   {quizCount}
                 </span>
               )}
@@ -287,12 +287,12 @@ export default function CourseDetailPage() {
             {/* Course info cards */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div className="rounded-xl border border-slate-200 bg-white p-4 text-center">
-                <BookOpen className="w-5 h-5 text-blue-400 mx-auto mb-2" />
+                <BookOpen className="w-5 h-5 text-primary-400 mx-auto mb-2" />
                 <div className="text-lg font-bold">{course.section_count}</div>
                 <div className="text-[10px] text-slate-500">教学段落</div>
               </div>
               <div className="rounded-xl border border-slate-200 bg-white p-4 text-center">
-                <Clock className="w-5 h-5 text-blue-400 mx-auto mb-2" />
+                <Clock className="w-5 h-5 text-primary-400 mx-auto mb-2" />
                 <div className="text-lg font-bold">
                   {sections.length > 0
                     ? `${Math.round(sections.reduce((sum: number, s: any) => sum + (s.duration || 0), 0))}`
@@ -301,7 +301,7 @@ export default function CourseDetailPage() {
                 <div className="text-[10px] text-slate-500">总时长（秒）</div>
               </div>
               <div className="rounded-xl border border-slate-200 bg-white p-4 text-center">
-                <Image className="w-5 h-5 text-emerald-400 mx-auto mb-2" />
+                <Image className="w-5 h-5 text-accent-400 mx-auto mb-2" />
                 <div className="text-lg font-bold">
                   {sections.filter((s: any) => s.image_url).length}
                 </div>
@@ -318,7 +318,7 @@ export default function CourseDetailPage() {
             <div className="flex flex-wrap gap-3">
               <Link
                 href={`/create?courseId=${courseId}&step=${nextStep}`}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-medium hover:from-blue-500 hover:to-indigo-500 transition-all shadow-lg shadow-blue-500/15"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-primary-600 to-primary-700 text-white text-sm font-medium hover:from-primary-500 hover:to-primary-700 transition-all shadow-lg shadow-md"
               >
                 <Edit className="w-4 h-4" />
                 {course.status === "completed" ? "预览" : "继续创作"}
@@ -330,7 +330,7 @@ export default function CourseDetailPage() {
                   href={toPublicUrl(course.pptx_url)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-sm font-medium hover:from-purple-500 hover:to-indigo-500 transition-all shadow-lg shadow-purple-500/15"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-primary-700 text-white text-sm font-medium hover:from-primary-500 hover:to-primary-700 transition-all shadow-lg shadow-md"
                 >
                   <Presentation className="w-4 h-4" />
                   下载 PPTX
@@ -342,7 +342,7 @@ export default function CourseDetailPage() {
                   onClick={copyLink}
                   className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-200 text-slate-500 text-sm hover:bg-slate-50 transition-all"
                 >
-                  {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5" />}
+                  {copied ? <Check className="w-3.5 h-3.5 text-accent-400" /> : <Share2 className="w-3.5 h-3.5" />}
                   {copied ? "已复制" : "分享"}
                 </button>
               )}
@@ -386,7 +386,7 @@ export default function CourseDetailPage() {
                       onClick={() => changeVideoSpeed(speed)}
                       className={`px-2 py-1 rounded text-[10px] font-medium transition ${
                         videoSpeed === speed
-                          ? "bg-blue-500/20 text-blue-400"
+                          ? "bg-primary-500/20 text-primary-400"
                           : "text-slate-500 hover:text-slate-600 hover:bg-slate-100"
                       }`}
                     >
@@ -406,9 +406,9 @@ export default function CourseDetailPage() {
                             const video = document.querySelector("video");
                             if (video) video.currentTime = sectionTimeOffsets[i];
                           }}
-                          className="flex items-center gap-1 px-2 py-1 rounded-md text-[10px] text-slate-500 hover:text-blue-600 hover:bg-slate-100 transition"
+                          className="flex items-center gap-1 px-2 py-1 rounded-md text-[10px] text-slate-500 hover:text-primary-600 hover:bg-slate-100 transition"
                         >
-                          <span className="w-4 h-4 rounded bg-blue-500/10 text-blue-400 flex items-center justify-center text-[8px] font-bold">
+                          <span className="w-4 h-4 rounded bg-primary-500/10 text-primary-400 flex items-center justify-center text-[8px] font-bold">
                             {s.section_number}
                           </span>
                           {s.title}
@@ -432,7 +432,7 @@ export default function CourseDetailPage() {
                 <p className="text-xs text-slate-400 mb-4">在编辑页面生成教学文案</p>
                 <Link
                   href={`/create?courseId=${courseId}&step=2`}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm transition-all"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary-600 hover:bg-primary-500 text-white text-sm transition-all"
                 >
                   开始生成
                 </Link>
@@ -450,13 +450,13 @@ export default function CourseDetailPage() {
                         onClick={() => toggleSection(i)}
                         className="w-full flex items-center gap-3 px-4 py-3 border-b border-slate-200 hover:bg-slate-50 transition text-left"
                       >
-                        <div className="w-7 h-7 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center text-xs font-bold flex-shrink-0">
+                        <div className="w-7 h-7 rounded-lg bg-primary-500/10 text-primary-400 flex items-center justify-center text-xs font-bold flex-shrink-0">
                           {s.section_number}
                         </div>
                         <h3 className="text-sm font-medium flex-1 min-w-0 truncate">{s.title}</h3>
                         <div className="flex items-center gap-2">
                           {s.image_url && (
-                            <span className="text-[10px] px-1.5 py-0.5 rounded border border-emerald-500/20 text-emerald-400 bg-emerald-500/5">
+                            <span className="text-[10px] px-1.5 py-0.5 rounded border border-accent-400/20 text-accent-400 bg-accent-500/5">
                               配图✓
                             </span>
                           )}
@@ -468,8 +468,8 @@ export default function CourseDetailPage() {
                               }}
                               className={`px-2 py-0.5 rounded-md text-[10px] font-medium transition ${
                                 playing === i
-                                  ? "bg-blue-500/20 text-blue-400"
-                                  : "bg-slate-100 text-slate-500 hover:bg-blue-50"
+                                  ? "bg-primary-500/20 text-primary-400"
+                                  : "bg-slate-100 text-slate-500 hover:bg-primary-50"
                               }`}
                             >
                               {playing === i ? "暂停" : "配音"}
@@ -517,7 +517,7 @@ export default function CourseDetailPage() {
                 <p className="text-sm text-slate-500 mb-6">共 {quizCount} 道题，涵盖所有教学章节</p>
                 <Link
                   href={`/course/${courseId}/quiz`}
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium text-sm hover:from-blue-500 hover:to-indigo-500 transition-all shadow-lg shadow-blue-500/15"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-primary-600 to-primary-700 text-white font-medium text-sm hover:from-primary-500 hover:to-primary-700 transition-all shadow-lg shadow-md"
                 >
                   <Sparkles className="w-4 h-4" />
                   开始测验
@@ -530,7 +530,7 @@ export default function CourseDetailPage() {
                 <p className="text-xs text-slate-400 mb-4">使用 AI 自动生成测验题</p>
                 <Link
                   href={`/course/${courseId}/quiz`}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm transition-all"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary-600 hover:bg-primary-500 text-white text-sm transition-all"
                 >
                   <Sparkles className="w-4 h-4" />
                   AI 生成测验

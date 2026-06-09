@@ -152,7 +152,7 @@ export default function Step5({ courseId, onNext, onPrev }: Step5Props) {
       {/* Header */}
       <div className="animate-fade-up">
         <h2 className="text-lg font-semibold mb-1 flex items-center gap-2">
-          <Presentation className="w-5 h-5 text-blue-400" />
+          <Presentation className="w-5 h-5 text-primary-400" />
           导出 PPTX
         </h2>
         <p className="text-sm text-slate-500">预览课程内容，一键导出 PPT 课件</p>
@@ -189,15 +189,15 @@ export default function Step5({ courseId, onNext, onPrev }: Step5Props) {
           {sections.map(function (s: any, i: number) {
             return (
               <div key={s.id || i} className="flex items-center gap-3 p-2 rounded-lg border border-slate-200 bg-slate-50">
-                <div className="w-6 h-6 rounded bg-blue-500/10 text-blue-400 flex items-center justify-center text-[10px] font-bold flex-shrink-0">
+                <div className="w-6 h-6 rounded bg-primary-500/10 text-primary-400 flex items-center justify-center text-[10px] font-bold flex-shrink-0">
                   {s.section_number}
                 </div>
                 <span className="text-xs text-slate-600 truncate flex-1">{s.title}</span>
                 {s.image_url && (
-                  <span className="text-[9px] px-1.5 py-0.5 rounded border border-emerald-500/20 text-emerald-400 bg-emerald-500/5">图</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded border border-accent-400/20 text-accent-400 bg-accent-500/5">图</span>
                 )}
                 {s.audio_url && (
-                  <span className="text-[9px] px-1.5 py-0.5 rounded border border-blue-500/20 text-blue-400 bg-blue-500/5">音</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded border border-primary-500/20 text-primary-400 bg-primary-500/5">音</span>
                 )}
               </div>
             );
@@ -211,9 +211,9 @@ export default function Step5({ courseId, onNext, onPrev }: Step5Props) {
         <button
           onClick={handleExportPptx}
           disabled={exporting || sections.length === 0}
-          className="flex items-center justify-center gap-3 p-4 rounded-xl border border-blue-500/30 bg-blue-500/5 hover:bg-blue-500/10 transition-all disabled:opacity-40"
+          className="flex items-center justify-center gap-3 p-4 rounded-xl border border-primary-500/30 bg-primary-500/5 hover:bg-primary-500/10 transition-all disabled:opacity-40"
         >
-          <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-primary-500/10 text-primary-400 flex items-center justify-center flex-shrink-0">
             {exporting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Presentation className="w-5 h-5" />}
           </div>
           <div className="text-left">
@@ -228,7 +228,7 @@ export default function Step5({ courseId, onNext, onPrev }: Step5Props) {
           disabled={pdfExporting || sections.length === 0}
           className="flex items-center justify-center gap-3 p-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition-all disabled:opacity-40"
         >
-          <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-accent-500/10 text-accent-400 flex items-center justify-center flex-shrink-0">
             {pdfExporting ? <Loader2 className="w-5 h-5 animate-spin" /> : <FileText className="w-5 h-5" />}
           </div>
           <div className="text-left">
@@ -241,9 +241,9 @@ export default function Step5({ courseId, onNext, onPrev }: Step5Props) {
         <button
           onClick={copyLink}
           disabled={!shareLink}
-          className={"flex items-center justify-center gap-3 p-4 rounded-xl border transition-all disabled:opacity-40 " + (copied ? "border-emerald-500/30 bg-emerald-500/5" : "border-slate-200 bg-white hover:bg-slate-50")}
+          className={"flex items-center justify-center gap-3 p-4 rounded-xl border transition-all disabled:opacity-40 " + (copied ? "border-accent-400/30 bg-accent-500/5" : "border-slate-200 bg-white hover:bg-slate-50")}
         >
-          <div className={"w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 " + (copied ? "bg-emerald-500/20 text-emerald-400" : "bg-indigo-500/10 text-indigo-400")}>
+          <div className={"w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 " + (copied ? "bg-accent-500/20 text-accent-400" : "bg-primary-500/10 text-primary-400")}>
             {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
           </div>
           <div className="text-left">
@@ -270,10 +270,10 @@ export default function Step5({ courseId, onNext, onPrev }: Step5Props) {
 
       {/* Already exported */}
       {hasPptx && (
-        <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4 flex items-center gap-3 animate-fade-up-delay-3">
-          <Check className="w-5 h-5 text-emerald-400 flex-shrink-0" />
+        <div className="rounded-xl border border-accent-400/20 bg-accent-500/5 p-4 flex items-center gap-3 animate-fade-up-delay-3">
+          <Check className="w-5 h-5 text-accent-400 flex-shrink-0" />
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-emerald-400">PPTX 已生成</p>
+            <p className="text-sm font-medium text-accent-400">PPTX 已生成</p>
             <p className="text-[10px] text-slate-400 truncate">{pptxUrl}</p>
           </div>
           <button
@@ -283,7 +283,7 @@ export default function Step5({ courseId, onNext, onPrev }: Step5Props) {
               a.download = (course?.title || '课件') + '.pptx';
               a.click();
             }}
-            className="px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition flex items-center gap-1"
+            className="px-3 py-1.5 rounded-lg text-xs font-medium bg-accent-500/20 text-accent-400 hover:bg-accent-500/30 transition flex items-center gap-1"
           >
             <Download className="w-3 h-3" />
             下载
@@ -292,13 +292,13 @@ export default function Step5({ courseId, onNext, onPrev }: Step5Props) {
       )}
 
       {/* CTA */}
-      <div className="rounded-2xl border border-slate-200 bg-gradient-to-r from-blue-500/5 to-indigo-500/5 p-6 text-center animate-fade-up-delay-3">
+      <div className="rounded-2xl border border-slate-200 bg-gradient-to-r from-primary-500/5 to-primary-700/5 p-6 text-center animate-fade-up-delay-3">
         <div className="text-3xl mb-3 animate-float">🎓</div>
         <p className="text-sm font-medium text-slate-600 mb-1">继续创作更多课程</p>
         <p className="text-xs text-slate-400 mb-4">AI 帮你快速生成更多高质量 PPT 课件</p>
         <Link
           href="/create"
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-medium hover:from-blue-500 hover:to-indigo-500 transition-all shadow-lg shadow-blue-500/15 hover:shadow-blue-500/25"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-primary-600 to-primary-700 text-white text-sm font-medium hover:from-primary-500 hover:to-primary-700 transition-all shadow-lg shadow-md hover:shadow-lg"
         >
           <Sparkles className="w-4 h-4" />
           制作下一个课程
@@ -315,7 +315,7 @@ export default function Step5({ courseId, onNext, onPrev }: Step5Props) {
         </button>
         <Link
           href="/dashboard"
-          className="flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-100 text-slate-600 font-medium text-sm hover:bg-blue-50 transition-all"
+          className="flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-100 text-slate-600 font-medium text-sm hover:bg-primary-50 transition-all"
         >
           <ExternalLink className="w-4 h-4" />
           返回课程列表

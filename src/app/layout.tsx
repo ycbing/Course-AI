@@ -21,7 +21,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-CN">
-      <body className="bg-slate-50 text-slate-900 antialiased">
+      <head>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+      </head>
+      <body
+        className="antialiased bg-primary-50 font-sans"
+      >
         {children}
         <MobileBottomNav />
       </body>

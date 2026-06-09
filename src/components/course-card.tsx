@@ -25,8 +25,8 @@ interface CourseCardProps {
 
 const statusConfig: Record<string, { label: string; color: string }> = {
   draft: { label: "草稿", color: "bg-slate-100 text-slate-500" },
-  generating: { label: "生成中", color: "bg-amber-500/10 text-amber-400 border border-amber-500/20" },
-  completed: { label: "已完成", color: "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" },
+  generating: { label: "生成中", color: "bg-primary-500/10 text-primary-400 border border-primary-500/20" },
+  completed: { label: "已完成", color: "bg-accent-500/10 text-accent-400 border border-accent-400/20" },
   error: { label: "错误", color: "bg-red-500/10 text-red-400 border border-red-500/20" },
 };
 
@@ -55,7 +55,8 @@ export function CourseCard({ course, onDelete }: CourseCardProps) {
   return (
     <Link
       href={`/course/${course.id}`}
-      className="group block rounded-2xl border border-slate-200 bg-white hover:bg-slate-100 card-hover overflow-hidden"
+      className="group block rounded-xl border bg-white overflow-hidden transition-all duration-200 hover:shadow hover:-translate-y-0.5"
+      style={{ borderColor: "var(--border)", boxShadow: "var(--shadow-sm)" }}
     >
       {/* Cover */}
       <div className="aspect-video bg-slate-100 overflow-hidden relative">
@@ -63,12 +64,12 @@ export function CourseCard({ course, onDelete }: CourseCardProps) {
           <img
             src={course.coverUrl}
             alt={course.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-blue-900/30 to-indigo-900/30 flex items-center justify-center">
-            <BookOpen className="w-10 h-10 text-slate-400" />
+          <div className="w-full h-full flex items-center justify-center" style={{ background: "linear-gradient(135deg, oklch(0.55 0.1 250 / 0.2), oklch(0.55 0.1 280 / 0.2))" }}>
+            <BookOpen className="w-10 h-10" style={{ color: "var(--muted-foreground)" }} />
           </div>
         )}
         {/* Status badge */}
@@ -80,7 +81,7 @@ export function CourseCard({ course, onDelete }: CourseCardProps) {
         {/* PPTX badge */}
         {course.pptxUrl && (
           <div className="absolute top-3 left-3">
-            <span className="text-[10px] px-2 py-1 rounded-full font-medium bg-blue-500/20 text-blue-300 border border-blue-500/30 flex items-center gap-1">
+            <span className="text-[10px] px-2 py-1 rounded-full font-medium bg-primary-500/20 text-primary-300 border border-primary-500/30 flex items-center gap-1">
               <Presentation className="w-3 h-3" />
               PPT
             </span>
@@ -99,23 +100,23 @@ export function CourseCard({ course, onDelete }: CourseCardProps) {
       <div className="p-4">
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0">
-            <h3 className="text-sm font-semibold group-hover:text-blue-600 transition truncate">
+            <h3 className="text-sm font-semibold truncate transition-colors duration-200" style={{ color: "var(--foreground)" }}>
               {course.title}
             </h3>
-            <div className="flex items-center gap-2 mt-1.5 text-xs text-slate-400">
+            <div className="flex items-center gap-2 mt-1.5 text-xs" style={{ color: "var(--muted-foreground)" }}>
               {course.subject && <span>{subjectLabels[course.subject] || course.subject}</span>}
               {course.grade && <span>· {course.grade}</span>}
               {course.sectionCount > 0 && <span>· {course.sectionCount}段</span>}
             </div>
           </div>
-          <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-blue-600 transition flex-shrink-0 mt-0.5" />
+          <ChevronRight className="w-4 h-4 mt-0.5 flex-shrink-0 transition-all duration-200" style={{ color: "var(--border)" }} />
         </div>
 
-        <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-200">
-          <span className="text-[11px] text-slate-400">
+        <div className="flex items-center justify-between mt-3 pt-3 border-t" style={{ borderColor: "var(--border)" }}>
+          <span className="text-[11px]" style={{ color: "var(--muted-foreground)" }}>
             {course.progressStep ? stepLabels[course.progressStep] || course.progressStep : "草稿"}
           </span>
-          <span className="text-[11px] text-slate-300">
+          <span className="text-[11px]" style={{ color: "var(--muted-foreground)", opacity: 0.6 }}>
             {new Date(course.createdAt).toLocaleDateString("zh-CN")}
           </span>
         </div>

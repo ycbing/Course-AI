@@ -25,7 +25,7 @@ export function EmptyState({ icon, title, description, action, onAction }: Empty
       {action && onAction && (
         <button
           onClick={onAction}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium transition-all"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary-600 hover:bg-primary-500 text-white text-sm font-medium transition-all"
         >
           {action}
         </button>

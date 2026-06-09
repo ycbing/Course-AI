@@ -190,7 +190,7 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
       <div className="flex items-center justify-between animate-fade-up">
         <div>
           <h2 className="text-lg font-semibold mb-1 flex items-center gap-2">
-            <FileText className="w-5 h-5 text-blue-400" />
+            <FileText className="w-5 h-5 text-primary-400" />
             AI 生成教学文案
           </h2>
           <p className="text-sm text-slate-500">根据课程主题自动生成分段教学文案，可编辑每段内容</p>
@@ -210,7 +210,7 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
                 onClick={() => setSectionCount(n.value)}
                 className={`flex flex-col items-center px-3 py-1.5 rounded-lg transition ${
                   sectionCount === n.value
-                    ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
+                    ? "bg-primary-500/20 text-primary-400 border border-primary-500/30"
                     : "bg-slate-50 text-slate-500 border border-slate-200 hover:bg-slate-100"
                 }`}
               >
@@ -227,7 +227,7 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
         <button
           onClick={generate}
           disabled={loading}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-medium hover:from-blue-500 hover:to-indigo-500 transition-all disabled:opacity-40 shadow-lg shadow-blue-500/15 ${
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-primary-600 to-primary-700 text-white text-sm font-medium hover:from-primary-500 hover:to-primary-700 transition-all disabled:opacity-40 shadow-lg shadow-md ${
             loading ? "btn-loading" : ""
           }`}
         >
@@ -250,10 +250,10 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
       {loading ? (
         <div className="flex flex-col items-center justify-center py-16 rounded-2xl border border-slate-200 bg-white animate-fade-in">
           <div className="relative mb-6">
-            <div className="w-16 h-16 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
-              <Sparkles className="w-8 h-8 text-blue-500" />
+            <div className="w-16 h-16 rounded-2xl bg-primary-500/10 border border-primary-500/20 flex items-center justify-center">
+              <Sparkles className="w-8 h-8 text-primary-500" />
             </div>
-            <div className="absolute -inset-2 rounded-2xl border border-blue-500/10 animate-pulse" />
+            <div className="absolute -inset-2 rounded-2xl border border-primary-500/10 animate-pulse" />
           </div>
           <div className="h-8 flex items-center mb-2">
             <p className="text-sm text-slate-600 typewriter-cursor">{generatingText}</p>
@@ -263,7 +263,7 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
             {[0, 1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="w-2 h-2 rounded-full bg-blue-500 pulse-dot"
+                className="w-2 h-2 rounded-full bg-primary-500 pulse-dot"
                 style={{ animationDelay: `${i * 0.3}s` }}
               />
             ))}
@@ -284,8 +284,8 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
               disabled={optimizing}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition ${
                 optimizing
-                  ? "bg-purple-500/20 text-purple-400 border border-purple-500/30"
-                  : "bg-slate-50 text-slate-500 border border-slate-200 hover:bg-purple-500/10 hover:text-purple-400 hover:border-purple-500/30"
+                  ? "bg-primary-500/20 text-primary-400 border border-primary-500/30"
+                  : "bg-slate-50 text-slate-500 border border-slate-200 hover:bg-primary-500/10 hover:text-primary-400 hover:border-primary-500/30"
               }`}
             >
               <Wand2 className="w-3 h-3" />
@@ -304,7 +304,7 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
                 >
                   <div className="flex items-center gap-3 px-4 py-3">
                     {/* Left: number + title + summary */}
-                    <div className="w-7 h-7 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center text-xs font-bold flex-shrink-0">
+                    <div className="w-7 h-7 rounded-lg bg-primary-500/10 text-primary-400 flex items-center justify-center text-xs font-bold flex-shrink-0">
                       {s.sectionNumber}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -337,7 +337,7 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
                       <button
                         onClick={() => saveSection(i)}
                         disabled={saving === i}
-                        className="p-1.5 rounded-md hover:bg-slate-100 text-slate-400 hover:text-emerald-400 transition disabled:opacity-30"
+                        className="p-1.5 rounded-md hover:bg-slate-100 text-slate-400 hover:text-accent-400 transition disabled:opacity-30"
                         title="保存"
                       >
                         {saving === i ? (
@@ -375,7 +375,7 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
                             )
                           )
                         }
-                        className="w-full bg-slate-100 text-sm text-slate-600 leading-relaxed resize-none focus:outline-none focus:ring-1 focus:ring-blue-500/20 rounded-lg p-3"
+                        className="w-full bg-slate-100 text-sm text-slate-600 leading-relaxed resize-none focus:outline-none focus:ring-1 focus:ring-primary-500/20 rounded-lg p-3"
                         rows={5}
                       />
                     </div>
@@ -398,7 +398,7 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
         <button
           onClick={onNext}
           disabled={sections.length === 0}
-          className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium text-sm transition-all disabled:opacity-40 shadow-lg shadow-blue-500/15"
+          className="px-6 py-3 rounded-xl bg-gradient-to-r from-primary-600 to-primary-700 text-white font-medium text-sm transition-all disabled:opacity-40 shadow-lg shadow-md"
         >
           下一步：生成配图
         </button>

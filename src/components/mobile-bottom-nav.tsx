@@ -15,7 +15,7 @@ export function MobileBottomNav() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
-      <div className="bg-white/80 backdrop-blur-xl border-t border-slate-200">
+      <div className="glass border-t" style={{ borderColor: "var(--border)" }}>
         <div className="flex items-center justify-around h-16 px-2">
           {NAV_ITEMS.map((item) => {
             const isActive =
@@ -28,16 +28,16 @@ export function MobileBottomNav() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all ${
-                  isActive
-                    ? "text-blue-400"
-                    : "text-slate-400 hover:text-slate-500"
-                }`}
+                className="relative flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all duration-200"
+                style={{ color: isActive ? "var(--primary)" : "var(--muted-foreground)" }}
               >
                 <Icon className="w-5 h-5" />
                 <span className="text-[10px] font-medium">{item.label}</span>
                 {isActive && (
-                  <div className="absolute top-0 h-0.5 w-8 bg-blue-500 rounded-b-full" />
+                  <div
+                    className="absolute -top-px left-1/2 -translate-x-1/2 w-8 h-[3px] rounded-b-full"
+                    style={{ background: "var(--primary)" }}
+                  />
                 )}
               </Link>
             );

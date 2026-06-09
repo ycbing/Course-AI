@@ -17,7 +17,7 @@ export default function CreatePage() {
     <Suspense
       fallback={
         <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-          <div className="w-6 h-6 border-2 border-slate-200 border-t-blue-500 rounded-full animate-spin" />
+          <div className="w-6 h-6 border-2 border-slate-200 border-t-primary-500 rounded-full animate-spin" />
         </div>
       }
     >
@@ -88,7 +88,7 @@ function CreatePageInner() {
             className="flex items-center gap-2 text-slate-500 hover:text-slate-900 transition"
           >
             <ArrowLeft className="w-4 h-4" />
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white font-bold text-[10px]">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center text-white font-bold text-[10px]">
               C
             </div>
           </button>
@@ -154,7 +154,7 @@ function CreatingPlaceholder() {
         <p className="text-slate-500 mb-4">{error}</p>
         <button
           onClick={() => window.location.reload()}
-          className="px-5 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-medium hover:bg-blue-500 transition"
+          className="px-5 py-2.5 rounded-xl bg-primary-600 text-white text-sm font-medium hover:bg-primary-500 transition"
         >
           重试
         </button>
@@ -164,7 +164,7 @@ function CreatingPlaceholder() {
 
   return (
     <div className="flex flex-col items-center justify-center py-20">
-      <div className="w-8 h-8 border-3 border-blue-600 border-t-blue-200 rounded-full animate-spin mb-4" />
+      <div className="w-8 h-8 border-3 border-primary-600 border-t-primary-200 rounded-full animate-spin mb-4" />
       <p className="text-slate-500 text-sm">正在创建课程...</p>
     </div>
   );

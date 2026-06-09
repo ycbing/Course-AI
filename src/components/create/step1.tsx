@@ -141,7 +141,7 @@ export default function Step1({ courseId, onNext }: Step1Props) {
     <div className="space-y-6 page-transition">
       <div className="animate-fade-up">
         <h2 className="text-lg font-semibold mb-1 flex items-center gap-2">
-          <BookTemplate className="w-5 h-5 text-blue-400" /> 输入课程信息
+          <BookTemplate className="w-5 h-5 text-primary-400" /> 输入课程信息
         </h2>
         <p className="text-sm text-slate-500">选择学科、输入课程主题和教学大纲</p>
       </div>
@@ -156,7 +156,7 @@ export default function Step1({ courseId, onNext }: Step1Props) {
               className="group flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-200 transition-all text-left">
               <span className="text-lg flex-shrink-0">{t.emoji}</span>
               <div className="min-w-0">
-                <div className="text-xs font-medium text-slate-600 group-hover:text-blue-600 transition truncate">{t.name}</div>
+                <div className="text-xs font-medium text-slate-600 group-hover:text-primary-600 transition truncate">{t.name}</div>
                 <div className="text-[10px] text-slate-400 truncate mt-0.5">{t.title}</div>
               </div>
             </button>
@@ -171,7 +171,7 @@ export default function Step1({ courseId, onNext }: Step1Props) {
             <span className={`text-[10px] ${title.length > 100 ? "text-red-400" : title.length > 80 ? "text-amber-400" : "text-slate-400"}`}>{title.length}/100</span>
           </div>
           <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="例：光合作用原理详解" maxLength={100}
-            className={`w-full px-4 py-3 rounded-xl border bg-slate-50 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/40 transition-all ${!title.trim() && loaded ? "border-red-500/40" : "border-slate-200"}`} />
+            className={`w-full px-4 py-3 rounded-xl border bg-slate-50 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500/40 transition-all ${!title.trim() && loaded ? "border-red-500/40" : "border-slate-200"}`} />
         </div>
 
         <div>
@@ -179,7 +179,7 @@ export default function Step1({ courseId, onNext }: Step1Props) {
           <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
             {SUBJECT_GRID.map((s) => (
               <button key={s.value} type="button" onClick={() => handleSubjectSelect(s.value)}
-                className={`flex flex-col items-center gap-1 p-3 rounded-xl border transition-all ${subject === s.value ? "border-blue-500/40 bg-blue-500/10 text-blue-400 shadow-lg shadow-blue-500/10" : "border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-50 hover:border-blue-200"}`}>
+                className={`flex flex-col items-center gap-1 p-3 rounded-xl border transition-all ${subject === s.value ? "border-primary-500/40 bg-primary-500/10 text-primary-400 shadow-lg shadow-md" : "border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-50 hover:border-primary-200"}`}>
                 <span className="text-xl">{s.emoji}</span>
                 <span className="text-[10px] font-medium">{s.label}</span>
               </button>
@@ -192,7 +192,7 @@ export default function Step1({ courseId, onNext }: Step1Props) {
           <div className="flex flex-wrap items-center gap-2">
             {["", "小学", "初中", "高中", "大学", "成人教育"].map((g) => (
               <button key={g || "all"} type="button" onClick={() => setGrade(g)}
-                className={`px-3.5 py-2 rounded-xl text-xs font-medium transition-all ${grade === g ? "bg-blue-500/20 text-blue-400 border border-blue-500/30" : "bg-slate-100 text-slate-500 border border-slate-200 hover:bg-slate-50"}`}>
+                className={`px-3.5 py-2 rounded-xl text-xs font-medium transition-all ${grade === g ? "bg-primary-500/20 text-primary-400 border border-primary-500/30" : "bg-slate-100 text-slate-500 border border-slate-200 hover:bg-slate-50"}`}>
                 {g || "不限"}
               </button>
             ))}
@@ -202,7 +202,7 @@ export default function Step1({ courseId, onNext }: Step1Props) {
         <div>
           <div className="flex items-center justify-between mb-2.5">
             <label className="text-xs font-medium text-slate-500">课程大纲（可选）</label>
-            <button type="button" onClick={addOutlineItem} className="flex items-center gap-1 text-[10px] text-blue-400 hover:text-blue-600 transition">
+            <button type="button" onClick={addOutlineItem} className="flex items-center gap-1 text-[10px] text-primary-400 hover:text-primary-600 transition">
               <Plus className="w-3 h-3" /> 添加
             </button>
           </div>
@@ -213,11 +213,11 @@ export default function Step1({ courseId, onNext }: Step1Props) {
                 setOutlineItems(lines.map((text, idx) => ({ id: `item-${idx}`, text: text.replace(/^\d+\.\s*/, ""), knowledgePoints: "", expanded: false })));
               }
             }} placeholder="输入大纲要点，每行一条（如：1. 光合作用原理 2. 叶绿体结构...）" rows={4}
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/40 transition-all resize-none" />
+              className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500/40 transition-all resize-none" />
           ) : (
             <div className="space-y-2">
               {outlineItems.map((item, idx) => (
-                <div key={item.id} className={`rounded-xl border transition-all ${item.expanded ? "border-blue-500/20 bg-slate-100" : "border-slate-200 bg-slate-50 hover:border-blue-200"}`}>
+                <div key={item.id} className={`rounded-xl border transition-all ${item.expanded ? "border-primary-500/20 bg-slate-100" : "border-slate-200 bg-slate-50 hover:border-primary-200"}`}>
                   <div className="flex items-center gap-2 px-3 py-2.5">
                     <div className="flex flex-col gap-0.5 opacity-30">
                       <button type="button" onClick={() => moveItem(item.id, "up")} disabled={idx === 0} className="p-0.5 hover:opacity-100 disabled:opacity-10 transition"><ChevronUp className="w-3 h-3" /></button>
@@ -226,7 +226,7 @@ export default function Step1({ courseId, onNext }: Step1Props) {
                     <span className="text-[10px] font-bold text-slate-400 w-4 text-center flex-shrink-0">{idx + 1}</span>
                     <input type="text" value={item.text} onChange={(e) => updateItem(item.id, e.target.value)} placeholder="大纲要点..."
                       className="flex-1 bg-transparent text-sm text-slate-600 placeholder:text-slate-300 focus:outline-none min-w-0" />
-                    <button type="button" onClick={() => toggleExpand(item.id)} className={`p-1 rounded-md transition text-xs ${item.expanded ? "text-blue-400 bg-blue-500/10" : "text-slate-400 hover:text-slate-500"}`} title="展开知识点">
+                    <button type="button" onClick={() => toggleExpand(item.id)} className={`p-1 rounded-md transition text-xs ${item.expanded ? "text-primary-400 bg-primary-500/10" : "text-slate-400 hover:text-slate-500"}`} title="展开知识点">
                       {item.expanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                     </button>
                     <button type="button" onClick={() => removeOutlineItem(item.id)} className="p-1 rounded-md text-slate-300 hover:text-red-400 transition"><X className="w-3.5 h-3.5" /></button>
@@ -234,12 +234,12 @@ export default function Step1({ courseId, onNext }: Step1Props) {
                   <div className={`overflow-hidden transition-all duration-300 ${item.expanded ? "max-h-32 opacity-100" : "max-h-0 opacity-0"}`}>
                     <div className="px-3 pb-3 pl-9">
                       <textarea value={item.knowledgePoints} onChange={(e) => updateKP(item.id, e.target.value)} placeholder="补充知识点（可选）" rows={2}
-                        className="w-full px-3 py-2 rounded-lg border border-slate-200 bg-slate-100 text-xs text-slate-500 placeholder:text-slate-300 focus:outline-none focus:ring-1 focus:ring-blue-500/20 resize-none" />
+                        className="w-full px-3 py-2 rounded-lg border border-slate-200 bg-slate-100 text-xs text-slate-500 placeholder:text-slate-300 focus:outline-none focus:ring-1 focus:ring-primary-500/20 resize-none" />
                     </div>
                   </div>
                 </div>
               ))}
-              <button type="button" onClick={addOutlineItem} className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-dashed border-slate-300 text-slate-400 hover:text-slate-500 hover:border-blue-200 transition text-xs">
+              <button type="button" onClick={addOutlineItem} className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-dashed border-slate-300 text-slate-400 hover:text-slate-500 hover:border-primary-200 transition text-xs">
                 <Plus className="w-3 h-3" /> 添加大纲项
               </button>
             </div>
@@ -249,7 +249,7 @@ export default function Step1({ courseId, onNext }: Step1Props) {
 
       <div className="flex justify-end animate-fade-up-delay-3">
         <button onClick={handleSubmit} disabled={loading || !title.trim()}
-          className={`flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-medium text-sm transition-all shadow-lg shadow-blue-500/15 ${loading ? "btn-loading" : "disabled:opacity-40"}`}>
+          className={`flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-500 hover:to-primary-700 text-white font-medium text-sm transition-all shadow-lg shadow-md ${loading ? "btn-loading" : "disabled:opacity-40"}`}>
           {loading ? "保存中..." : "下一步：生成教学文案"}
         </button>
       </div>
