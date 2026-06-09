@@ -1,19 +1,12 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import {
-  Loader2, ChevronDown, ChevronUp, Save, ArrowUp, ArrowDown,
-  Sparkles, RotateCcw, FileText, Wand2, Clock
-} from "lucide-react";
+import { Loader2, Sparkles, BookTemplate, ChevronDown, ChevronUp, Plus, X, Wand2, RefreshCw, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-
-interface Section {
-  sectionNumber: number;
-  title: string;
-  content: string;
-}
+import { Badge } from "@/components/ui/badge";
 
 interface Step2Props {
   courseId: string;
@@ -21,79 +14,54 @@ interface Step2Props {
   onPrev: () => void;
 }
 
-const SECTION_COUNTS = [
-  { value: 3, label: "3段", duration: "~1分钟" },
-  { value: 5, label: "5段", duration: "~2分钟" },
-  { value: 8, label: "8段", duration: "~3分钟" },
-  { value: 10, label: "10段", duration: "~5分钟" },
-];
+interface Section {
+  id?: string;
+  sectionNumber: number;
+  title: string;
+  content: string;
+  imagePrompt: string;
+  imageUrl?: string;
+}
 
 export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
   const [sections, setSections] = useState<Section[]>([]);
   const [loading, setLoading] = useState(false);
-  const [optimizing, setOptimizing] = useState(false);
-  const [collapsed, setCollapsed] = useState<Set<number>>(new Set());
-  const [saving, setSaving] = useState<number | null>(null);
+  const [generating, setGenerating] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const [sectionCount, setSectionCount] = useState(5);
-  const [generatingText, setGeneratingText] = useState("");
-  const typewriterRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [course, setCourse] = useState<any>(null);
+  const [editingIdx, setEditingIdx] = useState<number | null>(null);
+  const [editContent, setEditContent] = useState("");
 
   useEffect(() => {
+    if (loaded) return;
     fetch(`/api/courses/${courseId}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
-        if (d?.sections?.length > 0) {
+        if (d?.course) {
+          setCourse(d.course);
+          setSectionCount(d.course.section_count || 5);
+        }
+        if (d?.sections) {
           setSections(
             d.sections.map((s: any) => ({
+              id: s.id,
               sectionNumber: s.section_number,
               title: s.title,
               content: s.content,
+              imagePrompt: s.image_prompt || "",
+              imageUrl: s.image_url || undefined,
             }))
           );
         }
+        setLoaded(true);
       })
-      .catch(() => {});
-  }, [courseId]);
+      .catch(() => setLoaded(true));
+  }, [courseId, loaded]);
 
-  const startTypewriter = () => {
-    const messages = [
-      "正在分析课程主题...",
-      "构建教学大纲结构...",
-      "生成第1段教学文案...",
-      "优化文案表达...",
-      "添加教学知识点...",
-      "检查内容连贯性...",
-      "润色语言风格...",
-      "完成所有段落生成...",
-    ];
-    let msgIdx = 0;
-    let charIdx = 0;
-    setGeneratingText(messages[0].substring(0, 1));
-
-    typewriterRef.current = setInterval(() => {
-      charIdx++;
-      const currentMsg = messages[msgIdx];
-      if (charIdx <= currentMsg.length) {
-        setGeneratingText(currentMsg.substring(0, charIdx));
-      } else {
-        msgIdx = (msgIdx + 1) % messages.length;
-        charIdx = 0;
-        setGeneratingText(messages[msgIdx].substring(0, 1));
-      }
-    }, 60);
-  };
-
-  const stopTypewriter = () => {
-    if (typewriterRef.current) {
-      clearInterval(typewriterRef.current);
-      typewriterRef.current = null;
-    }
-    setGeneratingText("");
-  };
-
-  const generate = async () => {
+  const handleGenerate = async () => {
+    setGenerating(true);
     setLoading(true);
-    startTypewriter();
     try {
       const res = await fetch(`/api/courses/${courseId}/generate`, {
         method: "POST",
@@ -102,305 +70,281 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
       });
       const data = await res.json();
       if (res.ok) {
-        setSections(data.sections || []);
-        // Refresh course data for step validation
-        fetch(\`/api/courses/\${courseId}\`).then(r => r.json()).then(d => {
-          if (d?.course) setCourseData(d.course);
-        }).catch(() => {});
-        toast.success("教学文案生成成功");
+        setSections(
+          data.sections.map((s: any, i: number) => ({
+            sectionNumber: i + 1,
+            title: s.title,
+            content: s.content,
+            imagePrompt: s.imagePrompt || "",
+          }))
+        );
+        toast.success(`已生成 ${data.sections.length} 个教学段落`);
+      } else if (data.code === "INSUFFICIENT_CREDITS") {
+        toast.error(data.error || "积分不足");
       } else {
         toast.error(data.error || "生成失败");
       }
     } catch {
-      toast.error("生成失败");
+      toast.error("生成失败，请重试");
     } finally {
-      stopTypewriter();
+      setGenerating(false);
       setLoading(false);
     }
   };
 
-  const optimizeScript = async () => {
-    setOptimizing(true);
+  const handleSaveSection = async (idx: number) => {
+    const section = sections[idx];
+    if (!section?.id) return;
     try {
-      const res = await fetch(`/api/courses/${courseId}/generate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ courseId, sectionCount: sections.length, optimize: true }),
-      });
-      const data = await res.json();
-      if (res.ok && data.sections) {
-        setSections(
-          data.sections.map((s: any) => ({
-            sectionNumber: s.section_number,
-            title: s.title,
-            content: s.content,
-          }))
-        );
-        fetch(\`/api/courses/\${courseId}\`).then(r => r.json()).then(d => {
-          if (d?.course) setCourseData(d.course);
-        }).catch(() => {});
-        toast.success("文案已优化");
-      } else {
-        toast.error(data.error || "优化失败");
-      }
-    } catch {
-      toast.error("优化失败");
-    } finally {
-      setOptimizing(false);
-    }
-  };
-
-  const saveSection = async (idx: number) => {
-    const s = sections[idx];
-    if (!s) return;
-    setSaving(idx);
-    try {
-      const res = await fetch(`/api/courses/${courseId}`, {
+      const res = await fetch(`/api/courses/${courseId}/sections`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          sections: [{ section_number: s.sectionNumber, title: s.title, content: s.content }],
+          sectionId: section.id,
+          title: section.title,
+          content: section.content,
         }),
       });
-      if (res.ok) toast.success(`第${s.sectionNumber}段已保存`);
-      else {
-        const d = await res.json();
-        toast.error(d.error || "保存失败");
+      if (res.ok) {
+        toast.success("已保存");
+        setEditingIdx(null);
+      } else {
+        toast.error("保存失败");
       }
     } catch {
       toast.error("保存失败");
-    } finally {
-      setSaving(null);
     }
   };
 
-  const toggleCollapse = (idx: number) => {
-    setCollapsed((prev) => {
-      const next = new Set(prev);
-      if (next.has(idx)) next.delete(idx);
-      else next.add(idx);
-      return next;
-    });
+  const updateSection = (idx: number, field: keyof Section, value: string) => {
+    setSections((prev) =>
+      prev.map((s, i) => (i === idx ? { ...s, [field]: value } : s))
+    );
   };
 
-  const moveSection = (idx: number, dir: "up" | "down") => {
-    const newIdx = dir === "up" ? idx - 1 : idx + 1;
-    if (newIdx < 0 || newIdx >= sections.length) return;
-    const updated = [...sections];
-    [updated[idx], updated[newIdx]] = [updated[newIdx], updated[idx]];
-    updated.forEach((s, i) => (s.sectionNumber = i + 1));
-    setSections(updated);
-    toast.success(`段落已${dir === "up" ? "上移" : "下移"}`);
+  const startEdit = (idx: number) => {
+    setEditingIdx(idx);
+    setEditContent(sections[idx]?.content || "");
   };
+
+  const cancelEdit = () => {
+    setEditingIdx(null);
+    setEditContent("");
+  };
+
+  const totalChars = sections.reduce((sum, s) => sum + (s.content?.length || 0), 0);
 
   return (
     <div className="space-y-6 page-transition">
       {/* Header */}
-      <div className="flex items-center justify-between animate-fade-up">
-        <div>
-          <h2 className="text-lg font-semibold mb-1 flex items-center gap-2">
-            <FileText className="w-5 h-5 text-primary-400" />
-            AI 生成教学文案
-          </h2>
-          <p className="text-sm text-neutral-500">根据课程主题自动生成分段教学文案，可编辑每段内容</p>
-        </div>
+      <div className="animate-fade-up">
+        <h2 className="text-lg font-semibold mb-1 flex items-center gap-2">
+          <BookTemplate className="w-5 h-5 text-primary-400" />
+          教学文案
+        </h2>
+        <p className="text-sm text-neutral-500">AI 根据课程主题自动生成教学段落，可编辑调整</p>
       </div>
 
-      {/* Controls bar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-xl border border-neutral-200 bg-white animate-fade-up-delay-1">
-        {/* Section count selector */}
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-neutral-500">段落数：</span>
-          <div className="flex items-center gap-1.5">
-            {SECTION_COUNTS.map((n) => (
-              <button
-                key={n.value}
-                type="button"
-                onClick={() => setSectionCount(n.value)}
-                className={`flex flex-col items-center px-3 py-1.5 rounded-lg transition ${
-                  sectionCount === n.value
-                    ? "bg-primary-500/20 text-primary-400 border border-primary-500/30"
-                    : "bg-neutral-50 text-neutral-500 border border-neutral-200 hover:bg-neutral-100"
-                }`}
-              >
-                <span className="text-xs font-medium">{n.label}</span>
-                <span className="text-[9px] opacity-60 flex items-center gap-0.5">
-                  <Clock className="w-2.5 h-2.5" /> {n.duration}
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Generate button */}
-        <Button
-          onClick={generate}
-          disabled={loading}
-          variant="default"
-        >
-          {loading ? "生成中..." : sections.length === 0 ? (
-            <>
-              <Sparkles className="w-4 h-4" />
-              生成文案
-              <span className="text-[10px] opacity-70">约需 10 秒</span>
-            </>
-          ) : (
-            <>
-              <RotateCcw className="w-4 h-4" />
-              重新生成
-            </>
-          )}
-        </Button>
-      </div>
-
-      {/* Loading state with typewriter */}
-      {loading ? (
-        <div className="flex flex-col items-center justify-center py-16 rounded-2xl border border-neutral-200 bg-white animate-fade-in">
-          <div className="relative mb-6">
-            <div className="w-16 h-16 rounded-2xl bg-primary-500/10 border border-primary-500/20 flex items-center justify-center">
-              <Sparkles className="w-8 h-8 text-primary-500" />
+      {/* Controls */}
+      {!generating && (
+        <div className="flex items-center gap-4 animate-fade-up-delay-1">
+          <div className="flex items-center gap-2">
+            <label className="text-xs font-medium text-neutral-500">段落数</label>
+            <div className="flex items-center gap-1">
+              {[3, 4, 5, 6, 8].map((n) => (
+                <button
+                  key={n}
+                  type="button"
+                  onClick={() => setSectionCount(n)}
+                  className={`px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                    sectionCount === n
+                      ? "bg-primary-500/20 text-primary-400 border border-primary-500/30"
+                      : "bg-neutral-100 text-neutral-500 border border-neutral-200 hover:bg-neutral-50"
+                  }`}
+                >
+                  {n}
+                </button>
+              ))}
             </div>
-            <div className="absolute -inset-2 rounded-2xl border border-primary-500/10 animate-pulse" />
           </div>
-          <div className="h-8 flex items-center mb-2">
-            <p className="text-sm text-neutral-600 typewriter-cursor">{generatingText}</p>
-          </div>
-          <p className="text-xs text-neutral-400">通常需要 10-30 秒</p>
-          <div className="flex items-center gap-1.5 mt-6">
-            {[0, 1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="w-2 h-2 rounded-full bg-primary-500 pulse-dot"
-                style={{ animationDelay: `${i * 0.3}s` }}
-              />
-            ))}
+          <div className="ml-auto">
+            <Button
+              onClick={handleGenerate}
+              disabled={generating}
+              className="gap-2"
+            >
+              {generating ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span className="typewriter">AI 生成中</span>
+                </>
+              ) : sections.length > 0 ? (
+                <>
+                  <RefreshCw className="w-4 h-4" />
+                  重新生成
+                </>
+              ) : (
+                <>
+                  <Wand2 className="w-4 h-4" />
+                  生成教学文案（10积分）
+                </>
+              )}
+            </Button>
           </div>
         </div>
-      ) : sections.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 rounded-2xl border border-dashed border-neutral-300 animate-fade-in">
-          <div className="text-5xl mb-4 animate-bounce-subtle">✍️</div>
-          <p className="text-sm text-neutral-500 font-medium mb-2">点击上方按钮生成教学文案</p>
-          <p className="text-xs text-neutral-400">AI 将根据课程主题自动生成分段教学文案</p>
+      )}
+
+      {/* Generating animation */}
+      {generating && (
+        <div className="rounded-2xl border border-primary-500/20 bg-primary-500/5 p-8 flex flex-col items-center justify-center animate-fade-up">
+          <div className="relative mb-4">
+            <div className="w-16 h-16 rounded-2xl bg-primary-500/10 flex items-center justify-center">
+              <Wand2 className="w-8 h-8 text-primary-400 animate-pulse" />
+            </div>
+            <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-primary-400 flex items-center justify-center">
+              <Sparkles className="w-3 h-3 text-white" />
+            </div>
+          </div>
+          <p className="text-sm font-medium text-neutral-600 mb-1">
+            <span className="typewriter">AI 正在撰写教学文案</span>
+          </p>
+          <p className="text-xs text-neutral-400">
+            根据课程主题智能生成 {sectionCount} 个教学段落
+          </p>
+          <div className="mt-4 w-48 h-1.5 bg-neutral-200 rounded-full overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-primary-400 to-accent-400 rounded-full animate-progress-bar" />
+          </div>
         </div>
-      ) : (
-        <>
-          {/* AI optimize button */}
-          <div className="flex justify-end">
-            <button
-              onClick={optimizeScript}
-              disabled={optimizing}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition ${
-                optimizing
-                  ? "bg-primary-500/20 text-primary-400 border border-primary-500/30"
-                  : "bg-neutral-50 text-neutral-500 border border-neutral-200 hover:bg-primary-500/10 hover:text-primary-400 hover:border-primary-500/30"
+      )}
+
+      {/* Sections list */}
+      {sections.length > 0 && !generating && (
+        <div className="space-y-3 animate-fade-up">
+          {/* Stats bar */}
+          <div className="flex items-center gap-3 px-1">
+            <Badge variant="secondary" className="text-xs">
+              {sections.length} 段落
+            </Badge>
+            <span className="text-xs text-neutral-400">
+              共 {totalChars} 字
+            </span>
+            <span className="text-xs text-neutral-300 ml-auto">
+              点击段落可编辑
+            </span>
+          </div>
+
+          {/* Section cards */}
+          {sections.map((section, idx) => (
+            <div
+              key={section.id || idx}
+              className={`rounded-2xl border transition-all duration-300 ${
+                editingIdx === idx
+                  ? "border-primary-500/30 bg-primary-500/5 shadow-sm"
+                  : "border-neutral-200 bg-white hover:border-neutral-300 hover:shadow-sm"
               }`}
             >
-              <Wand2 className="w-3 h-3" />
-              {optimizing ? "优化中..." : "AI 润色优化"}
-            </button>
-          </div>
+              {/* Section header */}
+              <div
+                className="flex items-center gap-3 px-4 py-3 cursor-pointer"
+                onClick={() =>
+                  editingIdx === idx ? cancelEdit() : startEdit(idx)
+                }
+              >
+                <div className="w-7 h-7 rounded-lg bg-primary-500/10 text-primary-400 flex items-center justify-center text-xs font-bold flex-shrink-0">
+                  {idx + 1}
+                </div>
+                <h3 className="text-sm font-medium text-neutral-700 flex-1 truncate">
+                  {section.title}
+                </h3>
+                <span className="text-[10px] text-neutral-300">
+                  {section.content?.length || 0} 字
+                </span>
+                {editingIdx === idx ? (
+                  <ChevronUp className="w-4 h-4 text-neutral-400" />
+                ) : (
+                  <ChevronDown className="w-4 h-4 text-neutral-400" />
+                )}
+              </div>
 
-          {/* Section cards - left-right layout */}
-          <div className="space-y-3 stagger-children">
-            {sections.map((s, i) => {
-              const isCollapsed = collapsed.has(i);
-              return (
-                <div
-                  key={i}
-                  className="rounded-xl border border-neutral-200 bg-white overflow-hidden group hover:border-neutral-200 transition-colors"
-                >
-                  <div className="flex items-center gap-3 px-4 py-3">
-                    {/* Left: number + title + summary */}
-                    <div className="w-7 h-7 rounded-lg bg-primary-500/10 text-primary-400 flex items-center justify-center text-xs font-bold flex-shrink-0">
-                      {s.sectionNumber}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-sm font-medium truncate">{s.title}</h3>
-                      {!isCollapsed && (
-                        <p className="text-[11px] text-neutral-400 truncate mt-0.5">
-                          {s.content.substring(0, 60)}...
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Right: action buttons */}
-                    <div className="flex items-center gap-1 flex-shrink-0">
+              {/* Expanded content */}
+              <div
+                className={`overflow-hidden transition-all duration-300 ${
+                  editingIdx === idx ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+                }`}
+              >
+                <div className="px-4 pb-4 pt-0 pl-14">
+                  <textarea
+                    value={editingIdx === idx ? editContent : section.content}
+                    onChange={(e) => {
+                      setEditContent(e.target.value);
+                      updateSection(idx, "content", e.target.value);
+                    }}
+                    rows={6}
+                    className="w-full px-3 py-2.5 rounded-xl border border-neutral-200 bg-neutral-50 text-sm text-neutral-700 placeholder:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500/30 resize-none leading-relaxed"
+                  />
+                  <div className="flex items-center justify-between mt-2">
+                    <span className="text-[10px] text-neutral-300">
+                      {editContent.length} 字
+                    </span>
+                    <div className="flex items-center gap-2">
                       <button
-                        onClick={() => moveSection(i, "up")}
-                        disabled={i === 0}
-                        className="p-1.5 rounded-md hover:bg-neutral-100 text-neutral-400 hover:text-neutral-600 transition disabled:opacity-20"
-                        title="上移"
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          cancelEdit();
+                        }}
+                        className="px-3 py-1.5 rounded-lg text-xs text-neutral-500 hover:bg-neutral-100 transition"
                       >
-                        <ArrowUp className="w-3.5 h-3.5" />
+                        取消
                       </button>
                       <button
-                        onClick={() => moveSection(i, "down")}
-                        disabled={i === sections.length - 1}
-                        className="p-1.5 rounded-md hover:bg-neutral-100 text-neutral-400 hover:text-neutral-600 transition disabled:opacity-20"
-                        title="下移"
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSaveSection(idx);
+                        }}
+                        className="px-3 py-1.5 rounded-lg text-xs font-medium bg-primary-500/20 text-primary-400 hover:bg-primary-500/30 transition"
                       >
-                        <ArrowDown className="w-3.5 h-3.5" />
+                        保存
                       </button>
-                      <button
-                        onClick={() => saveSection(i)}
-                        disabled={saving === i}
-                        className="p-1.5 rounded-md hover:bg-neutral-100 text-neutral-400 hover:text-accent-400 transition disabled:opacity-30"
-                        title="保存"
-                      >
-                        {saving === i ? (
-                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                        ) : (
-                          <Save className="w-3.5 h-3.5" />
-                        )}
-                      </button>
-                      <button
-                        onClick={() => toggleCollapse(i)}
-                        className="p-1.5 rounded-md hover:bg-neutral-100 text-neutral-400 hover:text-neutral-600 transition"
-                        title={isCollapsed ? "展开" : "折叠"}
-                      >
-                        {isCollapsed ? (
-                          <ChevronDown className="w-3.5 h-3.5" />
-                        ) : (
-                          <ChevronUp className="w-3.5 h-3.5" />
-                        )}
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Editable content */}
-                  <div
-                    className={`collapsible-content ${isCollapsed ? "collapsed" : ""}`}
-                    style={{ maxHeight: isCollapsed ? "0px" : "500px" }}
-                  >
-                    <div className="px-4 pb-4 pl-14">
-                      <textarea
-                        value={s.content}
-                        onChange={(e) =>
-                          setSections((prev) =>
-                            prev.map((sec, j) =>
-                              j === i ? { ...sec, content: e.target.value } : sec
-                            )
-                          )
-                        }
-                        className="w-full bg-neutral-100 text-sm text-neutral-600 leading-relaxed resize-none focus:outline-none focus:ring-1 focus:ring-primary-500/20 rounded-lg p-3"
-                        rows={5}
-                      />
                     </div>
                   </div>
                 </div>
-              );
-            })}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Empty state */}
+      {sections.length === 0 && !generating && loaded && (
+        <div className="rounded-2xl border border-dashed border-neutral-300 bg-neutral-50 p-12 flex flex-col items-center justify-center animate-fade-up">
+          <div className="w-16 h-16 rounded-2xl bg-neutral-100 flex items-center justify-center mb-4">
+            <Pencil className="w-7 h-7 text-neutral-300" />
           </div>
-        </>
+          <p className="text-sm font-medium text-neutral-500 mb-1">
+            尚未生成教学文案
+          </p>
+          <p className="text-xs text-neutral-400 mb-4">
+            AI 将根据课程主题和教学大纲自动生成教学内容
+          </p>
+          <Button onClick={handleGenerate} className="gap-2">
+            <Wand2 className="w-4 h-4" />
+            开始生成（10积分）
+          </Button>
+        </div>
       )}
 
       {/* Navigation */}
-      <div className="flex justify-between pt-2">
+      <div className="flex justify-between animate-fade-up-delay-3">
         <Button variant="outline" onClick={onPrev}>
           上一步
         </Button>
-        <Button onClick={onNext} disabled={sections.length === 0}>
-          下一步：生成配图
+        <Button
+          onClick={onNext}
+          disabled={sections.length === 0}
+        >
+          下一步：配图
         </Button>
       </div>
     </div>
