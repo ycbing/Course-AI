@@ -15,7 +15,7 @@ export function MobileBottomNav() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
-      <div className="glass border-t" style={{ borderColor: "var(--border)" }}>
+      <div className="glass border-t border-neutral-200">
         <div className="flex items-center justify-around h-16 px-2">
           {NAV_ITEMS.map((item) => {
             const isActive =

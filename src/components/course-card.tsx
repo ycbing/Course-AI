@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { Clock, BookOpen, Presentation, ChevronRight, Trash2 } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 export interface CourseCardData {
   id: string;
@@ -24,7 +26,7 @@ interface CourseCardProps {
 }
 
 const statusConfig: Record<string, { label: string; color: string }> = {
-  draft: { label: "草稿", color: "bg-slate-100 text-slate-500" },
+  draft: { label: "草稿", color: "bg-neutral-100 text-neutral-500" },
   generating: { label: "生成中", color: "bg-primary-500/10 text-primary-400 border border-primary-500/20" },
   completed: { label: "已完成", color: "bg-accent-500/10 text-accent-400 border border-accent-400/20" },
   error: { label: "错误", color: "bg-red-500/10 text-red-400 border border-red-500/20" },
@@ -55,11 +57,11 @@ export function CourseCard({ course, onDelete }: CourseCardProps) {
   return (
     <Link
       href={`/course/${course.id}`}
-      className="group block rounded-xl border bg-white overflow-hidden transition-all duration-200 hover:shadow hover:-translate-y-0.5"
-      style={{ borderColor: "var(--border)", boxShadow: "var(--shadow-sm)" }}
+      className="group block overflow-hidden transition-all duration-150 hover:shadow"
     >
+      <Card className="overflow-hidden hover:shadow-md transition-shadow">
       {/* Cover */}
-      <div className="aspect-video bg-slate-100 overflow-hidden relative">
+      <div className="aspect-video bg-neutral-100 overflow-hidden relative">
         {course.coverUrl ? (
           <img
             src={course.coverUrl}
@@ -74,17 +76,17 @@ export function CourseCard({ course, onDelete }: CourseCardProps) {
         )}
         {/* Status badge */}
         <div className="absolute top-3 right-3">
-          <span className={`text-[10px] px-2.5 py-1 rounded-full font-medium ${status.color}`}>
+          <Badge variant="secondary" className={`text-[10px] px-2.5 py-1 rounded-full font-medium ${status.color}`}>
             {status.label}
-          </span>
+          </Badge>
         </div>
         {/* PPTX badge */}
         {course.pptxUrl && (
           <div className="absolute top-3 left-3">
-            <span className="text-[10px] px-2 py-1 rounded-full font-medium bg-primary-500/20 text-primary-300 border border-primary-500/30 flex items-center gap-1">
+            <Badge variant="outline" className="text-[10px] px-2 py-1 rounded-full font-medium bg-primary-500/20 text-primary-300 border-primary-500/30">
               <Presentation className="w-3 h-3" />
               PPT
-            </span>
+            </Badge>
           </div>
         )}
         {/* Duration badge */}
@@ -121,6 +123,7 @@ export function CourseCard({ course, onDelete }: CourseCardProps) {
           </span>
         </div>
       </div>
+        </Card>
     </Link>
   );
 }

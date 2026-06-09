@@ -69,15 +69,22 @@ export async function generateTeachingScript(
 2. 每个段落内容 250-450 字，内容要详实充实，包含具体知识点的讲解、举例说明或逻辑推导
 3. 语言通俗易懂，适合学生理解，逻辑清晰
 4. 语言风格适合教师课堂讲授，自然流畅，有亲和力
-5. 每个段落的配图提示要用具象的英文描述词，适合 AI 生图
-6. 配图提示应该是教学插图风格，清晰直观
+5. 每个段落的配图提示（imagePrompt）必须遵循以下规则：
+   - 必须是英文，详细且具体（50-100个英文单词）
+   - 必须包含该段落核心教学内容的视觉元素
+   - 指定画面构图：主体位置、视角、背景环境
+   - 指定绘画风格：educational illustration, clean, modern, vector art style, flat design
+   - 包含色彩提示：使用自然明亮的配色，适合教学场景
+   - 示例："A detailed educational illustration showing a plant cell with clearly labeled nucleus, mitochondria and chloroplasts in soft blue and green tones, science textbook diagram style, centered composition on white background, flat vector art"
+   - 禁止使用抽象符号或无意义的装饰元素
+6. 配图提示应该是教学插图风格，清晰直观，有教学指导价值
 ${visualStyle ? `7. 所有配图提示必须包含以下风格关键词：${visualStyle}\n` : ""}
 输出严格遵循以下 JSON 格式：
 [
   {
     "title": "段落标题",
     "content": "段落正文内容",
-    "imagePrompt": "English image generation prompt, educational illustration style, clear and informative"
+    "imagePrompt": "Detailed English prompt describing a specific educational scene, educational illustration style, vector art, clean and informative"
   }
 ]`,
     },

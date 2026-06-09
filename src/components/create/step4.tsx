@@ -3,6 +3,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { Palette, Check } from "lucide-react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface Step4Props {
   courseId: string;
@@ -115,7 +117,7 @@ function ContentSlideImageLeft({ section, colors }: { section: SectionData; colo
         {imgUrl ? (
           <img src={imgUrl} alt="" className="w-full h-full object-cover" crossOrigin="anonymous" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-slate-600 text-xs">配图区域</div>
+          <div className="w-full h-full flex items-center justify-center text-neutral-600 text-xs">配图区域</div>
         )}
       </div>
       {/* Right content area */}
@@ -125,11 +127,11 @@ function ContentSlideImageLeft({ section, colors }: { section: SectionData; colo
           {points.map((pt, i) => (
             <div key={i} className="flex items-start gap-1.5">
               <span className="mt-1 w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: colors.accent }} />
-              <span className="text-[10px] leading-relaxed text-slate-400 line-clamp-2">{pt}</span>
+              <span className="text-[10px] leading-relaxed text-neutral-400 line-clamp-2">{pt}</span>
             </div>
           ))}
           {points.length === 0 && (
-            <span className="text-[10px] text-slate-500">暂无要点内容</span>
+            <span className="text-[10px] text-neutral-500">暂无要点内容</span>
           )}
         </div>
         {/* Bottom accent bar */}
@@ -151,18 +153,18 @@ function ContentSlideImageTop({ section, colors }: { section: SectionData; color
         {imgUrl ? (
           <img src={imgUrl} alt="" className="w-full h-full object-cover" crossOrigin="anonymous" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-slate-600 text-xs">配图区域</div>
+          <div className="w-full h-full flex items-center justify-center text-neutral-600 text-xs">配图区域</div>
         )}
       </div>
       {/* Bottom content area */}
       <div className="h-[50%] flex flex-col justify-center px-4 py-2">
         <h3 className="text-sm font-bold mb-1.5" style={{ color: colors.primary }}>{titleText}</h3>
-        <p className="text-[10px] text-slate-500 leading-relaxed mb-1.5 line-clamp-3">{subtitle}</p>
+        <p className="text-[10px] text-neutral-500 leading-relaxed mb-1.5 line-clamp-3">{subtitle}</p>
         <div className="space-y-1">
           {points.slice(0, 2).map((pt, i) => (
             <div key={i} className="flex items-start gap-1.5">
               <span className="mt-1 w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: colors.accent }} />
-              <span className="text-[10px] leading-relaxed text-slate-400 line-clamp-1">{pt}</span>
+              <span className="text-[10px] leading-relaxed text-neutral-400 line-clamp-1">{pt}</span>
             </div>
           ))}
         </div>
@@ -217,7 +219,7 @@ function ContentSlideFullImage({ section, colors }: { section: SectionData; colo
       {imgUrl ? (
         <img src={imgUrl} alt="" className="w-full h-full object-cover" crossOrigin="anonymous" />
       ) : (
-        <div className="w-full h-full flex items-center justify-center text-slate-600 text-sm" style={{ backgroundColor: colors.bg }}>配图区域</div>
+        <div className="w-full h-full flex items-center justify-center text-neutral-600 text-sm" style={{ backgroundColor: colors.bg }}>配图区域</div>
       )}
       {/* Bottom text overlay */}
       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent px-4 py-3">
@@ -326,13 +328,13 @@ export default function Step4({ courseId, onNext, onPrev }: Step4Props) {
             <Palette className="w-5 h-5 text-primary-400" />
             PPT 样式
           </h2>
-          <p className="text-sm text-slate-500">选择主题配色和幻灯片布局</p>
+          <p className="text-sm text-neutral-500">选择主题配色和幻灯片布局</p>
         </div>
       </div>
 
       {/* Theme selection */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 animate-fade-up-delay-1">
-        <label className="text-xs font-medium text-slate-500 mb-4 block">选择主题</label>
+      <div className="rounded-2xl border border-neutral-200 bg-white p-6 animate-fade-up-delay-1">
+        <label className="text-xs font-medium text-neutral-500 mb-4 block">选择主题</label>
         <div className="grid grid-cols-2 gap-4">
           {THEMES.map((theme) => (
             <button
@@ -342,7 +344,7 @@ export default function Step4({ courseId, onNext, onPrev }: Step4Props) {
               className={`relative p-4 rounded-xl border text-left transition-all ${
                 selectedTheme === theme.id
                   ? "border-primary-500/40 bg-primary-500/10 shadow-lg shadow-md"
-                  : "border-slate-200 bg-slate-100 hover:bg-slate-50"
+                  : "border-neutral-200 bg-neutral-100 hover:bg-neutral-50"
               }`}
             >
               {selectedTheme === theme.id && (
@@ -363,14 +365,14 @@ export default function Step4({ courseId, onNext, onPrev }: Step4Props) {
                 </div>
               </div>
 
-              <div className={`text-sm font-medium ${selectedTheme === theme.id ? "text-primary-400" : "text-slate-600"}`}>
+              <div className={`text-sm font-medium ${selectedTheme === theme.id ? "text-primary-400" : "text-neutral-600"}`}>
                 {theme.name}
               </div>
               <div className="flex items-center gap-2 mt-1">
                 <span className="w-3 h-3 rounded-full" style={{ backgroundColor: theme.colors.primary }} />
                 <span className="w-3 h-3 rounded-full" style={{ backgroundColor: theme.colors.accent }} />
                 <span className="w-3 h-3 rounded-full border border-zinc-600" style={{ backgroundColor: theme.colors.bg }} />
-                <span className="text-[10px] text-slate-400">{theme.desc}</span>
+                <span className="text-[10px] text-neutral-400">{theme.desc}</span>
               </div>
             </button>
           ))}
@@ -378,8 +380,8 @@ export default function Step4({ courseId, onNext, onPrev }: Step4Props) {
       </div>
 
       {/* Layout preview */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 animate-fade-up-delay-2">
-        <label className="text-xs font-medium text-slate-500 mb-4 block">布局方式（有配图的章节自动使用选中的布局）</label>
+      <div className="rounded-2xl border border-neutral-200 bg-white p-6 animate-fade-up-delay-2">
+        <label className="text-xs font-medium text-neutral-500 mb-4 block">布局方式（有配图的章节自动使用选中的布局）</label>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {LAYOUTS.map((layout) => (
             <button
@@ -389,29 +391,29 @@ export default function Step4({ courseId, onNext, onPrev }: Step4Props) {
               className={`p-3 rounded-xl border text-center transition-all ${
                 selectedLayout === layout.id
                   ? "border-primary-500/40 bg-primary-500/10"
-                  : "border-slate-200 bg-slate-100 hover:bg-slate-50"
+                  : "border-neutral-200 bg-neutral-100 hover:bg-neutral-50"
               }`}
             >
               <div className="text-2xl mb-1">{layout.icon}</div>
-              <div className={`text-xs font-medium ${selectedLayout === layout.id ? "text-primary-400" : "text-slate-600"}`}>
+              <div className={`text-xs font-medium ${selectedLayout === layout.id ? "text-primary-400" : "text-neutral-600"}`}>
                 {layout.name}
               </div>
-              <div className="text-[10px] text-slate-400 mt-0.5">{layout.desc}</div>
+              <div className="text-[10px] text-neutral-400 mt-0.5">{layout.desc}</div>
             </button>
           ))}
         </div>
       </div>
 
       {/* Real slide preview */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 animate-fade-up-delay-3">
-        <label className="text-xs font-medium text-slate-500 mb-4 block">效果预览</label>
+      <div className="rounded-2xl border border-neutral-200 bg-white p-6 animate-fade-up-delay-3">
+        <label className="text-xs font-medium text-neutral-500 mb-4 block">效果预览</label>
         <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory">
           {/* Slide 1: Cover */}
           <div className="flex-shrink-0 w-[320px] snap-center">
             <div className="aspect-[16/9] rounded-lg overflow-hidden shadow-lg ring-1 ring-white/5">
               <CoverSlide title={previewSlides.cover} colors={colors} />
             </div>
-            <span className="text-[10px] text-slate-500 mt-1.5 block text-center">封面</span>
+            <span className="text-[10px] text-neutral-500 mt-1.5 block text-center">封面</span>
           </div>
 
           {/* Slide 2: Content with selected layout */}
@@ -423,7 +425,7 @@ export default function Step4({ courseId, onNext, onPrev }: Step4Props) {
                 colors={colors}
               />
             </div>
-            <span className="text-[10px] text-slate-500 mt-1.5 block text-center">
+            <span className="text-[10px] text-neutral-500 mt-1.5 block text-center">
               {selectedLayout === "text-only" ? "纯文字" : "内容页 · " + LAYOUTS.find((l) => l.id === selectedLayout)?.name}
             </span>
           </div>
@@ -437,7 +439,7 @@ export default function Step4({ courseId, onNext, onPrev }: Step4Props) {
                 colors={colors}
               />
             </div>
-            <span className="text-[10px] text-slate-500 mt-1.5 block text-center">纯文字</span>
+            <span className="text-[10px] text-neutral-500 mt-1.5 block text-center">纯文字</span>
           </div>
 
           {/* Slide 4: Ending */}
@@ -445,26 +447,19 @@ export default function Step4({ courseId, onNext, onPrev }: Step4Props) {
             <div className="aspect-[16/9] rounded-lg overflow-hidden shadow-lg ring-1 ring-white/5">
               <EndingSlide colors={colors} />
             </div>
-            <span className="text-[10px] text-slate-500 mt-1.5 block text-center">结尾</span>
+            <span className="text-[10px] text-neutral-500 mt-1.5 block text-center">结尾</span>
           </div>
         </div>
       </div>
 
       {/* Navigation */}
       <div className="flex justify-between pt-2">
-        <button
-          onClick={onPrev}
-          className="px-5 py-3 rounded-xl border border-slate-200 text-slate-500 text-sm font-medium hover:bg-slate-50 transition-all"
-        >
+        <Button variant="outline" onClick={onPrev}>
           上一步
-        </button>
-        <button
-          onClick={saveAndNext}
-          disabled={saving}
-          className="px-6 py-3 rounded-xl bg-gradient-to-r from-primary-600 to-primary-700 text-white font-medium text-sm transition-all disabled:opacity-40 shadow-lg shadow-md"
-        >
+        </Button>
+        <Button onClick={saveAndNext} disabled={saving}>
           {saving ? "保存中..." : "下一步：导出 PPTX"}
-        </button>
+        </Button>
       </div>
     </div>
   );

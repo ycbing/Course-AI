@@ -134,27 +134,27 @@ export default function QuizPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="w-6 h-6 border-2 border-slate-200 border-t-blue-500 rounded-full animate-spin" />
+      <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
+        <div className="w-6 h-6 border-2 border-neutral-200 border-t-blue-500 rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-neutral-50">
       <Toaster theme="light" position="top-center" />
 
-      <header className="border-b border-slate-200 glass sticky top-0 z-40">
+      <header className="border-b border-neutral-200 glass sticky top-0 z-40">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 h-14 flex items-center gap-3">
           <button
             onClick={() => router.push(`/course/${courseId}`)}
-            className="flex items-center gap-2 text-slate-500 hover:text-slate-900 transition"
+            className="flex items-center gap-2 text-neutral-500 hover:text-neutral-900 transition"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
           <span className="font-semibold text-sm truncate">随堂测验</span>
           {questions.length > 0 && (
-            <span className="ml-auto text-xs text-slate-500">{totalCount} 道题</span>
+            <span className="ml-auto text-xs text-neutral-500">{totalCount} 道题</span>
           )}
         </div>
       </header>
@@ -165,13 +165,13 @@ export default function QuizPage() {
           <div className="text-center py-20">
             <div className="text-5xl mb-4 animate-float">📝</div>
             <h2 className="text-xl font-bold mb-2">还没有测验题目</h2>
-            <p className="text-sm text-slate-500 mb-8 max-w-md mx-auto">
+            <p className="text-sm text-neutral-500 mb-8 max-w-md mx-auto">
               AI 会根据课程内容自动生成测验题，涵盖每个章节的知识点
             </p>
             <button
               onClick={generateQuiz}
               disabled={generating}
-              className="flex items-center gap-2 mx-auto px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium text-sm hover:from-blue-500 hover:to-indigo-500 transition-all shadow-lg shadow-blue-500/15 disabled:opacity-40"
+              className="flex items-center gap-2 mx-auto px-6 py-3 rounded-xl bg-gradient-to-r bg-neutral-900 text-white font-medium text-sm hover:from-blue-500 hover:to-indigo-500 transition-all shadow-lg shadow-sm disabled:opacity-40"
             >
               {generating ? (
                 <Spinner className="w-4 h-4 animate-spin" />
@@ -184,13 +184,13 @@ export default function QuizPage() {
         ) : (
           <>
             {/* Timer bar */}
-            <div className="flex items-center justify-between mb-6 p-3 rounded-xl border border-slate-200 bg-white">
+            <div className="flex items-center justify-between mb-6 p-3 rounded-xl border border-neutral-200 bg-white">
               <div className="flex items-center gap-4">
-                <div className="flex items-center gap-1.5 text-sm text-slate-500">
+                <div className="flex items-center gap-1.5 text-sm text-neutral-500">
                   <Clock className="w-4 h-4" />
                   {formatTime(elapsedTime)}
                 </div>
-                <div className="text-sm text-slate-500">
+                <div className="text-sm text-neutral-500">
                   {Object.keys(answers).length}/{totalCount} 已答
                 </div>
               </div>
@@ -211,7 +211,7 @@ export default function QuizPage() {
                   disabled={!submitted && Object.keys(answers).length === 0 && elapsedTime === 0}
                   className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-medium transition ${
                     submitted
-                      ? "bg-slate-100 text-slate-500"
+                      ? "bg-neutral-100 text-neutral-500"
                       : Object.keys(answers).length > 0
                       ? "bg-blue-600 text-white hover:bg-blue-500"
                       : "bg-blue-600 text-white hover:bg-blue-500"
@@ -226,7 +226,7 @@ export default function QuizPage() {
             <div className="space-y-8">
               {sections.map((section) => (
                 <div key={section.key}>
-                  <h3 className="text-sm font-medium text-slate-500 mb-4 flex items-center gap-2">
+                  <h3 className="text-sm font-medium text-neutral-500 mb-4 flex items-center gap-2">
                     <div className="w-6 h-6 rounded-md bg-blue-500/10 text-blue-400 flex items-center justify-center text-xs font-bold">
                       {section.sectionNumber}
                     </div>
@@ -252,7 +252,7 @@ export default function QuizPage() {
               {!submitted && elapsedTime === 0 && (
                 <button
                   onClick={() => startTimer()}
-                  className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium text-sm hover:from-blue-500 hover:to-indigo-500 transition-all shadow-lg shadow-blue-500/15"
+                  className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r bg-neutral-900 text-white font-medium text-sm hover:from-blue-500 hover:to-indigo-500 transition-all shadow-lg shadow-sm"
                 >
                   <Send className="w-4 h-4" />
                   开始答题
@@ -261,7 +261,7 @@ export default function QuizPage() {
               {!submitted && Object.keys(answers).length > 0 && (
                 <button
                   onClick={handleSubmit}
-                  className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium text-sm hover:from-blue-500 hover:to-indigo-500 transition-all shadow-lg shadow-blue-500/15"
+                  className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r bg-neutral-900 text-white font-medium text-sm hover:from-blue-500 hover:to-indigo-500 transition-all shadow-lg shadow-sm"
                 >
                   <CheckCircle className="w-4 h-4" />
                   提交答案 ({Object.keys(answers).length}/{totalCount})
@@ -271,7 +271,7 @@ export default function QuizPage() {
                 <>
                   <button
                     onClick={handleRetry}
-                    className="flex items-center gap-2 px-6 py-3 rounded-xl border border-slate-200 text-slate-500 text-sm hover:bg-slate-50 transition-all"
+                    className="flex items-center gap-2 px-6 py-3 rounded-xl border border-neutral-200 text-neutral-500 text-sm hover:bg-neutral-50 transition-all"
                   >
                     <RotateCcw className="w-4 h-4" />
                     重新答题
@@ -279,7 +279,7 @@ export default function QuizPage() {
                   <button
                     onClick={generateQuiz}
                     disabled={generating}
-                    className="flex items-center gap-2 px-6 py-3 rounded-xl border border-slate-200 text-slate-500 text-sm hover:bg-slate-50 transition-all disabled:opacity-40"
+                    className="flex items-center gap-2 px-6 py-3 rounded-xl border border-neutral-200 text-neutral-500 text-sm hover:bg-neutral-50 transition-all disabled:opacity-40"
                   >
                     {generating ? <Spinner className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
                     重新生成
@@ -290,14 +290,14 @@ export default function QuizPage() {
 
             {/* Results summary */}
             {submitted && (
-              <div className="mt-8 p-6 rounded-2xl border border-slate-200 bg-white text-center">
+              <div className="mt-8 p-6 rounded-2xl border border-neutral-200 bg-white text-center">
                 <div className="text-4xl mb-2">
                   {accuracy >= 80 ? "🎉" : accuracy >= 60 ? "💪" : "📚"}
                 </div>
-                <div className="text-2xl font-bold text-slate-900 mb-1">
+                <div className="text-2xl font-bold text-neutral-900 mb-1">
                   {correctCount}/{totalCount}
                 </div>
-                <div className="text-sm text-slate-500">
+                <div className="text-sm text-neutral-500">
                   正确率 {accuracy}% · 用时 {formatTime(elapsedTime)}
                 </div>
               </div>
@@ -338,12 +338,12 @@ function QuestionCard({
           ? "border-emerald-500/30 bg-emerald-500/5"
           : isAnswered
           ? "border-red-500/30 bg-red-500/5"
-          : "border-slate-200 bg-white"
-        : "border-slate-200 bg-white hover:border-slate-200"
+          : "border-neutral-200 bg-white"
+        : "border-neutral-200 bg-white hover:border-neutral-200"
     }`}>
       {/* Question header */}
       <div className="flex items-start gap-2 mb-3">
-        <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 font-medium flex-shrink-0">
+        <span className="text-[10px] px-1.5 py-0.5 rounded bg-neutral-100 text-neutral-500 font-medium flex-shrink-0">
           {typeLabels[question.type] || question.type}
         </span>
         <p className="text-sm text-slate-700 leading-relaxed">{question.question}</p>
@@ -366,10 +366,10 @@ function QuestionCard({
                       ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-400"
                       : isSelected
                       ? "border-red-500/40 bg-red-500/10 text-red-400"
-                      : "border-slate-200 text-slate-500"
+                      : "border-neutral-200 text-neutral-500"
                     : isSelected
                     ? "border-blue-500/40 bg-blue-500/10 text-blue-400"
-                    : "border-slate-200 text-slate-500 hover:border-blue-200 hover:bg-slate-100"
+                    : "border-neutral-200 text-neutral-500 hover:border-blue-200 hover:bg-neutral-100"
                 }`}
               >
                 <div className={`w-5 h-5 rounded-full border flex items-center justify-center flex-shrink-0 ${
@@ -409,10 +409,10 @@ function QuestionCard({
                       ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-400"
                       : isSelected
                       ? "border-red-500/40 bg-red-500/10 text-red-400"
-                      : "border-slate-200 text-slate-500"
+                      : "border-neutral-200 text-neutral-500"
                     : isSelected
                     ? "border-blue-500/40 bg-blue-500/10 text-blue-400"
-                    : "border-slate-200 text-slate-500 hover:border-blue-200"
+                    : "border-neutral-200 text-neutral-500 hover:border-blue-200"
                 }`}
               >
                 {submitted && isThisCorrect && <CheckCircle className="w-4 h-4" />}
@@ -439,8 +439,8 @@ function QuestionCard({
                   ? "border-emerald-500/40 bg-emerald-500/5 text-emerald-400"
                   : isAnswered
                   ? "border-red-500/40 bg-red-500/5 text-red-400"
-                  : "border-slate-200 text-slate-500"
-                : "border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                  : "border-neutral-200 text-neutral-500"
+                : "border-neutral-200 bg-neutral-50 text-neutral-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
             }`}
           />
         </div>

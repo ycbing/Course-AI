@@ -38,9 +38,9 @@ export function SectionCard({
   mode = "script",
 }: SectionCardProps) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
+    <div className="rounded-xl border border-neutral-200 bg-white overflow-hidden">
       {/* Header */}
-      <div className="flex items-center gap-3 px-4 py-3 border-b border-slate-200">
+      <div className="flex items-center gap-3 px-4 py-3 border-b border-neutral-200">
         <div className="w-7 h-7 rounded-lg bg-primary-500/10 text-primary-400 flex items-center justify-center text-xs font-bold flex-shrink-0">
           {section.sectionNumber}
         </div>
@@ -50,7 +50,7 @@ export function SectionCard({
             <button
               onClick={() => onRegenerateSection(index)}
               disabled={sectionRegenerating === index}
-              className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-600 transition disabled:opacity-30"
+              className="p-1.5 rounded-lg hover:bg-neutral-100 text-neutral-500 hover:text-neutral-600 transition disabled:opacity-30"
               title="重新生成此段"
             >
               {sectionRegenerating === index ? (
@@ -64,7 +64,7 @@ export function SectionCard({
             <button
               onClick={() => onRegenerateImage(index)}
               disabled={imageGenerating}
-              className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-600 transition disabled:opacity-30"
+              className="p-1.5 rounded-lg hover:bg-neutral-100 text-neutral-500 hover:text-neutral-600 transition disabled:opacity-30"
               title="重新生成配图"
             >
               {imageGenerating ? (
@@ -80,7 +80,7 @@ export function SectionCard({
               className={`px-3 py-1 rounded-lg text-[11px] font-medium transition ${
                 isPlaying === index
                   ? "bg-primary-500/20 text-primary-400"
-                  : "bg-slate-100 text-slate-500 hover:bg-primary-50"
+                  : "bg-neutral-100 text-neutral-500 hover:bg-primary-50"
               }`}
             >
               {isPlaying === index ? "暂停" : "播放"}
@@ -95,7 +95,7 @@ export function SectionCard({
           <textarea
             value={section.content}
             onChange={(e) => onEditContent?.(index, e.target.value)}
-            className="w-full bg-transparent text-sm text-slate-600 leading-relaxed resize-none focus:outline-none placeholder:text-slate-400"
+            className="w-full bg-transparent text-sm text-neutral-600 leading-relaxed resize-none focus:outline-none placeholder:text-slate-400"
             rows={6}
             placeholder="教学文案内容..."
           />
@@ -104,14 +104,14 @@ export function SectionCard({
         {mode === "images" && (
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
-              <p className="text-sm text-slate-500 leading-relaxed line-clamp-4">{section.content}</p>
+              <p className="text-sm text-neutral-500 leading-relaxed line-clamp-4">{section.content}</p>
             </div>
-            <div className="w-full sm:w-48 h-32 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0">
+            <div className="w-full sm:w-48 h-32 rounded-lg bg-neutral-100 overflow-hidden flex-shrink-0">
               {section.imageUrl ? (
                 <img src={section.imageUrl} alt={section.title} className="w-full h-full object-cover" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <ImageIcon className="w-6 h-6 text-slate-300" />
+                  <ImageIcon className="w-6 h-6 text-neutral-300" />
                 </div>
               )}
             </div>
@@ -120,7 +120,7 @@ export function SectionCard({
 
         {mode === "voiceover" && (
           <div className="space-y-3">
-            <p className="text-sm text-slate-500 leading-relaxed line-clamp-3">{section.content}</p>
+            <p className="text-sm text-neutral-500 leading-relaxed line-clamp-3">{section.content}</p>
             <div className="flex items-center gap-3 text-xs text-slate-400">
               <span>{section.audioUrl ? "✓ 配音已生成" : "○ 待生成"}</span>
               {section.duration && <span>· {section.duration.toFixed(1)}s</span>}

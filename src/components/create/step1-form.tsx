@@ -1,15 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Loader2, Sparkles, BookTemplate, ChevronDown, ChevronUp, Plus, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 
-interface Step1Props {
-  courseId: string;
-  onNext: () => void;
+interface Step1FormProps {
+  onCreated: (courseId: string) => void;
 }
 
 interface OutlineItem {
@@ -51,35 +50,12 @@ const SUBJECT_GRADES: Record<string, string> = {
   programming: "大学", history: "高中",
 };
 
-export default function Step1({ courseId, onNext }: Step1Props) {
+export default function Step1Form({ onCreated }: Step1FormProps) {
   const [title, setTitle] = useState("");
   const [subject, setSubject] = useState("general");
   const [grade, setGrade] = useState("");
   const [outlineItems, setOutlineItems] = useState<OutlineItem[]>([]);
   const [loading, setLoading] = useState(false);
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    if (loaded) return;
-    fetch(`/api/courses/${courseId}`)
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => {
-        if (d?.course) {
-          setTitle(d.course.title || "");
-          setSubject(d.course.subject || "general");
-          setGrade(d.course.grade || "");
-          if (d.course.outline) {
-            setOutlineItems(
-              d.course.outline.split("\n").filter(Boolean).map((text: string, idx: number) => ({
-                id: `item-${idx}`, text: text.replace(/^\d+\.\s*/, ""), knowledgePoints: "", expanded: false,
-              }))
-            );
-          }
-        }
-        setLoaded(true);
-      })
-      .catch(() => setLoaded(true));
-  }, [courseId, loaded]);
 
   const applyTemplate = (t: typeof QUICK_TEMPLATES[0]) => {
     setTitle(t.title);
@@ -129,13 +105,19 @@ export default function Step1({ courseId, onNext }: Step1Props) {
     setLoading(true);
     try {
       const outline = outlineItems.map((item, i) => `${i + 1}. ${item.text}`).join("\n");
-      const res = await fetch(`/api/courses/${courseId}`, {
-        method: "PATCH",
+      const res = await fetch("/api/courses", {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title: title.trim(), subject, grade, outline }),
       });
-      if (res.ok) { toast.success("课程信息已保存"); onNext(); }
-      else { const d = await res.json(); toast.error(d.error || "保存失败"); }
+      const data = await res.json();
+      if (res.ok && data.course?.id) {
+        toast.success("课程已创建");
+        onCreated(data.course.id);
+      } else {
+        const d = data.error || "创建失败";
+        toast.error(d);
+      }
     } catch { toast.error("保存失败"); }
     finally { setLoading(false); }
   };
@@ -174,7 +156,7 @@ export default function Step1({ courseId, onNext }: Step1Props) {
             <span className={`text-[10px] ${title.length > 100 ? "text-red-400" : title.length > 80 ? "text-amber-400" : "text-neutral-400"}`}>{title.length}/100</span>
           </div>
           <Input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="例：光合作用原理详解" maxLength={100}
-            className={!title.trim() && loaded ? "border-red-500/40" : ""} />
+            className={!title.trim() ? "border-red-500/40" : ""} />
         </div>
 
         <div>

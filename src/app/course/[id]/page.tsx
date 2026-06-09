@@ -10,6 +10,10 @@ import {
 } from "lucide-react";
 import { toast, Toaster } from "sonner";
 import { toPublicUrl } from "@/lib/cos-url";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 type DetailTab = "overview" | "chapters" | "quiz";
 
@@ -142,7 +146,7 @@ export default function CourseDetailPage() {
   };
 
   const statusConfig: Record<string, { label: string; color: string }> = {
-    draft: { label: "草稿", color: "bg-slate-100 text-slate-500" },
+    draft: { label: "草稿", color: "bg-neutral-100 text-neutral-500" },
     generating: { label: "生成中", color: "bg-amber-500/10 text-amber-400" },
     completed: { label: "已完成", color: "bg-accent-500/10 text-accent-400" },
     error: { label: "错误", color: "bg-red-500/10 text-red-400" },
@@ -150,7 +154,7 @@ export default function CourseDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen bg-neutral-50">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 py-8 space-y-6">
           <div className="skeleton w-full h-48 rounded-2xl" />
           <div className="space-y-3">
@@ -164,11 +168,11 @@ export default function CourseDetailPage() {
 
   if (!course) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
         <div className="text-center">
           <div className="text-5xl mb-4">😔</div>
-          <p className="text-slate-500">课程不存在</p>
-          <Link href="/dashboard" className="text-primary-400 hover:text-primary-600 text-sm mt-2 inline-block">
+          <p className="text-neutral-500">课程不存在</p>
+          <Link href="/dashboard" className="text-primary-400 hover:text-neutral-900 text-sm mt-2 inline-block">
             返回课程列表
           </Link>
         </div>
@@ -195,14 +199,14 @@ export default function CourseDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-neutral-50">
       <Toaster theme="light" position="top-center" />
 
-      <header className="border-b border-slate-200 glass sticky top-0 z-40">
+      <header className="border-b border-neutral-200 glass sticky top-0 z-40">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 h-14 flex items-center gap-3">
           <button
             onClick={() => router.push("/dashboard")}
-            className="flex items-center gap-2 text-slate-500 hover:text-slate-900 transition"
+            className="flex items-center gap-2 text-neutral-500 hover:text-neutral-900 transition"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
@@ -225,10 +229,10 @@ export default function CourseDetailPage() {
                 alt={course.title}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-neutral-900/80 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-6">
                 <h1 className="text-2xl font-bold mb-2 text-white">{course.title}</h1>
-                <div className="flex items-center gap-3 text-sm text-slate-600">
+                <div className="flex items-center gap-3 text-sm text-neutral-600">
                   {course.subject && (
                     <span className="badge badge-blue">
                       {subjectLabels[course.subject] || course.subject}
@@ -240,11 +244,11 @@ export default function CourseDetailPage() {
               </div>
             </div>
           ) : (
-            <div className="aspect-video bg-gradient-to-br from-primary-900/40 to-primary-900/40 flex items-center justify-center">
+            <div className="aspect-video bg-gradient-to-br from-neutral-200 to-neutral-100 flex items-center justify-center">
               <div className="text-center">
                 <div className="text-5xl mb-3">📖</div>
                 <h1 className="text-2xl font-bold mb-2">{course.title}</h1>
-                <div className="flex items-center justify-center gap-3 text-sm text-slate-500">
+                <div className="flex items-center justify-center gap-3 text-sm text-neutral-500">
                   {course.subject && (
                     <span className="badge badge-blue">
                       {subjectLabels[course.subject] || course.subject}
@@ -258,59 +262,50 @@ export default function CourseDetailPage() {
           )}
         </div>
 
-        {/* Tabs */}
-        <div className="flex gap-1 p-1 bg-slate-100 rounded-xl border border-slate-200 mb-6 animate-fade-up-delay-1">
-          {TABS.map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-all flex-1 justify-center ${
-                activeTab === tab.key
-                  ? "bg-primary-600 text-white shadow-lg shadow-lg"
-                  : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
-              }`}
-            >
-              <tab.icon className="w-3.5 h-3.5" />
-              {tab.label}
-              {tab.key === "quiz" && quizCount > 0 && (
-                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary-500/20 text-primary-300">
-                  {quizCount}
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
+        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as DetailTab)} className="mb-6 animate-fade-up-delay-1">
+          <TabsList className="w-full">
+            {TABS.map((tab) => (
+              <TabsTrigger key={tab.key} value={tab.key} className="flex-1">
+                <tab.icon className="w-3.5 h-3.5" />
+                {tab.label}
+                {tab.key === "quiz" && quizCount > 0 && (
+                  <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary-500/20 text-primary-300">
+                    {quizCount}
+                  </span>
+                )}
+              </TabsTrigger>
+            ))}
+          </TabsList>
 
-        {/* ─── Overview Tab ─── */}
-        {activeTab === "overview" && (
+        <TabsContent value="overview">
           <div className="space-y-6 animate-fade-up-delay-2">
             {/* Course info cards */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="rounded-xl border border-slate-200 bg-white p-4 text-center">
+              <div className="rounded-xl border border-neutral-200 bg-white p-4 text-center">
                 <BookOpen className="w-5 h-5 text-primary-400 mx-auto mb-2" />
                 <div className="text-lg font-bold">{course.section_count}</div>
-                <div className="text-[10px] text-slate-500">教学段落</div>
+                <div className="text-[10px] text-neutral-500">教学段落</div>
               </div>
-              <div className="rounded-xl border border-slate-200 bg-white p-4 text-center">
+              <div className="rounded-xl border border-neutral-200 bg-white p-4 text-center">
                 <Clock className="w-5 h-5 text-primary-400 mx-auto mb-2" />
                 <div className="text-lg font-bold">
                   {sections.length > 0
                     ? `${Math.round(sections.reduce((sum: number, s: any) => sum + (s.duration || 0), 0))}`
                     : "0"}
                 </div>
-                <div className="text-[10px] text-slate-500">总时长（秒）</div>
+                <div className="text-[10px] text-neutral-500">总时长（秒）</div>
               </div>
-              <div className="rounded-xl border border-slate-200 bg-white p-4 text-center">
+              <div className="rounded-xl border border-neutral-200 bg-white p-4 text-center">
                 <Image className="w-5 h-5 text-accent-400 mx-auto mb-2" />
                 <div className="text-lg font-bold">
                   {sections.filter((s: any) => s.image_url).length}
                 </div>
-                <div className="text-[10px] text-slate-500">已配图</div>
+                <div className="text-[10px] text-neutral-500">已配图</div>
               </div>
-              <div className="rounded-xl border border-slate-200 bg-white p-4 text-center">
+              <div className="rounded-xl border border-neutral-200 bg-white p-4 text-center">
                 <GraduationCap className="w-5 h-5 text-amber-400 mx-auto mb-2" />
                 <div className="text-lg font-bold">{quizCount}</div>
-                <div className="text-[10px] text-slate-500">测验题</div>
+                <div className="text-[10px] text-neutral-500">测验题</div>
               </div>
             </div>
 
@@ -318,10 +313,11 @@ export default function CourseDetailPage() {
             <div className="flex flex-wrap gap-3">
               <Link
                 href={`/create?courseId=${courseId}&step=${nextStep}`}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-primary-600 to-primary-700 text-white text-sm font-medium hover:from-primary-500 hover:to-primary-700 transition-all shadow-lg shadow-md"
               >
-                <Edit className="w-4 h-4" />
-                {course.status === "completed" ? "预览" : "继续创作"}
+                <Button>
+                  <Edit className="w-4 h-4" />
+                  {course.status === "completed" ? "预览" : "继续创作"}
+                </Button>
               </Link>
 
               {/* PPTX download button */}
@@ -330,45 +326,35 @@ export default function CourseDetailPage() {
                   href={toPublicUrl(course.pptx_url)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-primary-700 text-white text-sm font-medium hover:from-primary-500 hover:to-primary-700 transition-all shadow-lg shadow-md"
                 >
-                  <Presentation className="w-4 h-4" />
-                  下载 PPTX
+                  <Button>
+                    <Presentation className="w-4 h-4" />
+                    下载 PPTX
+                  </Button>
                 </a>
               )}
 
               {shareLink && (
-                <button
-                  onClick={copyLink}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-200 text-slate-500 text-sm hover:bg-slate-50 transition-all"
-                >
+                <Button variant="outline" onClick={copyLink}>
                   {copied ? <Check className="w-3.5 h-3.5 text-accent-400" /> : <Share2 className="w-3.5 h-3.5" />}
                   {copied ? "已复制" : "分享"}
-                </button>
+                </Button>
               )}
 
-              <button
-                onClick={handleClone}
-                disabled={cloning}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-200 text-slate-500 text-sm hover:bg-slate-50 transition-all disabled:opacity-40"
-              >
+              <Button variant="outline" onClick={handleClone} disabled={cloning}>
                 {cloning ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FolderPlus className="w-3.5 h-3.5" />}
                 复制
-              </button>
+              </Button>
 
-              <button
-                onClick={handleDelete}
-                disabled={deleting}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-red-500/20 text-red-400 text-sm hover:bg-red-500/10 transition-all disabled:opacity-40"
-              >
+              <Button variant="outline" onClick={handleDelete} disabled={deleting} className="border-red-500/20 text-red-400 hover:bg-red-500/10 hover:text-red-400">
                 {deleting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
                 删除
-              </button>
+              </Button>
             </div>
 
             {/* Video with enhanced player */}
             {course.video_url && course.status === "completed" && (
-              <div className="rounded-2xl border border-slate-200 overflow-hidden">
+              <div className="rounded-2xl border border-neutral-200 overflow-hidden">
                 <div className="aspect-video bg-black relative">
                   <video
                     ref={videoRef}
@@ -378,8 +364,8 @@ export default function CourseDetailPage() {
                   />
                 </div>
                 {/* Speed controls */}
-                <div className="flex items-center gap-2 p-3 border-t border-slate-200">
-                  <span className="text-[10px] text-slate-500">播放速度</span>
+                <div className="flex items-center gap-2 p-3 border-t border-neutral-200">
+                  <span className="text-[10px] text-neutral-500">播放速度</span>
                   {[0.5, 0.75, 1, 1.25, 1.5, 2].map((speed) => (
                     <button
                       key={speed}
@@ -387,7 +373,7 @@ export default function CourseDetailPage() {
                       className={`px-2 py-1 rounded text-[10px] font-medium transition ${
                         videoSpeed === speed
                           ? "bg-primary-500/20 text-primary-400"
-                          : "text-slate-500 hover:text-slate-600 hover:bg-slate-100"
+                          : "text-neutral-500 hover:text-neutral-600 hover:bg-neutral-100"
                       }`}
                     >
                       {speed}x
@@ -396,8 +382,8 @@ export default function CourseDetailPage() {
                 </div>
                 {/* Chapter markers */}
                 {sections.length > 0 && (
-                  <div className="p-3 border-t border-slate-200">
-                    <div className="text-[10px] text-slate-500 mb-2">章节跳转</div>
+                  <div className="p-3 border-t border-neutral-200">
+                    <div className="text-[10px] text-neutral-500 mb-2">章节跳转</div>
                     <div className="flex flex-wrap gap-2">
                       {sections.map((s: any, i: number) => (
                         <button
@@ -406,7 +392,7 @@ export default function CourseDetailPage() {
                             const video = document.querySelector("video");
                             if (video) video.currentTime = sectionTimeOffsets[i];
                           }}
-                          className="flex items-center gap-1 px-2 py-1 rounded-md text-[10px] text-slate-500 hover:text-primary-600 hover:bg-slate-100 transition"
+                          className="flex items-center gap-1 px-2 py-1 rounded-md text-[10px] text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 transition"
                         >
                           <span className="w-4 h-4 rounded bg-primary-500/10 text-primary-400 flex items-center justify-center text-[8px] font-bold">
                             {s.section_number}
@@ -420,15 +406,14 @@ export default function CourseDetailPage() {
               </div>
             )}
           </div>
-        )}
+        </TabsContent>
 
-        {/* ─── Chapters Tab ─── */}
-        {activeTab === "chapters" && (
+        <TabsContent value="chapters">
           <div className="animate-fade-up-delay-2">
             {sections.length === 0 ? (
-              <div className="text-center py-16 rounded-2xl border border-dashed border-slate-300">
+              <div className="text-center py-16 rounded-2xl border border-dashed border-neutral-300">
                 <BookOpen className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                <p className="text-sm text-slate-500 font-medium mb-2">还没有教学段落</p>
+                <p className="text-sm text-neutral-500 font-medium mb-2">还没有教学段落</p>
                 <p className="text-xs text-slate-400 mb-4">在编辑页面生成教学文案</p>
                 <Link
                   href={`/create?courseId=${courseId}&step=2`}
@@ -444,11 +429,11 @@ export default function CourseDetailPage() {
                   return (
                     <div
                       key={s.id}
-                      className="rounded-xl border border-slate-200 bg-white overflow-hidden hover:border-slate-200 transition-colors"
+                      className="rounded-xl border border-neutral-200 bg-white overflow-hidden hover:border-neutral-200 transition-colors"
                     >
                       <button
                         onClick={() => toggleSection(i)}
-                        className="w-full flex items-center gap-3 px-4 py-3 border-b border-slate-200 hover:bg-slate-50 transition text-left"
+                        className="w-full flex items-center gap-3 px-4 py-3 border-b border-neutral-200 hover:bg-neutral-50 transition text-left"
                       >
                         <div className="w-7 h-7 rounded-lg bg-primary-500/10 text-primary-400 flex items-center justify-center text-xs font-bold flex-shrink-0">
                           {s.section_number}
@@ -469,7 +454,7 @@ export default function CourseDetailPage() {
                               className={`px-2 py-0.5 rounded-md text-[10px] font-medium transition ${
                                 playing === i
                                   ? "bg-primary-500/20 text-primary-400"
-                                  : "bg-slate-100 text-slate-500 hover:bg-primary-50"
+                                  : "bg-neutral-100 text-neutral-500 hover:bg-primary-50"
                               }`}
                             >
                               {playing === i ? "暂停" : "配音"}
@@ -489,7 +474,7 @@ export default function CourseDetailPage() {
                         style={{ maxHeight: isExpanded ? "600px" : "0px" }}
                       >
                         <div className="p-4">
-                          <p className="text-sm text-slate-500 leading-relaxed">{s.content}</p>
+                          <p className="text-sm text-neutral-500 leading-relaxed">{s.content}</p>
                           <div className="flex gap-3 mt-3">
                             {s.image_url && (
                               <div className="rounded-lg overflow-hidden inline-block">
@@ -505,28 +490,27 @@ export default function CourseDetailPage() {
               </div>
             )}
           </div>
-        )}
+        </TabsContent>
 
-        {/* ─── Quiz Tab ─── */}
-        {activeTab === "quiz" && (
+        <TabsContent value="quiz">
           <div className="animate-fade-up-delay-2">
             {quizCount > 0 ? (
-              <div className="text-center py-12 rounded-2xl border border-slate-200 bg-white">
+              <div className="text-center py-12 rounded-2xl border border-neutral-200 bg-white">
                 <div className="text-4xl mb-3">📝</div>
                 <h3 className="text-lg font-bold mb-2">随堂测验</h3>
-                <p className="text-sm text-slate-500 mb-6">共 {quizCount} 道题，涵盖所有教学章节</p>
+                <p className="text-sm text-neutral-500 mb-6">共 {quizCount} 道题，涵盖所有教学章节</p>
                 <Link
                   href={`/course/${courseId}/quiz`}
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-primary-600 to-primary-700 text-white font-medium text-sm hover:from-primary-500 hover:to-primary-700 transition-all shadow-lg shadow-md"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-neutral-900 text-white font-medium text-sm hover:bg-neutral-800 transition-all"
                 >
                   <Sparkles className="w-4 h-4" />
                   开始测验
                 </Link>
               </div>
             ) : (
-              <div className="text-center py-12 rounded-2xl border border-dashed border-slate-300">
+              <div className="text-center py-12 rounded-2xl border border-dashed border-neutral-300">
                 <GraduationCap className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                <p className="text-sm text-slate-500 font-medium mb-2">还没有测验题目</p>
+                <p className="text-sm text-neutral-500 font-medium mb-2">还没有测验题目</p>
                 <p className="text-xs text-slate-400 mb-4">使用 AI 自动生成测验题</p>
                 <Link
                   href={`/course/${courseId}/quiz`}
@@ -538,7 +522,8 @@ export default function CourseDetailPage() {
               </div>
             )}
           </div>
-        )}
+        </TabsContent>
+        </Tabs>
       </main>
     </div>
   );

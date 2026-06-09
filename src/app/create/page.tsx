@@ -1,10 +1,11 @@
 "use client";
 
-import { Suspense, useState, useEffect } from "react";
+import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Loader2, ArrowLeft, Settings } from "lucide-react";
 import { toast, Toaster } from "sonner";
+import { Button } from "@/components/ui/button";
 import { StepBar } from "@/components/step-bar";
 import Step1 from "@/components/create/step1";
 import Step2 from "@/components/create/step2";
@@ -16,8 +17,8 @@ export default function CreatePage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-          <div className="w-6 h-6 border-2 border-slate-200 border-t-primary-500 rounded-full animate-spin" />
+        <div className="min-h-screen bg-[#fafafa] flex items-center justify-center">
+          <div className="w-6 h-6 border-2 border-neutral-200 border-t-neutral-500 rounded-full animate-spin" />
         </div>
       }
     >
@@ -77,25 +78,25 @@ function CreatePageInner() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-[#fafafa]">
       <Toaster theme="light" position="top-center" />
 
       {/* Top nav */}
-      <header className="border-b border-slate-200 glass sticky top-0 z-40">
+      <header className="border-b border-neutral-200 glass sticky top-0 z-40">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 h-14 flex items-center gap-3">
           <button
             onClick={() => router.push("/dashboard")}
-            className="flex items-center gap-2 text-slate-500 hover:text-slate-900 transition"
+            className="flex items-center gap-2 text-neutral-500 hover:text-neutral-900 transition"
           >
             <ArrowLeft className="w-4 h-4" />
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center text-white font-bold text-[10px]">
+            <div className="w-7 h-7 rounded-lg bg-neutral-900 flex items-center justify-center text-white font-bold text-[10px]">
               C
             </div>
           </button>
-          <div className="h-5 w-px bg-slate-100" />
+          <div className="h-5 w-px bg-neutral-100" />
           <span className="font-semibold text-sm">课程创作</span>
           <div className="ml-auto">
-            <Link href="/settings" className="text-slate-500 hover:text-slate-600 transition">
+            <Link href="/settings" className="text-neutral-500 hover:text-neutral-600 transition">
               <Settings className="w-4 h-4" />
             </Link>
           </div>
@@ -115,59 +116,23 @@ function CreatePageInner() {
             />
           </>
         ) : (
-          <CreatingPlaceholder />
+          <CreateForm onCreated={(id) => {
+            const params = new URLSearchParams(searchParams.toString());
+            params.set("courseId", id);
+            params.set("step", "1");
+            router.push(`/create?${params.toString()}`);
+          }} />
         )}
       </main>
     </div>
   );
 }
 
-/* ─── Auto-create course and redirect to Step1 ─── */
-function CreatingPlaceholder() {
-  const router = useRouter();
-  const [error, setError] = useState("");
+/* ─── Step1: Create course form (no courseId yet) ─── */
+import Step1Form from "@/components/create/step1-form";
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch("/api/courses", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ title: "新课程", subject: "general" }),
-        });
-        const data = await res.json();
-        if (data.course?.id) {
-          router.replace(`/create?courseId=${data.course.id}&step=1`);
-        } else {
-          setError(data.error || "创建失败");
-        }
-      } catch {
-        setError("网络错误");
-      }
-    })();
-  }, [router]);
-
-  if (error) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20">
-        <div className="text-4xl mb-4">😕</div>
-        <p className="text-slate-500 mb-4">{error}</p>
-        <button
-          onClick={() => window.location.reload()}
-          className="px-5 py-2.5 rounded-xl bg-primary-600 text-white text-sm font-medium hover:bg-primary-500 transition"
-        >
-          重试
-        </button>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex flex-col items-center justify-center py-20">
-      <div className="w-8 h-8 border-3 border-primary-600 border-t-primary-200 rounded-full animate-spin mb-4" />
-      <p className="text-slate-500 text-sm">正在创建课程...</p>
-    </div>
-  );
+function CreateForm({ onCreated }: { onCreated: (id: string) => void }) {
+  return <Step1Form onCreated={onCreated} />;
 }
 
 /* ─── Step Content Router ─── */

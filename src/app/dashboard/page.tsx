@@ -12,6 +12,11 @@ import {
 } from "lucide-react";
 import { toast, Toaster } from "sonner";
 import { ConfirmDialog } from "@/components/confirm-dialog";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface Course {
   id: string;
@@ -28,12 +33,12 @@ interface Course {
 }
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; dotColor: string }> = {
-  draft: { label: "草稿", color: "bg-slate-100 text-slate-500", dotColor: "" },
-  generating: { label: "生成中", color: "bg-primary-500/10 text-primary-400 border border-primary-500/20", dotColor: "bg-primary-500" },
-  script_ready: { label: "文案就绪", color: "bg-accent-500/10 text-accent-400 border border-accent-400/20", dotColor: "bg-accent-500" },
-  images_ready: { label: "配图就绪", color: "bg-purple-500/10 text-purple-400 border border-purple-500/20", dotColor: "bg-purple-500" },
-  completed: { label: "已完成", color: "bg-accent-500/10 text-accent-400 border border-accent-400/20", dotColor: "bg-accent-500" },
-  error: { label: "错误", color: "bg-red-500/10 text-red-400 border border-red-500/20", dotColor: "bg-red-500" },
+  draft: { label: "草稿", color: "bg-neutral-100 text-neutral-500", dotColor: "" },
+  generating: { label: "生成中", color: "bg-primary-50 text-primary-700 border border-primary-200", dotColor: "bg-primary-500" },
+  script_ready: { label: "文案就绪", color: "bg-primary-50 text-primary-700 border border-primary-200", dotColor: "bg-primary-500" },
+  images_ready: { label: "配图就绪", color: "bg-primary-50 text-primary-700 border border-primary-200", dotColor: "bg-primary-500" },
+  completed: { label: "已完成", color: "bg-primary-50 text-primary-700 border border-primary-200", dotColor: "bg-primary-500" },
+  error: { label: "错误", color: "bg-neutral-100 text-neutral-500", dotColor: "" },
 };
 
 const STEP_LABELS: Record<string, string> = {
@@ -195,7 +200,6 @@ export default function DashboardPage() {
   const inProgressCount = courses.filter((c) => c.status === "generating").length;
 
   const getStatusConfig = (course: Course) => {
-    // Map progressStep to a more granular status
     const step = course.progressStep;
     if (step === "completed") return STATUS_CONFIG.completed;
     if (step === "script_ready") return STATUS_CONFIG.script_ready;
@@ -204,7 +208,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--background)' }}>
+    <div className="min-h-screen bg-[#fafafa]">
       <Toaster theme="light" position="top-center" />
       <ConfirmDialog
         open={!!deleteTarget}
@@ -217,28 +221,27 @@ export default function DashboardPage() {
       />
 
       {/* Top nav */}
-      <header className="glass sticky top-0 z-40 border-b" style={{ borderColor: 'var(--border)' }}>
+      <header className="glass sticky top-0 z-40 border-b border-neutral-200">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 h-14 flex items-center gap-3">
-          <Link href="/" className="flex items-center gap-2 text-slate-500 hover:text-slate-900 transition">
+          <Link href="/" className="flex items-center gap-2 text-neutral-400 hover:text-neutral-900 transition">
             <ArrowLeft className="w-4 h-4" />
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center text-white font-bold text-[10px]">
+            <div className="w-7 h-7 rounded-lg bg-neutral-900 flex items-center justify-center text-white font-bold text-[10px]">
               C
             </div>
           </Link>
-          <div className="h-5 w-px bg-slate-100" />
+          <div className="h-5 w-px bg-neutral-100" />
           <div className="flex items-center gap-2">
-            <LayoutDashboard className="w-4 h-4 text-slate-500" />
+            <LayoutDashboard className="w-4 h-4 text-neutral-400" />
             <span className="font-semibold text-sm">我的课程</span>
           </div>
           <div className="ml-auto flex items-center gap-3">
-            <Link
-              href="/create"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-primary-600 to-primary-700 text-white text-xs font-medium hover:from-primary-500 hover:to-primary-700 transition-all shadow-lg shadow-md"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">创建课程</span>
+            <Link href="/create">
+              <Button size="sm">
+                <Plus className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">创建课程</span>
+              </Button>
             </Link>
-            <Link href="/settings" className="text-slate-500 hover:text-slate-600 transition">
+            <Link href="/settings" className="text-neutral-400 hover:text-neutral-600 transition">
               <Settings className="w-4 h-4" />
             </Link>
           </div>
@@ -249,74 +252,77 @@ export default function DashboardPage() {
         {/* Stats cards */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-8 animate-fade-up">
           {[
-            { icon: FolderOpen, label: "总课程数", value: totalCount, color: "text-primary-400", bg: "bg-primary-500/10" },
-            { icon: Check, label: "已完成", value: completedCount, color: "text-accent-400", bg: "bg-accent-500/10" },
-            { icon: Loader2, label: "创作中", value: inProgressCount, color: "text-amber-400", bg: "bg-amber-500/10" },
-            { icon: BarChart3, label: "积分余额", value: userCredits, color: "text-primary-400", bg: "bg-primary-500/10" },
+            { icon: FolderOpen, label: "总课程数", value: totalCount, color: "text-neutral-900", bg: "bg-neutral-100" },
+            { icon: Check, label: "已完成", value: completedCount, color: "text-neutral-900", bg: "bg-neutral-100" },
+            { icon: Loader2, label: "创作中", value: inProgressCount, color: "text-neutral-900", bg: "bg-neutral-100" },
+            { icon: BarChart3, label: "积分余额", value: userCredits, color: "text-neutral-900", bg: "bg-neutral-100" },
           ].map((s) => (
-            <div key={s.label} className="rounded-xl border border-slate-200 bg-white p-4">
-              <div className="flex items-center gap-3">
-                <div className={`w-9 h-9 rounded-lg ${s.bg} ${s.color} flex items-center justify-center flex-shrink-0`}>
-                  <s.icon className="w-4.5 h-4.5" />
+            <Card key={s.label}>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className={`w-9 h-9 rounded-lg ${s.bg} ${s.color} flex items-center justify-center flex-shrink-0 text-neutral-500`}>
+                    <s.icon className="w-4.5 h-4.5" />
+                  </div>
+                  <div>
+                    <div className="text-lg font-bold text-neutral-900">{s.value}</div>
+                    <div className="section-label text-[10px]">{s.label}</div>
+                  </div>
                 </div>
-                <div>
-                  <div className="text-lg font-bold">{s.value}</div>
-                  <div className="text-[11px] text-slate-400">{s.label}</div>
-                </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
 
         {/* Quick create bar */}
         <div className="mb-6 animate-fade-up-delay-1">
-          <div className="flex items-center gap-2 p-3 rounded-xl border border-slate-200 bg-white">
-            <Sparkles className="w-4 h-4 text-primary-400 flex-shrink-0" />
-            <input
-              type="text"
-              value={quickCreate}
-              onChange={(e) => setQuickCreate(e.target.value)}
-              placeholder="快速创建：输入课程主题..."
-              className="flex-1 bg-transparent text-sm text-slate-600 placeholder:text-slate-400 focus:outline-none"
-              onKeyDown={(e) => e.key === "Enter" && handleQuickCreate()}
-            />
-            <select
-              value={quickCreateSubject}
-              onChange={(e) => setQuickCreateSubject(e.target.value)}
-              className="px-2 py-1 rounded-lg border border-slate-200 bg-slate-50 text-xs text-slate-500 appearance-none focus:outline-none cursor-pointer"
-            >
-              {SUBJECT_OPTIONS.map((s) => (
-                <option key={s.value} value={s.value}>{s.label}</option>
-              ))}
-            </select>
-            <button
-              onClick={handleQuickCreate}
-              className="px-4 py-2 rounded-lg bg-primary-600 hover:bg-primary-500 text-white text-xs font-medium transition flex items-center gap-1.5"
-            >
-              <Plus className="w-3 h-3" /> 创建
-            </button>
-          </div>
+          <Card>
+            <CardContent className="p-3">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-neutral-400 flex-shrink-0" />
+                <Input
+                  type="text"
+                  value={quickCreate}
+                  onChange={(e) => setQuickCreate(e.target.value)}
+                  placeholder="快速创建：输入课程主题..."
+                  className="flex-1 h-9 border-0 shadow-none focus-visible:ring-0"
+                  onKeyDown={(e) => e.key === "Enter" && handleQuickCreate()}
+                />
+                <Select value={quickCreateSubject} onValueChange={(v) => setQuickCreateSubject(v || "")}>
+                  <SelectTrigger className="w-[100px] h-9 border-neutral-200 text-xs">
+                    <SelectValue placeholder="学科" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {SUBJECT_OPTIONS.filter(s => s.value).map((s) => (
+                      <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button onClick={handleQuickCreate} size="sm">
+                  <Plus className="w-3 h-3" /> 创建
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Header with search/filter and view toggle */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 animate-fade-up-delay-1">
           <div>
             <h1 className="text-xl font-bold">课程列表</h1>
-            <p className="text-sm text-slate-500 mt-1">管理你的 AI 课件和教学视频</p>
+            <p className="text-sm text-neutral-500 mt-1">管理你的 AI 课件和教学视频</p>
           </div>
           <div className="flex items-center gap-2">
-            {/* View toggle */}
-            <div className="flex items-center gap-1 p-1 rounded-lg bg-slate-100 border border-slate-200">
+            <div className="flex items-center gap-1 p-1 rounded-lg bg-neutral-100 border border-neutral-200">
               <button
                 onClick={() => setViewMode("grid")}
-                className={`p-1.5 rounded-md transition ${viewMode === "grid" ? "bg-slate-100 text-primary-400" : "text-slate-400 hover:text-slate-500"}`}
+                className={`p-1.5 rounded-md transition ${viewMode === "grid" ? "bg-white text-neutral-900 shadow-sm" : "text-neutral-400 hover:text-neutral-500"}`}
                 title="网格视图"
               >
                 <Grid3X3 className="w-4 h-4" />
               </button>
               <button
                 onClick={() => setViewMode("list")}
-                className={`p-1.5 rounded-md transition ${viewMode === "list" ? "bg-slate-100 text-primary-400" : "text-slate-400 hover:text-slate-500"}`}
+                className={`p-1.5 rounded-md transition ${viewMode === "list" ? "bg-white text-neutral-900 shadow-sm" : "text-neutral-400 hover:text-neutral-500"}`}
                 title="列表视图"
               >
                 <List className="w-4 h-4" />
@@ -328,37 +334,36 @@ export default function DashboardPage() {
         {/* Search and filter bar */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-6 animate-fade-up-delay-2">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <input
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
+            <Input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="搜索课程..."
-              className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-600 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500/30 transition-all"
+              className="pl-9"
             />
           </div>
-          <select
-            value={subjectFilter}
-            onChange={(e) => setSubjectFilter(e.target.value)}
-            className="px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-500 appearance-none focus:outline-none focus:ring-2 focus:ring-primary-500/20 cursor-pointer"
-          >
-            {SUBJECT_OPTIONS.map((s) => (
-              <option key={s.value} value={s.value}>{s.label}</option>
-            ))}
-          </select>
+          <Select value={subjectFilter || "all"} onValueChange={(v) => setSubjectFilter(v === "all" ? "" : (v ?? ""))}>
+            <SelectTrigger className="w-[120px]">
+              <SelectValue placeholder="全部学科" />
+            </SelectTrigger>
+            <SelectContent>
+              {SUBJECT_OPTIONS.map((s) => (
+                <SelectItem key={s.value} value={s.value || "all"}>{s.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <div className="flex items-center gap-1">
             {STATUS_FILTERS.map((s) => (
-              <button
+              <Button
                 key={s.value}
+                variant={statusFilter === s.value ? "default" : "outline"}
+                size="sm"
+                className="text-xs h-9"
                 onClick={() => setStatusFilter(s.value)}
-                className={`px-3 py-2 rounded-lg text-xs font-medium transition ${
-                  statusFilter === s.value
-                    ? "bg-primary-500/20 text-primary-400 border border-primary-500/30"
-                    : "bg-slate-100 text-slate-400 border border-slate-200 hover:bg-slate-50"
-                }`}
               >
                 {s.label}
-              </button>
+              </Button>
             ))}
           </div>
         </div>
@@ -367,7 +372,7 @@ export default function DashboardPage() {
         {loading ? (
           <div className={viewMode === "grid" ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" : "space-y-3"}>
             {[1, 2, 3].map((i) => (
-              <div key={i} className="rounded-2xl border border-slate-200 bg-white overflow-hidden">
+              <div key={i} className="rounded-2xl border border-neutral-200 bg-white overflow-hidden">
                 {viewMode === "grid" && <div className="aspect-video skeleton" />}
                 <div className="p-4 space-y-3">
                   <div className="skeleton-text w-3/4" />
@@ -377,25 +382,23 @@ export default function DashboardPage() {
             ))}
           </div>
         ) : filteredCourses.length === 0 ? (
-          <div className="text-center py-24 rounded-2xl border border-dashed border-slate-300 page-transition">
+          <div className="text-center py-24 rounded-2xl border border-dashed border-neutral-300 page-transition">
             <div className="text-6xl mb-6 animate-float">📚</div>
-            <p className="text-base text-slate-500 font-medium mb-2">
+            <p className="text-base text-neutral-500 font-medium mb-2">
               {courses.length === 0 ? "还没有课程" : "没有匹配的课程"}
             </p>
-            <p className="text-sm text-slate-400 mb-6">
+            <p className="text-sm text-neutral-400 mb-6">
               {courses.length === 0 ? "点击上方按钮创建你的第一个 AI 课件" : "试试调整筛选条件"}
             </p>
             {courses.length === 0 && (
-              <Link
-                href="/create"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary-600 hover:bg-primary-500 text-white text-sm font-medium transition-all"
-              >
-                <Plus className="w-4 h-4" /> 创建第一个课程
+              <Link href="/create">
+                <Button>
+                  <Plus className="w-4 h-4" /> 创建第一个课程
+                </Button>
               </Link>
             )}
           </div>
         ) : viewMode === "grid" ? (
-          /* Grid view */
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 stagger-children">
             {filteredCourses.map((course) => (
               <CourseCard
@@ -409,7 +412,6 @@ export default function DashboardPage() {
             ))}
           </div>
         ) : (
-          /* List view */
           <div className="space-y-2 stagger-children">
             {filteredCourses.map((course) => (
               <CourseRow
@@ -442,25 +444,25 @@ function CourseCard({
     <div className="relative group">
       <Link
         href={`/course/${course.id}`}
-        className="block rounded-2xl border border-slate-200 bg-white hover:bg-slate-100 card-hover overflow-hidden"
+        className="block rounded-2xl border border-neutral-200 bg-white hover:bg-neutral-100 card-hover overflow-hidden"
       >
         {/* Cover */}
-        <div className="aspect-video bg-slate-100 overflow-hidden relative">
+        <div className="aspect-video bg-neutral-100 overflow-hidden relative">
           {course.coverUrl ? (
             <img src={toPublicUrl(course.coverUrl)} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-primary-900/30 to-primary-900/30 flex items-center justify-center">
-              <BookOpen className="w-10 h-10 text-slate-400" />
+              <BookOpen className="w-10 h-10 text-neutral-400" />
             </div>
           )}
           {/* Status badge with dot */}
           <div className="absolute top-3 right-3">
-            <span className={`text-[10px] px-2.5 py-1 rounded-full font-medium flex items-center gap-1.5 ${statusConfig.color}`}>
+            <Badge variant="secondary" className={`text-[10px] px-2.5 py-1 rounded-full font-medium flex items-center gap-1.5 ${statusConfig.color}`}>
               {statusConfig.dotColor && course.status === "generating" && (
                 <span className={`w-1.5 h-1.5 rounded-full ${statusConfig.dotColor} pulse-dot`} />
               )}
               {statusConfig.label}
-            </span>
+            </Badge>
           </div>
           {/* Video play overlay */}
           {course.videoUrl && course.status === "completed" && (
@@ -480,7 +482,7 @@ function CourseCard({
           <div className="absolute top-3 left-3 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all z-10">
             <button
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-              className="p-1.5 rounded-lg bg-black/60 backdrop-blur-sm text-slate-500 hover:text-white transition"
+              className="p-1.5 rounded-lg bg-black/60 backdrop-blur-sm text-neutral-500 hover:text-white transition"
               title="分享"
             >
               <Share2 className="w-3.5 h-3.5" />
@@ -488,7 +490,7 @@ function CourseCard({
             <button
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); onDelete(course); }}
               disabled={deletingId === course.id}
-              className="p-1.5 rounded-lg bg-black/60 backdrop-blur-sm text-slate-500 hover:text-red-400 transition disabled:opacity-30"
+              className="p-1.5 rounded-lg bg-black/60 backdrop-blur-sm text-neutral-500 hover:text-red-400 transition disabled:opacity-30"
               title="删除"
             >
               {deletingId === course.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
@@ -498,10 +500,10 @@ function CourseCard({
 
         {/* Info */}
         <div className="p-4">
-          <h3 className="text-sm font-semibold group-hover:text-primary-600 transition truncate mb-1.5">
+          <h3 className="text-sm font-semibold group-hover:text-neutral-900 transition truncate mb-1.5">
             {course.title}
           </h3>
-          <div className="flex items-center gap-2 text-xs text-slate-400 mb-3">
+          <div className="flex items-center gap-2 text-xs text-neutral-400 mb-3">
             {course.subject && <span>{SUBJECT_LABELS[course.subject] || course.subject}</span>}
             {course.grade && <span>· {course.grade}</span>}
             {course.sectionCount > 0 && <span>· {course.sectionCount}段</span>}
@@ -509,17 +511,15 @@ function CourseCard({
           {course.progressStep && (
             <div className="flex items-center gap-1.5 mb-3">
               {badges.map((b) => (
-                <span key={b.key} className={`text-[10px] px-1.5 py-0.5 rounded border ${
-                  b.done ? "border-accent-400/20 text-accent-400 bg-accent-500/5" : "border-slate-200 text-slate-400 bg-slate-50"
-                }`}>
+                <Badge key={b.key} variant={b.done ? "default" : "outline"} className="text-[10px] px-1.5 py-0.5">
                   {b.label} {b.done ? "✓" : "○"}
-                </span>
+                </Badge>
               ))}
             </div>
           )}
-          <div className="flex items-center justify-between pt-3 border-t border-slate-200">
-            <span className="text-[11px] text-slate-400">{STEP_LABELS[course.progressStep || ""] || "草稿"}</span>
-            <span className="text-[11px] text-slate-300">{new Date(course.createdAt).toLocaleDateString("zh-CN")}</span>
+          <div className="flex items-center justify-between pt-3 border-t border-neutral-200">
+            <span className="text-[11px] text-neutral-400">{STEP_LABELS[course.progressStep || ""] || "草稿"}</span>
+            <span className="text-[11px] text-neutral-300">{new Date(course.createdAt).toLocaleDateString("zh-CN")}</span>
           </div>
         </div>
       </Link>
@@ -541,15 +541,15 @@ function CourseRow({
     <div className="relative group">
       <Link
         href={`/course/${course.id}`}
-        className="flex items-center gap-4 p-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition-all"
+        className="flex items-center gap-4 p-4 rounded-xl border border-neutral-200 bg-white hover:bg-neutral-50 transition-all"
       >
         {/* Thumbnail */}
-        <div className="w-20 h-14 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0 relative">
+        <div className="w-20 h-14 rounded-lg bg-neutral-100 overflow-hidden flex-shrink-0 relative">
           {course.coverUrl ? (
             <img src={toPublicUrl(course.coverUrl)} alt="" className="w-full h-full object-cover" loading="lazy" />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
-              <BookOpen className="w-5 h-5 text-slate-300" />
+              <BookOpen className="w-5 h-5 text-neutral-300" />
             </div>
           )}
           {course.videoUrl && (
@@ -562,16 +562,16 @@ function CourseRow({
         {/* Info */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <h3 className="text-sm font-semibold truncate group-hover:text-primary-600 transition">{course.title}</h3>
-            <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium flex-shrink-0 ${statusConfig.color}`}>
+            <h3 className="text-sm font-semibold truncate group-hover:text-neutral-900 transition">{course.title}</h3>
+            <Badge variant="secondary" className={`text-[10px] px-2 py-0.5 rounded-full font-medium flex-shrink-0 ${statusConfig.color}`}>
               {course.status === "generating" && (
                 <span className={`inline-block w-1.5 h-1.5 rounded-full mr-1 ${statusConfig.dotColor} pulse-dot`} />
               )}
               {statusConfig.label}
-            </span>
+            </Badge>
           </div>
           <div className="flex items-center gap-3 mt-1">
-            <span className="text-xs text-slate-400">
+            <span className="text-xs text-neutral-400">
               {course.subject && `${SUBJECT_LABELS[course.subject] || course.subject}`}
               {course.grade && ` · ${course.grade}`}
               {course.sectionCount > 0 && ` · ${course.sectionCount}段`}
@@ -579,11 +579,9 @@ function CourseRow({
             {badges.some((b) => b.done) && (
               <div className="hidden sm:flex items-center gap-1">
                 {badges.map((b) => (
-                  <span key={b.key} className={`text-[9px] px-1 py-0.5 rounded ${
-                    b.done ? "text-accent-400 bg-accent-500/5" : "text-slate-300"
-                  }`}>
+                  <Badge key={b.key} variant={b.done ? "default" : "outline"} className={`text-[9px] px-1 py-0.5 rounded ${b.done ? "text-accent-400 bg-accent-500/5" : "text-neutral-300"}`}>
                     {b.label}{b.done ? "✓" : "○"}
-                  </span>
+                  </Badge>
                 ))}
               </div>
             )}
@@ -592,18 +590,18 @@ function CourseRow({
 
         {/* Right: date + actions */}
         <div className="flex items-center gap-3 flex-shrink-0">
-          <span className="text-[11px] text-slate-300">{new Date(course.createdAt).toLocaleDateString("zh-CN")}</span>
+          <span className="text-[11px] text-neutral-300">{new Date(course.createdAt).toLocaleDateString("zh-CN")}</span>
           <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
             <button
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-              className="p-1.5 rounded-md text-slate-400 hover:text-slate-600 transition"
+              className="p-1.5 rounded-md text-neutral-400 hover:text-neutral-600 transition"
             >
               <Share2 className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); onDelete(course); }}
               disabled={deletingId === course.id}
-              className="p-1.5 rounded-md text-slate-400 hover:text-red-400 transition disabled:opacity-30"
+              className="p-1.5 rounded-md text-neutral-400 hover:text-red-400 transition disabled:opacity-30"
             >
               {deletingId === course.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
             </button>

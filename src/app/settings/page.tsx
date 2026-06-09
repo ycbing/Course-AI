@@ -9,6 +9,10 @@ import {
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { toast, Toaster } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 const TABS = [
   { id: "profile", label: "个人信息", icon: User },
@@ -92,19 +96,19 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-neutral-50">
       <Toaster theme="light" position="top-center" />
 
-      <header className="border-b border-slate-200 glass sticky top-0 z-40">
+      <header className="border-b border-neutral-200 glass sticky top-0 z-40">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 h-14 flex items-center gap-3">
           <button
             onClick={() => router.back()}
-            className="flex items-center gap-2 text-slate-500 hover:text-slate-900 transition"
+            className="flex items-center gap-2 text-neutral-500 hover:text-neutral-900 transition"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
           <div className="flex items-center gap-2">
-            <Settings className="w-4 h-4 text-slate-500" />
+            <Settings className="w-4 h-4 text-neutral-500" />
             <span className="font-semibold text-sm">设置</span>
           </div>
         </div>
@@ -112,64 +116,55 @@ export default function SettingsPage() {
 
       <main className="mx-auto max-w-2xl px-4 sm:px-6 py-8">
         {/* Tab navigation */}
-        <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100 border border-slate-200 mb-8">
-          {TABS.map((tab) => {
-            const Icon = tab.icon;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                  activeTab === tab.id
-                    ? "bg-primary-600 text-white shadow-sm"
-                    : "text-slate-500 hover:text-slate-600 hover:bg-slate-50"
-                }`}
-              >
-                <Icon className="w-4 h-4" />
-                <span className="sm-show">{tab.label}</span>
-              </button>
-            );
-          })}
-        </div>
+        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as TabId)} className="mb-8">
+          <TabsList className="w-full">
+            {TABS.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <TabsTrigger key={tab.id} value={tab.id} className="flex-1">
+                  <Icon className="w-4 h-4" />
+                  <span className="sm-show">{tab.label}</span>
+                </TabsTrigger>
+              );
+            })}
+          </TabsList>
 
         {/* Profile tab */}
-        {activeTab === "profile" && (
+        <TabsContent value="profile">
           <div className="space-y-6 page-transition">
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 animate-fade-up">
+            <div className="rounded-2xl border border-neutral-200 bg-white p-6 animate-fade-up">
               <h3 className="text-sm font-semibold mb-6 flex items-center gap-2">
                 <User className="w-4 h-4 text-primary-400" />
                 个人信息
               </h3>
 
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center text-white text-xl font-bold">
+                <div className="w-14 h-14 rounded-full bg-neutral-900 flex items-center justify-center text-white text-xl font-bold">
                   {name ? name[0].toUpperCase() : "?"}
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold">{name || "未设置"}</h2>
-                  <p className="text-sm text-slate-500">{email}</p>
+                  <p className="text-sm text-neutral-500">{email}</p>
                 </div>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="text-xs font-medium text-slate-500 mb-1.5 block">昵称</label>
-                  <input
+                  <label className="text-xs font-medium text-neutral-500 mb-1.5 block">昵称</label>
+                  <Input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="设置你的昵称"
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500/40 transition-all"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-medium text-slate-500 mb-1.5 block">邮箱</label>
-                  <input
+                  <label className="text-xs font-medium text-neutral-500 mb-1.5 block">邮箱</label>
+                  <Input
                     type="email"
                     value={email}
                     disabled
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-100 text-sm text-slate-500 cursor-not-allowed"
                   />
                 </div>
 
@@ -183,45 +178,35 @@ export default function SettingsPage() {
               </div>
 
               <div className="mt-6 flex justify-end">
-                <button
-                  onClick={handleSaveProfile}
-                  disabled={saving}
-                  className={`flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-primary-600 to-primary-700 text-white text-sm font-medium hover:from-primary-500 hover:to-primary-700 transition-all disabled:opacity-40 ${
-                    saving ? "btn-loading" : ""
-                  }`}
-                >
+                <Button onClick={handleSaveProfile} disabled={saving}>
                   {saving ? "保存中..." : (
                     <>
                       <Save className="w-4 h-4" />
                       保存
                     </>
                   )}
-                </button>
+                </Button>
               </div>
             </div>
 
             {/* Danger zone */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 animate-fade-up-delay-1">
-              <h3 className="text-sm font-semibold mb-4 text-slate-500 flex items-center gap-2">
+            <div className="rounded-2xl border border-neutral-200 bg-white p-6 animate-fade-up-delay-1">
+              <h3 className="text-sm font-semibold mb-4 text-neutral-500 flex items-center gap-2">
                 <Shield className="w-4 h-4" />
                 账户
               </h3>
-              <button
-                onClick={handleLogout}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-red-500/20 bg-red-500/5 text-red-400 text-sm hover:bg-red-500/10 transition-all"
-              >
+              <Button variant="outline" onClick={handleLogout} className="border-red-500/20 text-red-400 hover:bg-red-500/10 hover:text-red-400">
                 <LogOut className="w-4 h-4" />
                 退出登录
-              </button>
+              </Button>
             </div>
           </div>
-        )}
+        </TabsContent>
 
-        {/* Models tab */}
-        {activeTab === "models" && (
+        <TabsContent value="models">
           <div className="space-y-6 page-transition">
             {/* LLM Config */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 animate-fade-up">
+            <div className="rounded-2xl border border-neutral-200 bg-white p-6 animate-fade-up">
               <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
                 <Brain className="w-4 h-4 text-primary-400" />
                 AI 文案模型
@@ -230,7 +215,7 @@ export default function SettingsPage() {
                 <select
                   value={llmModel}
                   onChange={(e) => setLlmModel(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary-500/30 appearance-none"
+                  className="w-full px-4 py-3 rounded-xl border border-neutral-200 bg-neutral-50 text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-500/30 appearance-none"
                 >
                   <option value="glm-4-flash">GLM-4 Flash（免费，推荐）</option>
                   <option value="glm-4-plus">GLM-4 Plus（更精准）</option>
@@ -243,7 +228,7 @@ export default function SettingsPage() {
             </div>
 
             {/* TTS Config */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 animate-fade-up-delay-1">
+            <div className="rounded-2xl border border-neutral-200 bg-white p-6 animate-fade-up-delay-1">
               <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
                 <Mic className="w-4 h-4 text-cyan-400" />
                 配音引擎
@@ -252,7 +237,7 @@ export default function SettingsPage() {
                 <select
                   value={ttsEngine}
                   onChange={(e) => setTtsEngine(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary-500/30 appearance-none"
+                  className="w-full px-4 py-3 rounded-xl border border-neutral-200 bg-neutral-50 text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-500/30 appearance-none"
                 >
                   <option value="edge-tts">Edge-TTS（免费，推荐）</option>
                 </select>
@@ -269,9 +254,9 @@ export default function SettingsPage() {
                   ].map((v) => (
                     <div
                       key={v.name}
-                      className="px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-xs"
+                      className="px-3 py-2 rounded-lg border border-neutral-200 bg-neutral-50 text-xs"
                     >
-                      <span className="font-medium text-slate-600">{v.name}</span>
+                      <span className="font-medium text-neutral-600">{v.name}</span>
                       <span className="text-slate-400 ml-1.5">{v.desc}</span>
                     </div>
                   ))}
@@ -280,7 +265,7 @@ export default function SettingsPage() {
             </div>
 
             {/* Image Config */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 animate-fade-up-delay-2">
+            <div className="rounded-2xl border border-neutral-200 bg-white p-6 animate-fade-up-delay-2">
               <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
                 <ImageIcon className="w-4 h-4 text-primary-400" />
                 配图模型
@@ -289,7 +274,7 @@ export default function SettingsPage() {
                 <select
                   value={imageModel}
                   onChange={(e) => setImageModel(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary-500/30 appearance-none"
+                  className="w-full px-4 py-3 rounded-xl border border-neutral-200 bg-neutral-50 text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-500/30 appearance-none"
                 >
                   <option value="cogview-3-plus">CogView-3-Plus（推荐）</option>
                   <option value="cogview-3-flash">CogView-3-Flash（更快）</option>
@@ -301,61 +286,54 @@ export default function SettingsPage() {
             </div>
 
             {/* Video config */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 animate-fade-up-delay-3">
+            <div className="rounded-2xl border border-neutral-200 bg-white p-6 animate-fade-up-delay-3">
               <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
                 <Video className="w-4 h-4 text-primary-400" />
                 视频合成
               </h3>
               <div className="space-y-3 text-sm">
-                <div className="flex items-center justify-between py-2 border-b border-slate-200">
-                  <span className="text-slate-500">合成引擎</span>
-                  <span className="text-slate-600">FFmpeg</span>
+                <div className="flex items-center justify-between py-2 border-b border-neutral-200">
+                  <span className="text-neutral-500">合成引擎</span>
+                  <span className="text-neutral-600">FFmpeg</span>
                 </div>
-                <div className="flex items-center justify-between py-2 border-b border-slate-200">
-                  <span className="text-slate-500">运镜效果</span>
-                  <span className="text-slate-600">Ken Burns</span>
+                <div className="flex items-center justify-between py-2 border-b border-neutral-200">
+                  <span className="text-neutral-500">运镜效果</span>
+                  <span className="text-neutral-600">Ken Burns</span>
                 </div>
                 <div className="flex items-center justify-between py-2">
-                  <span className="text-slate-500">输出分辨率</span>
-                  <span className="text-slate-600">1080P</span>
+                  <span className="text-neutral-500">输出分辨率</span>
+                  <span className="text-neutral-600">1080P</span>
                 </div>
               </div>
             </div>
 
             <div className="flex justify-end">
-              <button
-                onClick={handleSaveModels}
-                disabled={saving}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-primary-600 to-primary-700 text-white text-sm font-medium hover:from-primary-500 hover:to-primary-700 transition-all disabled:opacity-40 ${
-                  saving ? "btn-loading" : ""
-                }`}
-              >
+              <Button onClick={handleSaveModels} disabled={saving}>
                 {saving ? "保存中..." : (
                   <>
                     <Save className="w-4 h-4" />
                     保存配置
                   </>
                 )}
-              </button>
+              </Button>
             </div>
           </div>
-        )}
+        </TabsContent>
 
-        {/* Usage tab */}
-        {activeTab === "usage" && (
+        <TabsContent value="usage">
           <div className="space-y-6 page-transition">
             {/* Summary */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 animate-fade-up">
+            <div className="rounded-2xl border border-neutral-200 bg-white p-6 animate-fade-up">
               <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
                 <BarChart3 className="w-4 h-4 text-accent-400" />
                 使用概览
               </h3>
               <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 rounded-xl bg-slate-100 border border-slate-200">
+                <div className="p-4 rounded-xl bg-neutral-100 border border-neutral-200">
                   <div className="text-2xl font-bold text-primary-400">{credits}</div>
                   <div className="text-xs text-slate-400 mt-1">积分余额</div>
                 </div>
-                <div className="p-4 rounded-xl bg-slate-100 border border-slate-200">
+                <div className="p-4 rounded-xl bg-neutral-100 border border-neutral-200">
                   <div className="text-2xl font-bold text-primary-400">{usageLogs.length}</div>
                   <div className="text-xs text-slate-400 mt-1">总操作数</div>
                 </div>
@@ -363,9 +341,9 @@ export default function SettingsPage() {
             </div>
 
             {/* Usage logs */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 animate-fade-up-delay-1">
+            <div className="rounded-2xl border border-neutral-200 bg-white p-6 animate-fade-up-delay-1">
               <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
-                <Database className="w-4 h-4 text-slate-500" />
+                <Database className="w-4 h-4 text-neutral-500" />
                 积分消耗记录
               </h3>
               {loadingLogs ? (
@@ -384,7 +362,7 @@ export default function SettingsPage() {
               ) : usageLogs.length === 0 ? (
                 <div className="text-center py-8">
                   <div className="text-4xl mb-3">📊</div>
-                  <p className="text-sm text-slate-500">暂无使用记录</p>
+                  <p className="text-sm text-neutral-500">暂无使用记录</p>
                   <p className="text-xs text-slate-400 mt-1">开始创作课程后，这里会显示积分消耗详情</p>
                 </div>
               ) : (
@@ -392,7 +370,7 @@ export default function SettingsPage() {
                   {usageLogs.map((log, i) => (
                     <div
                       key={i}
-                      className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 transition"
+                      className="flex items-center gap-3 p-3 rounded-xl hover:bg-neutral-50 transition"
                     >
                       <div className="w-8 h-8 rounded-lg bg-primary-500/10 text-primary-400 flex items-center justify-center flex-shrink-0">
                         {log.type === "script" ? (
@@ -420,7 +398,8 @@ export default function SettingsPage() {
               )}
             </div>
           </div>
-        )}
+        </TabsContent>
+        </Tabs>
       </main>
     </div>
   );

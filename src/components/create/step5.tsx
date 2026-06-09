@@ -7,6 +7,9 @@ import {
   Share2, FolderPlus, ExternalLink, Presentation
 } from "lucide-react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 interface Step5Props {
   courseId: string;
@@ -155,32 +158,32 @@ export default function Step5({ courseId, onNext, onPrev }: Step5Props) {
           <Presentation className="w-5 h-5 text-primary-400" />
           导出 PPTX
         </h2>
-        <p className="text-sm text-slate-500">预览课程内容，一键导出 PPT 课件</p>
+        <p className="text-sm text-neutral-500">预览课程内容，一键导出 PPT 课件</p>
       </div>
 
       {/* Status badges */}
       <div className="flex items-center gap-3 animate-fade-up-delay-1">
-        <span className={"badge text-xs " + (hasScript ? "badge-green" : "badge-zinc")}>
+        <Badge variant={hasScript ? "default" : "outline"} className="text-xs">
           文案{hasScript ? "✓" : "○"}
-        </span>
-        <span className={"badge text-xs " + (hasImagesAll ? "badge-green" : "badge-zinc")}>
+        </Badge>
+        <Badge variant={hasImagesAll ? "default" : "outline"} className="text-xs">
           配图{hasImagesAll ? "✓" : "○"}
-        </span>
-        <span className={"badge text-xs " + (hasPptx ? "badge-green" : "badge-zinc")}>
+        </Badge>
+        <Badge variant={hasPptx ? "default" : "outline"} className="text-xs">
           PPT{hasPptx ? "✓" : "○"}
-        </span>
-        <span className="text-xs text-slate-400 ml-auto">
+        </Badge>
+        <span className="text-xs text-neutral-400 ml-auto">
           主题: {themeLabels[themeName] || themeName} · {sections.length} 章节
         </span>
       </div>
 
       {/* Course summary */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 animate-fade-up-delay-1">
+      <div className="rounded-2xl border border-neutral-200 bg-white p-6 animate-fade-up-delay-1">
         <div className="flex items-center gap-4 mb-4">
           <div className="text-3xl">📊</div>
           <div>
             <h3 className="text-base font-semibold">{course?.title || "课程标题"}</h3>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-neutral-500">
               {course?.subject || "通用"} · {course?.grade || "全年级"} · {sections.length} 个章节
             </p>
           </div>
@@ -188,11 +191,11 @@ export default function Step5({ courseId, onNext, onPrev }: Step5Props) {
         <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
           {sections.map(function (s: any, i: number) {
             return (
-              <div key={s.id || i} className="flex items-center gap-3 p-2 rounded-lg border border-slate-200 bg-slate-50">
+              <div key={s.id || i} className="flex items-center gap-3 p-2 rounded-lg border border-neutral-200 bg-neutral-50">
                 <div className="w-6 h-6 rounded bg-primary-500/10 text-primary-400 flex items-center justify-center text-[10px] font-bold flex-shrink-0">
                   {s.section_number}
                 </div>
-                <span className="text-xs text-slate-600 truncate flex-1">{s.title}</span>
+                <span className="text-xs text-neutral-600 truncate flex-1">{s.title}</span>
                 {s.image_url && (
                   <span className="text-[9px] px-1.5 py-0.5 rounded border border-accent-400/20 text-accent-400 bg-accent-500/5">图</span>
                 )}
@@ -218,7 +221,7 @@ export default function Step5({ courseId, onNext, onPrev }: Step5Props) {
           </div>
           <div className="text-left">
             <span className="text-sm font-medium block">{hasPptx ? "重新导出 PPTX" : "导出 PPTX"}</span>
-            <span className="text-[10px] text-slate-400">PowerPoint 课件 · 扣 5 积分</span>
+            <span className="text-[10px] text-neutral-400">PowerPoint 课件 · 扣 5 积分</span>
           </div>
         </button>
 
@@ -226,14 +229,14 @@ export default function Step5({ courseId, onNext, onPrev }: Step5Props) {
         <button
           onClick={handleExportPdf}
           disabled={pdfExporting || sections.length === 0}
-          className="flex items-center justify-center gap-3 p-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition-all disabled:opacity-40"
+          className="flex items-center justify-center gap-3 p-4 rounded-xl border border-neutral-200 bg-white hover:bg-neutral-50 transition-all disabled:opacity-40"
         >
           <div className="w-10 h-10 rounded-xl bg-accent-500/10 text-accent-400 flex items-center justify-center flex-shrink-0">
             {pdfExporting ? <Loader2 className="w-5 h-5 animate-spin" /> : <FileText className="w-5 h-5" />}
           </div>
           <div className="text-left">
             <span className="text-sm font-medium block">导出 PDF 课件</span>
-            <span className="text-[10px] text-slate-400">可打印的教学课件</span>
+            <span className="text-[10px] text-neutral-400">可打印的教学课件</span>
           </div>
         </button>
 
@@ -241,14 +244,14 @@ export default function Step5({ courseId, onNext, onPrev }: Step5Props) {
         <button
           onClick={copyLink}
           disabled={!shareLink}
-          className={"flex items-center justify-center gap-3 p-4 rounded-xl border transition-all disabled:opacity-40 " + (copied ? "border-accent-400/30 bg-accent-500/5" : "border-slate-200 bg-white hover:bg-slate-50")}
+          className={"flex items-center justify-center gap-3 p-4 rounded-xl border transition-all disabled:opacity-40 " + (copied ? "border-accent-400/30 bg-accent-500/5" : "border-neutral-200 bg-white hover:bg-neutral-50")}
         >
           <div className={"w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 " + (copied ? "bg-accent-500/20 text-accent-400" : "bg-primary-500/10 text-primary-400")}>
             {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
           </div>
           <div className="text-left">
             <span className="text-sm font-medium block">{copied ? "已复制！" : "复制分享链接"}</span>
-            <span className="text-[10px] text-slate-400">学生可免登录查看</span>
+            <span className="text-[10px] text-neutral-400">学生可免登录查看</span>
           </div>
         </button>
 
@@ -256,14 +259,14 @@ export default function Step5({ courseId, onNext, onPrev }: Step5Props) {
         <button
           onClick={handleClone}
           disabled={cloning}
-          className="flex items-center justify-center gap-3 p-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition-all disabled:opacity-40"
+          className="flex items-center justify-center gap-3 p-4 rounded-xl border border-neutral-200 bg-white hover:bg-neutral-50 transition-all disabled:opacity-40"
         >
           <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center flex-shrink-0">
             {cloning ? <Loader2 className="w-5 h-5 animate-spin" /> : <FolderPlus className="w-5 h-5" />}
           </div>
           <div className="text-left">
             <span className="text-sm font-medium block">复制课程</span>
-            <span className="text-[10px] text-slate-400">基于当前内容创建副本</span>
+            <span className="text-[10px] text-neutral-400">基于当前内容创建副本</span>
           </div>
         </button>
       </div>
@@ -274,7 +277,7 @@ export default function Step5({ courseId, onNext, onPrev }: Step5Props) {
           <Check className="w-5 h-5 text-accent-400 flex-shrink-0" />
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-accent-400">PPTX 已生成</p>
-            <p className="text-[10px] text-slate-400 truncate">{pptxUrl}</p>
+            <p className="text-[10px] text-neutral-400 truncate">{pptxUrl}</p>
           </div>
           <button
             onClick={function () {
@@ -292,13 +295,13 @@ export default function Step5({ courseId, onNext, onPrev }: Step5Props) {
       )}
 
       {/* CTA */}
-      <div className="rounded-2xl border border-slate-200 bg-gradient-to-r from-primary-500/5 to-primary-700/5 p-6 text-center animate-fade-up-delay-3">
+      <div className="rounded-2xl border border-neutral-200 bg-gradient-to-r from-neutral-50 to-white p-6 text-center animate-fade-up-delay-3">
         <div className="text-3xl mb-3 animate-float">🎓</div>
-        <p className="text-sm font-medium text-slate-600 mb-1">继续创作更多课程</p>
-        <p className="text-xs text-slate-400 mb-4">AI 帮你快速生成更多高质量 PPT 课件</p>
+        <p className="text-sm font-medium text-neutral-600 mb-1">继续创作更多课程</p>
+        <p className="text-xs text-neutral-400 mb-4">AI 帮你快速生成更多高质量 PPT 课件</p>
         <Link
           href="/create"
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-primary-600 to-primary-700 text-white text-sm font-medium hover:from-primary-500 hover:to-primary-700 transition-all shadow-lg shadow-md hover:shadow-lg"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-neutral-900 text-white text-sm font-medium hover:bg-neutral-800 transition-all shadow-sm"
         >
           <Sparkles className="w-4 h-4" />
           制作下一个课程
@@ -307,18 +310,16 @@ export default function Step5({ courseId, onNext, onPrev }: Step5Props) {
 
       {/* Navigation */}
       <div className="flex justify-between">
-        <button
-          onClick={onPrev}
-          className="px-5 py-3 rounded-xl border border-slate-200 text-slate-500 text-sm font-medium hover:bg-slate-50 transition-all"
-        >
+        <Button variant="outline" onClick={onPrev}>
           上一步
-        </button>
+        </Button>
         <Link
           href="/dashboard"
-          className="flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-100 text-slate-600 font-medium text-sm hover:bg-primary-50 transition-all"
         >
-          <ExternalLink className="w-4 h-4" />
-          返回课程列表
+          <Button variant="secondary">
+            <ExternalLink className="w-4 h-4" />
+            返回课程列表
+          </Button>
         </Link>
       </div>
     </div>

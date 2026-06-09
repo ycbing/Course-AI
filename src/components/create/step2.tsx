@@ -6,6 +6,8 @@ import {
   Sparkles, RotateCcw, FileText, Wand2, Clock
 } from "lucide-react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface Section {
   sectionNumber: number;
@@ -101,6 +103,10 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
       const data = await res.json();
       if (res.ok) {
         setSections(data.sections || []);
+        // Refresh course data for step validation
+        fetch(\`/api/courses/\${courseId}\`).then(r => r.json()).then(d => {
+          if (d?.course) setCourseData(d.course);
+        }).catch(() => {});
         toast.success("教学文案生成成功");
       } else {
         toast.error(data.error || "生成失败");
@@ -130,6 +136,9 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
             content: s.content,
           }))
         );
+        fetch(\`/api/courses/\${courseId}\`).then(r => r.json()).then(d => {
+          if (d?.course) setCourseData(d.course);
+        }).catch(() => {});
         toast.success("文案已优化");
       } else {
         toast.error(data.error || "优化失败");
@@ -193,15 +202,15 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
             <FileText className="w-5 h-5 text-primary-400" />
             AI 生成教学文案
           </h2>
-          <p className="text-sm text-slate-500">根据课程主题自动生成分段教学文案，可编辑每段内容</p>
+          <p className="text-sm text-neutral-500">根据课程主题自动生成分段教学文案，可编辑每段内容</p>
         </div>
       </div>
 
       {/* Controls bar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-xl border border-slate-200 bg-white animate-fade-up-delay-1">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-xl border border-neutral-200 bg-white animate-fade-up-delay-1">
         {/* Section count selector */}
         <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-500">段落数：</span>
+          <span className="text-xs text-neutral-500">段落数：</span>
           <div className="flex items-center gap-1.5">
             {SECTION_COUNTS.map((n) => (
               <button
@@ -211,7 +220,7 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
                 className={`flex flex-col items-center px-3 py-1.5 rounded-lg transition ${
                   sectionCount === n.value
                     ? "bg-primary-500/20 text-primary-400 border border-primary-500/30"
-                    : "bg-slate-50 text-slate-500 border border-slate-200 hover:bg-slate-100"
+                    : "bg-neutral-50 text-neutral-500 border border-neutral-200 hover:bg-neutral-100"
                 }`}
               >
                 <span className="text-xs font-medium">{n.label}</span>
@@ -224,12 +233,10 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
         </div>
 
         {/* Generate button */}
-        <button
+        <Button
           onClick={generate}
           disabled={loading}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-primary-600 to-primary-700 text-white text-sm font-medium hover:from-primary-500 hover:to-primary-700 transition-all disabled:opacity-40 shadow-lg shadow-md ${
-            loading ? "btn-loading" : ""
-          }`}
+          variant="default"
         >
           {loading ? "生成中..." : sections.length === 0 ? (
             <>
@@ -243,12 +250,12 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
               重新生成
             </>
           )}
-        </button>
+        </Button>
       </div>
 
       {/* Loading state with typewriter */}
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-16 rounded-2xl border border-slate-200 bg-white animate-fade-in">
+        <div className="flex flex-col items-center justify-center py-16 rounded-2xl border border-neutral-200 bg-white animate-fade-in">
           <div className="relative mb-6">
             <div className="w-16 h-16 rounded-2xl bg-primary-500/10 border border-primary-500/20 flex items-center justify-center">
               <Sparkles className="w-8 h-8 text-primary-500" />
@@ -256,9 +263,9 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
             <div className="absolute -inset-2 rounded-2xl border border-primary-500/10 animate-pulse" />
           </div>
           <div className="h-8 flex items-center mb-2">
-            <p className="text-sm text-slate-600 typewriter-cursor">{generatingText}</p>
+            <p className="text-sm text-neutral-600 typewriter-cursor">{generatingText}</p>
           </div>
-          <p className="text-xs text-slate-400">通常需要 10-30 秒</p>
+          <p className="text-xs text-neutral-400">通常需要 10-30 秒</p>
           <div className="flex items-center gap-1.5 mt-6">
             {[0, 1, 2, 3].map((i) => (
               <div
@@ -270,10 +277,10 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
           </div>
         </div>
       ) : sections.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 rounded-2xl border border-dashed border-slate-300 animate-fade-in">
+        <div className="flex flex-col items-center justify-center py-20 rounded-2xl border border-dashed border-neutral-300 animate-fade-in">
           <div className="text-5xl mb-4 animate-bounce-subtle">✍️</div>
-          <p className="text-sm text-slate-500 font-medium mb-2">点击上方按钮生成教学文案</p>
-          <p className="text-xs text-slate-400">AI 将根据课程主题自动生成分段教学文案</p>
+          <p className="text-sm text-neutral-500 font-medium mb-2">点击上方按钮生成教学文案</p>
+          <p className="text-xs text-neutral-400">AI 将根据课程主题自动生成分段教学文案</p>
         </div>
       ) : (
         <>
@@ -285,7 +292,7 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition ${
                 optimizing
                   ? "bg-primary-500/20 text-primary-400 border border-primary-500/30"
-                  : "bg-slate-50 text-slate-500 border border-slate-200 hover:bg-primary-500/10 hover:text-primary-400 hover:border-primary-500/30"
+                  : "bg-neutral-50 text-neutral-500 border border-neutral-200 hover:bg-primary-500/10 hover:text-primary-400 hover:border-primary-500/30"
               }`}
             >
               <Wand2 className="w-3 h-3" />
@@ -300,7 +307,7 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
               return (
                 <div
                   key={i}
-                  className="rounded-xl border border-slate-200 bg-white overflow-hidden group hover:border-slate-200 transition-colors"
+                  className="rounded-xl border border-neutral-200 bg-white overflow-hidden group hover:border-neutral-200 transition-colors"
                 >
                   <div className="flex items-center gap-3 px-4 py-3">
                     {/* Left: number + title + summary */}
@@ -310,7 +317,7 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
                     <div className="flex-1 min-w-0">
                       <h3 className="text-sm font-medium truncate">{s.title}</h3>
                       {!isCollapsed && (
-                        <p className="text-[11px] text-slate-400 truncate mt-0.5">
+                        <p className="text-[11px] text-neutral-400 truncate mt-0.5">
                           {s.content.substring(0, 60)}...
                         </p>
                       )}
@@ -321,7 +328,7 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
                       <button
                         onClick={() => moveSection(i, "up")}
                         disabled={i === 0}
-                        className="p-1.5 rounded-md hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition disabled:opacity-20"
+                        className="p-1.5 rounded-md hover:bg-neutral-100 text-neutral-400 hover:text-neutral-600 transition disabled:opacity-20"
                         title="上移"
                       >
                         <ArrowUp className="w-3.5 h-3.5" />
@@ -329,7 +336,7 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
                       <button
                         onClick={() => moveSection(i, "down")}
                         disabled={i === sections.length - 1}
-                        className="p-1.5 rounded-md hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition disabled:opacity-20"
+                        className="p-1.5 rounded-md hover:bg-neutral-100 text-neutral-400 hover:text-neutral-600 transition disabled:opacity-20"
                         title="下移"
                       >
                         <ArrowDown className="w-3.5 h-3.5" />
@@ -337,7 +344,7 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
                       <button
                         onClick={() => saveSection(i)}
                         disabled={saving === i}
-                        className="p-1.5 rounded-md hover:bg-slate-100 text-slate-400 hover:text-accent-400 transition disabled:opacity-30"
+                        className="p-1.5 rounded-md hover:bg-neutral-100 text-neutral-400 hover:text-accent-400 transition disabled:opacity-30"
                         title="保存"
                       >
                         {saving === i ? (
@@ -348,7 +355,7 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
                       </button>
                       <button
                         onClick={() => toggleCollapse(i)}
-                        className="p-1.5 rounded-md hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition"
+                        className="p-1.5 rounded-md hover:bg-neutral-100 text-neutral-400 hover:text-neutral-600 transition"
                         title={isCollapsed ? "展开" : "折叠"}
                       >
                         {isCollapsed ? (
@@ -375,7 +382,7 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
                             )
                           )
                         }
-                        className="w-full bg-slate-100 text-sm text-slate-600 leading-relaxed resize-none focus:outline-none focus:ring-1 focus:ring-primary-500/20 rounded-lg p-3"
+                        className="w-full bg-neutral-100 text-sm text-neutral-600 leading-relaxed resize-none focus:outline-none focus:ring-1 focus:ring-primary-500/20 rounded-lg p-3"
                         rows={5}
                       />
                     </div>
@@ -389,19 +396,12 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
 
       {/* Navigation */}
       <div className="flex justify-between pt-2">
-        <button
-          onClick={onPrev}
-          className="px-5 py-3 rounded-xl border border-slate-200 text-slate-500 text-sm font-medium hover:bg-slate-50 transition-all"
-        >
+        <Button variant="outline" onClick={onPrev}>
           上一步
-        </button>
-        <button
-          onClick={onNext}
-          disabled={sections.length === 0}
-          className="px-6 py-3 rounded-xl bg-gradient-to-r from-primary-600 to-primary-700 text-white font-medium text-sm transition-all disabled:opacity-40 shadow-lg shadow-md"
-        >
+        </Button>
+        <Button onClick={onNext} disabled={sections.length === 0}>
           下一步：生成配图
-        </button>
+        </Button>
       </div>
     </div>
   );

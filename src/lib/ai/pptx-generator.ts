@@ -95,7 +95,16 @@ const SLIDE_H = 7.5;
 // ─── Image download helper ───
 async function downloadImage(url: string): Promise<Buffer | null> {
   try {
-    const resp = await fetch(url, {
+    // If COS private bucket URL, use signed proxy
+    let downloadUrl = url;
+    if (url.includes(".cos.") || url.includes("myqcloud.com")) {
+      const { getSignedCosUrl } = await import("@/lib/cos");
+      const cosKey = (() => {
+        try { const u = new URL(url); return u.pathname; } catch { return url; }
+      })();
+      downloadUrl = getSignedCosUrl(cosKey, 3600);
+    }
+    const resp = await fetch(downloadUrl, {
       headers: { "User-Agent": "CourseAI-PPTX/1.0" },
       signal: AbortSignal.timeout(30_000),
     });

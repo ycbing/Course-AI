@@ -32,9 +32,9 @@ export function StepBar({ currentStep, steps, labels }: StepBarProps) {
                       : ""
                   }`}
                   style={isCompleted
-                    ? { background: "var(--accent)", boxShadow: "0 4px 12px oklch(0.65 0.2 150 / 0.3)" }
+                    ? { background: "oklch(0.35 0 0)" }
                     : isActive
-                    ? { background: "var(--primary)", boxShadow: "0 4px 12px oklch(0.55 0.2 250 / 0.3), 0 0 0 4px oklch(0.55 0.2 250 / 0.15)" }
+                    ? { background: "oklch(0.35 0 0)", boxShadow: "0 0 0 3px oklch(0 0 0 / 0.06)" }
                     : { backgroundColor: "var(--muted)", color: "var(--muted-foreground)", border: "1px solid var(--border)" }
                   }
                 >
@@ -48,13 +48,13 @@ export function StepBar({ currentStep, steps, labels }: StepBarProps) {
                 </div>
                 <span
                   className="mt-1.5 text-[11px] font-medium whitespace-nowrap"
-                  style={{ color: isActive ? "var(--primary)" : isCompleted ? "var(--accent)" : "var(--muted-foreground)" }}
+                  style={{ color: isActive ? "oklch(0.35 0 0)" : isCompleted ? "oklch(0.35 0 0)" : "var(--muted-foreground)" }}
                 >
                   {labels[i]}
                 </span>
                 <span
                   className="text-[9px] whitespace-nowrap"
-                  style={{ color: isActive ? "var(--primary)" : "var(--muted-foreground)", opacity: isActive ? 1 : 0.6 }}
+                  style={{ color: isActive ? "oklch(0.35 0 0)" : "var(--muted-foreground)", opacity: isActive ? 1 : 0.6 }}
                 >
                   {STEP_TIMES[i]}
                 </span>
@@ -67,7 +67,7 @@ export function StepBar({ currentStep, steps, labels }: StepBarProps) {
                     className="h-full transition-all duration-500"
                     style={{
                       background: isCompleted
-                        ? "linear-gradient(90deg, oklch(0.65 0.2 150), oklch(0.65 0.15 200))"
+                        ? "oklch(0.35 0 0)"
                         : "var(--border)"
                     }}
                   />
