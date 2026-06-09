@@ -1,0 +1,7 @@
+.env.local
+node_modules/
+.next/
+uploads/
+!src/app/api/uploads/
+drizzle/
+*.tsbuildinfo
