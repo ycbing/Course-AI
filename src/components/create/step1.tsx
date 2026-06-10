@@ -254,7 +254,7 @@ export default function Step1({ courseId, onNext }: Step1Props) {
 
       <div className="flex justify-end animate-fade-up-delay-3">
         <Button onClick={handleSubmit} disabled={loading || !title.trim()}>
-          {loading ? "保存中..." : "下一步：生成教学文案"}
+          {loading ? "保存中..." : "保存并继续"}
         </Button>
       </div>
     </div>

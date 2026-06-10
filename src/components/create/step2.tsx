@@ -28,6 +28,7 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
   const [loading, setLoading] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [hasGenerated, setHasGenerated] = useState(false);
   const [sectionCount, setSectionCount] = useState(5);
   const [course, setCourse] = useState<any>(null);
   const [editingIdx, setEditingIdx] = useState<number | null>(null);
@@ -42,7 +43,7 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
           setCourse(d.course);
           setSectionCount(d.course.section_count || 5);
         }
-        if (d?.sections) {
+        if (d?.sections && d.sections.length > 0) {
           setSections(
             d.sections.map((s: any) => ({
               id: s.id,
@@ -53,11 +54,20 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
               imageUrl: s.image_url || undefined,
             }))
           );
+          setHasGenerated(true);
         }
         setLoaded(true);
       })
       .catch(() => setLoaded(true));
   }, [courseId, loaded]);
+
+  // Auto-generate on first entry (no sections yet)
+  useEffect(() => {
+    if (!loaded || hasGenerated || generating) return;
+    if (sections.length === 0) {
+      handleGenerate();
+    }
+  }, [loaded, hasGenerated, generating]);
 
   const handleGenerate = async () => {
     setGenerating(true);
@@ -78,6 +88,7 @@ export default function Step2({ courseId, onNext, onPrev }: Step2Props) {
             imagePrompt: s.imagePrompt || "",
           }))
         );
+        setHasGenerated(true);
         toast.success(`已生成 ${data.sections.length} 个教学段落`);
       } else if (data.code === "INSUFFICIENT_CREDITS") {
         toast.error(data.error || "积分不足");
