@@ -119,7 +119,7 @@ function CreatePageInner() {
           <CreateForm onCreated={(id) => {
             const params = new URLSearchParams(searchParams.toString());
             params.set("courseId", id);
-            params.set("step", "1");
+            params.set("step", "2");
             router.push(`/create?${params.toString()}`);
           }} />
         )}
