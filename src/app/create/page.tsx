@@ -47,8 +47,8 @@ function CreatePageInner() {
       const course = data.course;
       // Use progress_step first (more granular), then fall back to status
       const stepMap: Record<string, number> = {
-        'draft': 1,
-        'created': 1,
+        'draft': 2,
+        'created': 2,
         'generating': 1,
         'generating_script': 1,
         'script_ready': 3,
@@ -59,7 +59,7 @@ function CreatePageInner() {
         'pptx_ready': 5,
         'voice_ready': 5,
         'completed': 5,
-        'error': 1,
+        'error': 2,
       };
       const maxStep = stepMap[course?.progress_step] || stepMap[course?.status] || 1;
 
