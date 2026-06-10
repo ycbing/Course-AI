@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { Loader2, Play, Clock, BookOpen, Download, GraduationCap } from "lucide-react";
+import { Loader2, Play, Clock, BookOpen, Download, GraduationCap, CircleDashed } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -45,7 +45,7 @@ export default function SharePage() {
     return (
       <div className="min-h-screen bg-neutral-50 flex items-center justify-center px-4">
         <div className="text-center">
-          <div className="text-5xl mb-4">😔</div>
+          <div className="mb-4"><CircleDashed className="w-12 h-12 text-neutral-300 mx-auto" /></div>
           <p className="text-lg font-medium mb-2">{error}</p>
           <Link href="/" className="text-primary-400 hover:text-neutral-900 text-sm">
             返回首页

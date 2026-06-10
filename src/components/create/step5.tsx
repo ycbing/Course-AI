@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Loader2, Download, Check, Copy, FileText, Sparkles,
-  Share2, FolderPlus, ExternalLink, Presentation
+  Share2, FolderPlus, ExternalLink, Presentation, BarChart3, GraduationCap
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -180,7 +180,9 @@ export default function Step5({ courseId, onNext, onPrev }: Step5Props) {
       {/* Course summary */}
       <div className="rounded-2xl border border-neutral-200 bg-white p-6 animate-fade-up-delay-1">
         <div className="flex items-center gap-4 mb-4">
-          <div className="text-3xl">📊</div>
+          <div className="w-12 h-12 rounded-xl bg-primary-500/10 text-primary-400 flex items-center justify-center flex-shrink-0">
+            <BarChart3 className="w-6 h-6" />
+          </div>
           <div>
             <h3 className="text-base font-semibold">{course?.title || "课程标题"}</h3>
             <p className="text-xs text-neutral-500">
@@ -296,7 +298,9 @@ export default function Step5({ courseId, onNext, onPrev }: Step5Props) {
 
       {/* CTA */}
       <div className="rounded-2xl border border-neutral-200 bg-gradient-to-r from-neutral-50 to-white p-6 text-center animate-fade-up-delay-3">
-        <div className="text-3xl mb-3 animate-float">🎓</div>
+        <div className="w-12 h-12 rounded-xl bg-primary-500/10 text-primary-400 flex items-center justify-center mx-auto mb-3 animate-float">
+          <GraduationCap className="w-7 h-7" />
+        </div>
         <p className="text-sm font-medium text-neutral-600 mb-1">继续创作更多课程</p>
         <p className="text-xs text-neutral-400 mb-4">AI 帮你快速生成更多高质量 PPT 课件</p>
         <Link

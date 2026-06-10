@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
       subject: t.subject,
       grade: t.grade,
       publisher: t.publisher,
-      coverEmoji: t.coverEmoji,
+      coverIcon: t.coverIcon,
       chapterCount: t.chapters.length,
       chapters: t.chapters.map((c) => ({
         id: c.id,

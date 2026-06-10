@@ -361,7 +361,7 @@ export default function SettingsPage() {
                 </div>
               ) : usageLogs.length === 0 ? (
                 <div className="text-center py-8">
-                  <div className="text-4xl mb-3">📊</div>
+                  <div className="mb-3"><BarChart3 className="w-10 h-10 text-neutral-300 mx-auto" /></div>
                   <p className="text-sm text-neutral-500">暂无使用记录</p>
                   <p className="text-xs text-slate-400 mt-1">开始创作课程后，这里会显示积分消耗详情</p>
                 </div>

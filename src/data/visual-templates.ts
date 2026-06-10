@@ -7,7 +7,7 @@ export interface VisualTemplate {
   id: string;
   name: string;
   description: string;
-  coverEmoji: string;
+  coverIcon: string;
   colors: {
     primary: string;
     secondary: string;
@@ -30,7 +30,7 @@ export const visualTemplates: VisualTemplate[] = [
     id: "classic",
     name: "经典课堂",
     description: "白色背景 + 蓝色强调，简洁专业",
-    coverEmoji: "📘",
+    coverIcon: "BookOpen",
     colors: {
       primary: "#3B82F6",
       secondary: "#60A5FA",
@@ -51,7 +51,7 @@ export const visualTemplates: VisualTemplate[] = [
     id: "tech",
     name: "科技未来",
     description: "深色背景 + 霓虹色，科技感十足",
-    coverEmoji: "🚀",
+    coverIcon: "Rocket",
     colors: {
       primary: "#8B5CF6",
       secondary: "#06B6D4",
@@ -72,7 +72,7 @@ export const visualTemplates: VisualTemplate[] = [
     id: "handdrawn",
     name: "手绘风格",
     description: "米色背景 + 手绘元素，温暖亲切",
-    coverEmoji: "✏️",
+    coverIcon: "Pencil",
     colors: {
       primary: "#D97706",
       secondary: "#F59E0B",
@@ -93,7 +93,7 @@ export const visualTemplates: VisualTemplate[] = [
     id: "chinese",
     name: "中国风",
     description: "水墨元素 + 红金配色，传统美学",
-    coverEmoji: "🏯",
+    coverIcon: "Landmark",
     colors: {
       primary: "#DC2626",
       secondary: "#F59E0B",
@@ -114,7 +114,7 @@ export const visualTemplates: VisualTemplate[] = [
     id: "cartoon",
     name: "卡通风格",
     description: "鲜艳色彩 + 圆润设计，活泼有趣",
-    coverEmoji: "🎨",
+    coverIcon: "Palette",
     colors: {
       primary: "#EC4899",
       secondary: "#8B5CF6",
@@ -135,7 +135,7 @@ export const visualTemplates: VisualTemplate[] = [
     id: "minimal",
     name: "极简黑白",
     description: "黑白灰 + 大留白，高端大气",
-    coverEmoji: "◻️",
+    coverIcon: "Square",
     colors: {
       primary: "#18181B",
       secondary: "#71717A",
@@ -156,7 +156,7 @@ export const visualTemplates: VisualTemplate[] = [
     id: "nature",
     name: "自然绿意",
     description: "绿色系 + 植物元素，清新舒适",
-    coverEmoji: "🌿",
+    coverIcon: "Leaf",
     colors: {
       primary: "#16A34A",
       secondary: "#22C55E",
@@ -177,7 +177,7 @@ export const visualTemplates: VisualTemplate[] = [
     id: "space",
     name: "星空探索",
     description: "深蓝星空 + 宇宙元素，神秘浪漫",
-    coverEmoji: "🌌",
+    coverIcon: "Sparkles",
     colors: {
       primary: "#6366F1",
       secondary: "#A855F7",

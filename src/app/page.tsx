@@ -5,8 +5,11 @@ import Link from "next/link";
 import {
   Sparkles, ArrowRight, BookOpen, ImageIcon, Share2,
   GraduationCap, Brain, Layers, Globe, Wand2,
-  FileText, CheckCircle, Zap
+  FileText, CheckCircle, Zap,
+  PenTool, Presentation, Link2, Target, Palette,
+  FileEdit, Check, Leaf, Calculator, ScrollText, Languages, Atom, Landmark
 } from "lucide-react";
+import { ICON_MAP } from "@/components/subject-icon";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -15,10 +18,10 @@ function HeroDemoAnimation() {
   const [activeStep, setActiveStep] = useState(0);
 
   const demoSteps = [
-    { emoji: "📝", label: "输入课程主题", desc: "光合作用原理详解", detail: "生物 · 高中 · 5段大纲", color: "from-neutral-50 to-neutral-100/50" },
-    { emoji: "✍️", label: "AI 生成文案", desc: "正在生成教学文案...", detail: "GLM-4 Flash · 结构化教学", color: "from-neutral-100 to-neutral-100/50" },
-    { emoji: "🎨", label: "智能配图生成", desc: "为每段文案生成教学插图", detail: "CogView-3 · 教学插画风格", color: "from-neutral-100 to-neutral-200/30" },
-    { emoji: "✅", label: "课件制作完成", desc: "10段教学 · 配图完成 · 可导出", detail: "PPT课件已就绪 · 一键分享", color: "from-neutral-50 to-neutral-50/50" },
+    { icon: FileEdit, label: "输入课程主题", desc: "光合作用原理详解", detail: "生物 · 高中 · 5段大纲", color: "from-neutral-50 to-neutral-100/50" },
+    { icon: PenTool, label: "AI 生成文案", desc: "正在生成教学文案...", detail: "GLM-4 Flash · 结构化教学", color: "from-neutral-100 to-neutral-100/50" },
+    { icon: Palette, label: "智能配图生成", desc: "为每段文案生成教学插图", detail: "CogView-3 · 教学插画风格", color: "from-neutral-100 to-neutral-200/30" },
+    { icon: CheckCircle, label: "课件制作完成", desc: "10段教学 · 配图完成 · 可导出", detail: "PPT课件已就绪 · 一键分享", color: "from-neutral-50 to-neutral-50/50" },
   ];
 
   useEffect(() => {
@@ -68,7 +71,7 @@ function HeroDemoAnimation() {
             className={`rounded-xl bg-gradient-to-br ${current.color} border border-neutral-200 p-5 sm:p-6 hero-step-enter`}
           >
             <div className="flex items-center gap-3 mb-4">
-              <span className="text-2xl">{current.emoji}</span>
+              {(() => { const I = current.icon; return I ? <I className="w-6 h-6 text-primary-400" /> : null; })()}
               <div>
                 <div className="text-sm font-semibold text-neutral-900">{current.label}</div>
                 <div className="text-xs text-neutral-400">{current.detail}</div>
@@ -135,12 +138,12 @@ function SocialProof() {
 
 /* ─── Feature Cards ─── */
 const FEATURES = [
-  { emoji: "✍️", title: "AI 教学文案", desc: "基于 GLM-4 大模型，根据课程主题自动生成结构化教学文案，支持逐段编辑和 AI 润色优化。" },
-  { emoji: "🎨", title: "智能配图生成", desc: "CogView-3 为每个教学段落自动生成教学插图，支持自定义风格和单张重新生成。" },
-  { emoji: "📊", title: "一键导出 PPT", desc: "将教学内容自动排版为精美 PPT 课件，支持多种模板风格选择。" },
-  { emoji: "🔗", title: "在线分享", desc: "课件生成后自动创建在线预览链接，学生无需安装软件即可浏览。" },
-  { emoji: "🎯", title: "随堂测验", desc: "AI 根据教学内容自动生成测验题目，支持选择题、判断题等多种题型。" },
-  { emoji: "📚", title: "多学科覆盖", desc: "支持数学、语文、英语、物理、化学、生物等 10+ 学科，全年级覆盖。" },
+  { icon: PenTool, title: "AI 教学文案", desc: "基于 GLM-4 大模型，根据课程主题自动生成结构化教学文案，支持逐段编辑和 AI 润色优化。" },
+  { icon: Palette, title: "智能配图生成", desc: "CogView-3 为每个教学段落自动生成教学插图，支持自定义风格和单张重新生成。" },
+  { icon: Presentation, title: "一键导出 PPT", desc: "将教学内容自动排版为精美 PPT 课件，支持多种模板风格选择。" },
+  { icon: Link2, title: "在线分享", desc: "课件生成后自动创建在线预览链接，学生无需安装软件即可浏览。" },
+  { icon: Target, title: "随堂测验", desc: "AI 根据教学内容自动生成测验题目，支持选择题、判断题等多种题型。" },
+  { icon: BookOpen, title: "多学科覆盖", desc: "支持数学、语文、英语、物理、化学、生物等 10+ 学科，全年级覆盖。" },
 ];
 
 function FeatureSection() {
@@ -148,8 +151,8 @@ function FeatureSection() {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
       {FEATURES.map((f, i) => (
         <Card key={f.title} className="group relative p-8 transition-all duration-150 hover:shadow cursor-default">
-          <div className="w-10 h-10 rounded-lg bg-neutral-100 flex items-center justify-center mb-5 text-lg">
-            {f.emoji}
+          <div className="w-10 h-10 rounded-lg bg-neutral-100 flex items-center justify-center mb-5 text-primary-400">
+            {(() => { const I = f.icon; return I ? <I className="w-5 h-5" /> : null; })()}
           </div>
           <h3 className="text-lg font-semibold text-neutral-900 mb-2">{f.title}</h3>
           <p className="text-sm leading-relaxed text-neutral-500">{f.desc}</p>
@@ -193,12 +196,12 @@ function WorkflowSection() {
 
 /* ─── Example Topics ─── */
 const EXAMPLE_TOPICS = [
-  { title: "光合作用的原理与过程", tag: "生物", tagColor: "bg-neutral-100 text-neutral-500 border-neutral-200", desc: "从光反应到暗反应，详解植物光合作用的完整过程", emoji: "🌿", subject: "biology" },
-  { title: "二次函数的图像与性质", tag: "数学", tagColor: "bg-neutral-100 text-neutral-500 border-neutral-200", desc: "通过图象理解二次函数的顶点、对称轴、开口方向等性质", emoji: "📐", subject: "math" },
-  { title: "唐宋八大家之苏轼", tag: "语文", tagColor: "bg-neutral-100 text-neutral-500 border-neutral-200", desc: "从《水调歌头》到《赤壁赋》，走进苏东坡的文学世界", emoji: "📜", subject: "chinese" },
-  { title: "牛顿三大运动定律", tag: "物理", tagColor: "bg-neutral-100 text-neutral-500 border-neutral-200", desc: "用生活实例深入浅出地解释牛顿三大定律", emoji: "🍎", subject: "physics" },
-  { title: "英语时态完全攻略", tag: "英语", tagColor: "bg-neutral-100 text-neutral-500 border-neutral-200", desc: "系统讲解英语12种时态的构成和用法，配例句练习", emoji: "🔤", subject: "english" },
-  { title: "中国近代史大事记", tag: "历史", tagColor: "bg-neutral-100 text-neutral-500 border-neutral-200", desc: "从鸦片战争到新中国成立，梳理中国近代百年风云", emoji: "🏛️", subject: "history" },
+  { title: "光合作用的原理与过程", tag: "生物", tagColor: "bg-neutral-100 text-neutral-500 border-neutral-200", desc: "从光反应到暗反应，详解植物光合作用的完整过程", icon: "Leaf", subject: "biology" },
+  { title: "二次函数的图像与性质", tag: "数学", tagColor: "bg-neutral-100 text-neutral-500 border-neutral-200", desc: "通过图象理解二次函数的顶点、对称轴、开口方向等性质", icon: "Calculator", subject: "math" },
+  { title: "唐宋八大家之苏轼", tag: "语文", tagColor: "bg-neutral-100 text-neutral-500 border-neutral-200", desc: "从《水调歌头》到《赤壁赋》，走进苏东坡的文学世界", icon: "ScrollText", subject: "chinese" },
+  { title: "牛顿三大运动定律", tag: "物理", tagColor: "bg-neutral-100 text-neutral-500 border-neutral-200", desc: "用生活实例深入浅出地解释牛顿三大定律", icon: "Atom", subject: "physics" },
+  { title: "英语时态完全攻略", tag: "英语", tagColor: "bg-neutral-100 text-neutral-500 border-neutral-200", desc: "系统讲解英语12种时态的构成和用法，配例句练习", icon: "Languages", subject: "english" },
+  { title: "中国近代史大事记", tag: "历史", tagColor: "bg-neutral-100 text-neutral-500 border-neutral-200", desc: "从鸦片战争到新中国成立，梳理中国近代百年风云", icon: "Landmark", subject: "history" },
 ];
 
 export default function LandingPage() {
@@ -353,7 +356,7 @@ export default function LandingPage() {
                   window.location.href = loggedIn ? `/create?topic=${encodeURIComponent(e.title)}&subject=${e.subject}` : `/login?topic=${encodeURIComponent(e.title)}&subject=${e.subject}`;
                 }}
               >
-                <div className="text-2xl mt-0.5">{e.emoji}</div>
+                <div className="mt-0.5 text-primary-400">{(() => { const I = ICON_MAP[e.icon]; return I ? <I className="w-5 h-5" /> : null; })()}</div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1.5">
                     <h3 className="text-sm font-semibold text-neutral-900 truncate">{e.title}</h3>
@@ -377,7 +380,9 @@ export default function LandingPage() {
       {/* ─── CTA ─── */}
       <section className="py-20 lg:py-32 border-t border-neutral-200 relative overflow-hidden bg-gradient-to-b from-neutral-50 to-white">
         <div className="relative mx-auto max-w-3xl px-6 lg:px-8 text-center">
-          <div className="text-6xl mb-8 animate-float">🎓</div>
+          <div className="mb-8 animate-float">
+            <GraduationCap className="w-16 h-16 text-primary-400 mx-auto" />
+          </div>
           <h2 className="text-3xl sm:text-4xl font-bold text-neutral-900 mb-4">开始你的第一个课件</h2>
           <p className="text-lg mb-10 max-w-lg mx-auto text-neutral-500">AI 帮你完成从文案到课件的全流程。让每一节课都精彩纷呈。</p>
           <Link href={loggedIn ? "/create" : "/login"}>

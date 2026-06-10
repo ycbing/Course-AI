@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
 import {
   Loader2, ArrowLeft, CheckCircle, XCircle, Clock, Trophy,
-  Loader2 as Spinner, Send, RotateCcw, Sparkles
+  Loader2 as Spinner, Send, RotateCcw, Sparkles, FileEdit, BookOpen
 } from "lucide-react";
 import { toast, Toaster } from "sonner";
 
@@ -163,7 +163,7 @@ export default function QuizPage() {
         {questions.length === 0 ? (
           /* Empty state - generate quiz */
           <div className="text-center py-20">
-            <div className="text-5xl mb-4 animate-float">📝</div>
+            <div className="mb-4 animate-float"><FileEdit className="w-12 h-12 text-neutral-300 mx-auto" /></div>
             <h2 className="text-xl font-bold mb-2">还没有测验题目</h2>
             <p className="text-sm text-neutral-500 mb-8 max-w-md mx-auto">
               AI 会根据课程内容自动生成测验题，涵盖每个章节的知识点
@@ -292,7 +292,7 @@ export default function QuizPage() {
             {submitted && (
               <div className="mt-8 p-6 rounded-2xl border border-neutral-200 bg-white text-center">
                 <div className="text-4xl mb-2">
-                  {accuracy >= 80 ? "🎉" : accuracy >= 60 ? "💪" : "📚"}
+                  {accuracy >= 80 ? <Trophy className="w-10 h-10 text-amber-400 mx-auto" /> : accuracy >= 60 ? <CheckCircle className="w-10 h-10 text-blue-400 mx-auto" /> : <BookOpen className="w-10 h-10 text-neutral-400 mx-auto" />}
                 </div>
                 <div className="text-2xl font-bold text-neutral-900 mb-1">
                   {correctCount}/{totalCount}

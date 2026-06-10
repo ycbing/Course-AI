@@ -17,7 +17,7 @@ export interface TextbookTemplate {
   subject: string;
   grade: string;
   publisher: string;
-  coverEmoji: string;
+  coverIcon: string;
   chapters: TextbookChapter[];
 }
 
@@ -29,7 +29,7 @@ export const textbookTemplates: TextbookTemplate[] = [
     subject: "biology",
     grade: "高一",
     publisher: "人教版",
-    coverEmoji: "🧬",
+    coverIcon: "Dna",
     chapters: [
       {
         id: "c1", title: "走进细胞", topics: ["细胞是生命活动的基本单位", "细胞的多样性和统一性", "原核细胞与真核细胞"], keyPoints: ["细胞学说的建立过程", "显微镜观察细胞的方法"], duration: 8,
@@ -59,7 +59,7 @@ export const textbookTemplates: TextbookTemplate[] = [
     subject: "math",
     grade: "高一",
     publisher: "人教版",
-    coverEmoji: "📐",
+    coverIcon: "Calculator",
     chapters: [
       {
         id: "c1", title: "集合与常用逻辑用语", topics: ["集合的概念", "集合间的基本关系", "集合的基本运算", "充分条件与必要条件"], keyPoints: ["集合的交并补运算", "充要条件的判断方法"], duration: 10,
@@ -89,7 +89,7 @@ export const textbookTemplates: TextbookTemplate[] = [
     subject: "physics",
     grade: "高一",
     publisher: "人教版",
-    coverEmoji: "⚡",
+    coverIcon: "Zap",
     chapters: [
       {
         id: "c1", title: "运动的描述", topics: ["质点 参考系", "时间和位移", "位置变化快慢的描述——速度", "速度变化快慢的描述——加速度"], keyPoints: ["位移与路程的区别", "加速度的物理意义"], duration: 10,
@@ -119,7 +119,7 @@ export const textbookTemplates: TextbookTemplate[] = [
     subject: "chinese",
     grade: "高三",
     publisher: "人教版",
-    coverEmoji: "📜",
+    coverIcon: "ScrollText",
     chapters: [
       {
         id: "c1", title: "古诗词鉴赏", topics: ["诗歌的形象与意象", "诗歌的表达技巧", "诗歌的语言风格", "情感主旨的把握"], keyPoints: ["常见意象的象征意义", "对比、衬托、虚实结合等手法"], duration: 12,
@@ -149,7 +149,7 @@ export const textbookTemplates: TextbookTemplate[] = [
     subject: "chemistry",
     grade: "高一",
     publisher: "北师大版",
-    coverEmoji: "⚗️",
+    coverIcon: "FlaskConical",
     chapters: [
       {
         id: "c1", title: "物质的分类与转化", topics: ["物质的分类方法", "单质与化合物", "酸碱盐氧化物", "化学反应的类型"], keyPoints: ["物质分类的树状图法", "四大基本反应类型"], duration: 8,
@@ -179,7 +179,7 @@ export const textbookTemplates: TextbookTemplate[] = [
     subject: "english",
     grade: "高一",
     publisher: "人教版",
-    coverEmoji: "🔤",
+    coverIcon: "Languages",
     chapters: [
       {
         id: "c1", title: "Teenage Life", topics: ["School life in different countries", "Extracurricular activities", "Volunteer work", "Teenage challenges"], keyPoints: ["表达建议与观点", "定语从句入门"], duration: 10,

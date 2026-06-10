@@ -6,7 +6,7 @@ import Link from "next/link";
 import {
   Loader2, ArrowLeft, Play, Download, Share2, Copy, Check, BookOpen,
   ChevronDown, ChevronUp, Trash2, FolderPlus, Edit, GraduationCap,
-  FileText, Clock, Image, Volume2, LayoutList, Sparkles, Presentation
+  FileText, Clock, Image, Volume2, LayoutList, Sparkles, Presentation, CircleDashed, Book, FileEdit
 } from "lucide-react";
 import { toast, Toaster } from "sonner";
 import { toPublicUrl } from "@/lib/cos-url";
@@ -170,7 +170,7 @@ export default function CourseDetailPage() {
     return (
       <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="text-5xl mb-4">😔</div>
+          <div className="mb-4"><CircleDashed className="w-12 h-12 text-neutral-300 mx-auto" /></div>
           <p className="text-neutral-500">课程不存在</p>
           <Link href="/dashboard" className="text-primary-400 hover:text-neutral-900 text-sm mt-2 inline-block">
             返回课程列表
@@ -246,7 +246,7 @@ export default function CourseDetailPage() {
           ) : (
             <div className="aspect-video bg-gradient-to-br from-neutral-200 to-neutral-100 flex items-center justify-center">
               <div className="text-center">
-                <div className="text-5xl mb-3">📖</div>
+                <div className="mb-3"><Book className="w-12 h-12 text-neutral-400 mx-auto" /></div>
                 <h1 className="text-2xl font-bold mb-2">{course.title}</h1>
                 <div className="flex items-center justify-center gap-3 text-sm text-neutral-500">
                   {course.subject && (
@@ -496,7 +496,7 @@ export default function CourseDetailPage() {
           <div className="animate-fade-up-delay-2">
             {quizCount > 0 ? (
               <div className="text-center py-12 rounded-2xl border border-neutral-200 bg-white">
-                <div className="text-4xl mb-3">📝</div>
+                <div className="mb-3"><FileEdit className="w-10 h-10 text-primary-400 mx-auto" /></div>
                 <h3 className="text-lg font-bold mb-2">随堂测验</h3>
                 <p className="text-sm text-neutral-500 mb-6">共 {quizCount} 道题，涵盖所有教学章节</p>
                 <Link

@@ -160,11 +160,11 @@ function LoginForm() {
               <p className="text-xs text-center mb-3 text-neutral-400">其他登录方式</p>
               <div className="grid grid-cols-2 gap-2">
                 <Button variant="outline" className="h-11 text-xs border-neutral-300">
-                  <span>💬</span> 微信登录
+                  微信登录
                   <span className="text-[9px] px-1.5 py-0.5 rounded ml-auto opacity-40">即将推出</span>
                 </Button>
                 <Button variant="outline" className="h-11 text-xs border-neutral-300">
-                  <span>🌐</span> Google
+                  Google
                   <span className="text-[9px] px-1.5 py-0.5 rounded ml-auto opacity-40">即将推出</span>
                 </Button>
               </div>

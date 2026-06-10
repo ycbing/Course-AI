@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, Sparkles, BookTemplate, ChevronDown, ChevronUp, Plus, X } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import { Loader2, Sparkles, BookTemplate, ChevronDown, ChevronUp, Plus, X, Calculator, ScrollText, Languages, Leaf, Atom, FlaskConical, Globe2, Landmark, Code2, Music, Palette, SquareFunction } from "lucide-react";
+import { ICON_MAP } from "@/components/subject-icon";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,29 +21,29 @@ interface OutlineItem {
 }
 
 const QUICK_TEMPLATES = [
-  { id: "math", emoji: "📐", name: "数学", title: "二次函数的图像与性质", subject: "math", grade: "高中", items: ["二次函数的定义与标准形式", "抛物线的开口方向与顶点坐标", "对称轴的求法与应用", "二次函数的最值问题", "实际应用：抛物线运动与面积优化"] },
-  { id: "chinese", emoji: "📜", name: "语文", title: "唐宋八大家之苏轼", subject: "chinese", grade: "高中", items: ["苏轼的生平与时代背景", "《水调歌头》赏析", "《赤壁赋》的思想内涵", "苏轼的诗词风格与文学地位", "东坡精神对后世的深远影响"] },
-  { id: "english", emoji: "🔤", name: "英语", title: "英语时态完全攻略", subject: "english", grade: "高中", items: ["一般现在时与现在进行时的区别", "一般过去时与现在完成时", "过去完成时与过去进行时", "将来时态：will/shall/be going to", "时态在复杂句中的应用"] },
-  { id: "physics", emoji: "🍎", name: "物理", title: "牛顿三大运动定律", subject: "physics", grade: "高中", items: ["第一定律：惯性定律", "第二定律：F=ma", "第三定律：作用力与反作用力", "牛顿定律在日常生活中的应用", "经典力学的局限性与爱因斯坦相对论"] },
-  { id: "chemistry", emoji: "⚗️", name: "化学", title: "化学键与分子结构", subject: "chemistry", grade: "高中", items: ["离子键的形成与特征", "共价键：极性与非极性", "金属键与金属晶体", "分子间作用力", "分子结构对物质性质的影响"] },
-  { id: "biology", emoji: "🌿", name: "生物", title: "光合作用的原理与过程", subject: "biology", grade: "高中", items: ["光合作用的发现历史", "叶绿体的结构与光合色素", "光反应：水的光解与ATP合成", "暗反应：CO₂的固定与C₃还原", "影响光合作用的因素与农业应用"] },
-  { id: "history", emoji: "🏛️", name: "历史", title: "中国近代史大事记", subject: "history", grade: "高中", items: ["鸦片战争与不平等条约", "太平天国运动", "洋务运动与戊戌变法", "辛亥革命与民国建立", "五四运动与新文化运动"] },
-  { id: "programming", emoji: "💻", name: "编程", title: "Python编程入门：变量与数据类型", subject: "programming", grade: "大学", items: ["Python环境安装与第一个程序", "变量命名规则与赋值", "基本数据类型：整数、浮点、字符串、布尔", "类型转换与字符串操作", "输入输出与简单计算程序"] },
+  { id: "math", icon: "Calculator", name: "数学", title: "二次函数的图像与性质", subject: "math", grade: "高中", items: ["二次函数的定义与标准形式", "抛物线的开口方向与顶点坐标", "对称轴的求法与应用", "二次函数的最值问题", "实际应用：抛物线运动与面积优化"] },
+  { id: "chinese", icon: "ScrollText", name: "语文", title: "唐宋八大家之苏轼", subject: "chinese", grade: "高中", items: ["苏轼的生平与时代背景", "《水调歌头》赏析", "《赤壁赋》的思想内涵", "苏轼的诗词风格与文学地位", "东坡精神对后世的深远影响"] },
+  { id: "english", icon: "Languages", name: "英语", title: "英语时态完全攻略", subject: "english", grade: "高中", items: ["一般现在时与现在进行时的区别", "一般过去时与现在完成时", "过去完成时与过去进行时", "将来时态：will/shall/be going to", "时态在复杂句中的应用"] },
+  { id: "physics", icon: "Atom", name: "物理", title: "牛顿三大运动定律", subject: "physics", grade: "高中", items: ["第一定律：惯性定律", "第二定律：F=ma", "第三定律：作用力与反作用力", "牛顿定律在日常生活中的应用", "经典力学的局限性与爱因斯坦相对论"] },
+  { id: "chemistry", icon: "FlaskConical", name: "化学", title: "化学键与分子结构", subject: "chemistry", grade: "高中", items: ["离子键的形成与特征", "共价键：极性与非极性", "金属键与金属晶体", "分子间作用力", "分子结构对物质性质的影响"] },
+  { id: "biology", icon: "Leaf", name: "生物", title: "光合作用的原理与过程", subject: "biology", grade: "高中", items: ["光合作用的发现历史", "叶绿体的结构与光合色素", "光反应：水的光解与ATP合成", "暗反应：CO₂的固定与C₃还原", "影响光合作用的因素与农业应用"] },
+  { id: "history", icon: "Landmark", name: "历史", title: "中国近代史大事记", subject: "history", grade: "高中", items: ["鸦片战争与不平等条约", "太平天国运动", "洋务运动与戊戌变法", "辛亥革命与民国建立", "五四运动与新文化运动"] },
+  { id: "programming", icon: "Code2", name: "编程", title: "Python编程入门：变量与数据类型", subject: "programming", grade: "大学", items: ["Python环境安装与第一个程序", "变量命名规则与赋值", "基本数据类型：整数、浮点、字符串、布尔", "类型转换与字符串操作", "输入输出与简单计算程序"] },
 ];
 
 const SUBJECT_GRID = [
-  { value: "math", label: "数学", emoji: "🧮" },
-  { value: "chinese", label: "语文", emoji: "📖" },
-  { value: "english", label: "英语", emoji: "🔤" },
-  { value: "biology", label: "生物", emoji: "🌿" },
-  { value: "physics", label: "物理", emoji: "⚛️" },
-  { value: "chemistry", label: "化学", emoji: "🧪" },
-  { value: "geography", label: "地理", emoji: "🌍" },
-  { value: "history", label: "历史", emoji: "📜" },
-  { value: "programming", label: "编程", emoji: "💻" },
-  { value: "music", label: "音乐", emoji: "🎵" },
-  { value: "art", label: "美术", emoji: "🎨" },
-  { value: "general", label: "通用", emoji: "📐" },
+  { value: "math", label: "数学", icon: "Calculator" },
+  { value: "chinese", label: "语文", icon: "ScrollText" },
+  { value: "english", label: "英语", icon: "Languages" },
+  { value: "biology", label: "生物", icon: "Leaf" },
+  { value: "physics", label: "物理", icon: "Atom" },
+  { value: "chemistry", label: "化学", icon: "FlaskConical" },
+  { value: "geography", label: "地理", icon: "Globe2" },
+  { value: "history", label: "历史", icon: "Landmark" },
+  { value: "programming", label: "编程", icon: "Code2" },
+  { value: "music", label: "音乐", icon: "Music" },
+  { value: "art", label: "美术", icon: "Palette" },
+  { value: "general", label: "通用", icon: "SquareFunction" },
 ];
 
 const SUBJECT_GRADES: Record<string, string> = {
@@ -139,7 +141,7 @@ export default function Step1Form({ onCreated }: Step1FormProps) {
           {QUICK_TEMPLATES.map((t) => (
             <button key={t.id} type="button" onClick={() => applyTemplate(t)}
               className="group flex items-center gap-2.5 p-3 rounded-xl border border-neutral-200 bg-white hover:bg-neutral-50 hover:border-neutral-200 transition-all text-left">
-              <span className="text-lg flex-shrink-0">{t.emoji}</span>
+              <span className="flex-shrink-0">{(() => { const I = ICON_MAP[t.icon]; return I ? <I className="w-5 h-5 text-primary-400" /> : null; })()}</span>
               <div className="min-w-0">
                 <div className="text-xs font-medium text-neutral-600 group-hover:text-primary-600 transition truncate">{t.name}</div>
                 <div className="text-[10px] text-neutral-400 truncate mt-0.5">{t.title}</div>
@@ -165,7 +167,7 @@ export default function Step1Form({ onCreated }: Step1FormProps) {
             {SUBJECT_GRID.map((s) => (
               <button key={s.value} type="button" onClick={() => handleSubjectSelect(s.value)}
                 className={`flex flex-col items-center gap-1 p-3 rounded-xl border transition-all ${subject === s.value ? "border-primary-500/40 bg-primary-500/10 text-primary-400 shadow-lg shadow-md" : "border-neutral-200 bg-neutral-50 text-neutral-500 hover:bg-neutral-50 hover:border-neutral-300"}`}>
-                <span className="text-xl">{s.emoji}</span>
+                {(() => { const I = ICON_MAP[s.icon]; return I ? <I className="w-5 h-5" /> : null; })()}
                 <span className="text-[10px] font-medium">{s.label}</span>
               </button>
             ))}

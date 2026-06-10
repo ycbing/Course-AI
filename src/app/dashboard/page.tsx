@@ -383,7 +383,7 @@ export default function DashboardPage() {
           </div>
         ) : filteredCourses.length === 0 ? (
           <div className="text-center py-24 rounded-2xl border border-dashed border-neutral-300 page-transition">
-            <div className="text-6xl mb-6 animate-float">📚</div>
+            <div className="mb-6 animate-float"><BookOpen className="w-16 h-16 text-neutral-300 mx-auto" /></div>
             <p className="text-base text-neutral-500 font-medium mb-2">
               {courses.length === 0 ? "还没有课程" : "没有匹配的课程"}
             </p>

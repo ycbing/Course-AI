@@ -43,7 +43,7 @@ module.exports = {
       name: 'course-ai',
       script: '.next/standalone/server.js',
       cwd: __dirname,
-      env: { PORT: 3005, ...envVars },
+      env: { PORT: 3004, ...envVars },
     },
   ],
 };

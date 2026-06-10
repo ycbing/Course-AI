@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { Palette, Check } from "lucide-react";
+import { Palette, Check, ImageIcon, FileEdit, FileText, Maximize } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -46,11 +46,13 @@ const THEMES = [
 ];
 
 const LAYOUTS = [
-  { id: "image-left", name: "左图右文", icon: "🖼️", desc: "配图在左，文字在右" },
-  { id: "image-top", name: "上图下文", icon: "📝", desc: "配图在上，文字在下" },
-  { id: "text-only", name: "纯文字", icon: "📄", desc: "仅有标题和要点" },
-  { id: "full-image", name: "全屏配图", icon: "🖼️", desc: "配图全屏，文字叠底" },
+  { id: "image-left", name: "左图右文", icon: "ImageIcon", desc: "配图在左，文字在右" },
+  { id: "image-top", name: "上图下文", icon: "FileEdit", desc: "配图在上，文字在下" },
+  { id: "text-only", name: "纯文字", icon: "FileText", desc: "仅有标题和要点" },
+  { id: "full-image", name: "全屏配图", icon: "Maximize", desc: "配图全屏，文字叠底" },
 ];
+
+const LAYOUT_ICON_MAP: Record<string, any> = { ImageIcon, FileEdit, FileText, Maximize };
 
 /* ─── Helpers ─── */
 
@@ -394,7 +396,7 @@ export default function Step4({ courseId, onNext, onPrev }: Step4Props) {
                   : "border-neutral-200 bg-neutral-100 hover:bg-neutral-50"
               }`}
             >
-              <div className="text-2xl mb-1">{layout.icon}</div>
+              <div className="mb-1">{(() => { const I = LAYOUT_ICON_MAP[layout.icon]; return I ? <I className="w-6 h-6 mx-auto" /> : null; })()}</div>
               <div className={`text-xs font-medium ${selectedLayout === layout.id ? "text-primary-400" : "text-neutral-600"}`}>
                 {layout.name}
               </div>

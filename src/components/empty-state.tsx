@@ -1,6 +1,6 @@
 "use client";
 
-import { LucideIcon } from "lucide-react";
+import { LucideIcon, Inbox } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface EmptyStateProps {
@@ -17,7 +17,7 @@ export function EmptyState({ icon, title, description, action, onAction }: Empty
       {icon ? (
         <div className="mb-6 animate-float">{icon}</div>
       ) : (
-        <div className="text-5xl mb-6 animate-float">📭</div>
+        <div className="mb-6 animate-float"><Inbox className="w-12 h-12 text-neutral-300" /></div>
       )}
       <p className="text-base text-neutral-500 font-medium mb-2">{title}</p>
       {description && (
