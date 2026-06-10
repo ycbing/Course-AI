@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Loader2, ImageIcon, Download, RefreshCw, Check, Palette, AlertCircle, RotateCcw } from "lucide-react";
+import { Loader2, ImageIcon, Download, RefreshCw, Check, Palette, AlertCircle, RotateCcw, Sparkles, ChevronDown, ChevronUp, Save } from "lucide-react";
 import { toast } from "sonner";
 import { toPublicUrl } from "@/lib/cos-url";
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,8 @@ interface Section {
   imageUrl?: string;
   imagePrompt?: string;
   imageError?: string;
-
+  showPrompt?: boolean;
+  refiningPrompt?: boolean;
 }
 
 interface Step3Props {
@@ -32,6 +33,9 @@ export default function Step3({ courseId, onNext, onPrev }: Step3Props) {
   const [loadingAll, setLoadingAll] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [customPrompt, setCustomPrompt] = useState("");
+  const [refiningAll, setRefiningAll] = useState(false);
+  const [editingPromptIdx, setEditingPromptIdx] = useState<number | null>(null);
+  const [editingPromptText, setEditingPromptText] = useState("");
   useEffect(() => {
     if (loaded) return;
     fetch(`/api/courses/${courseId}`)
@@ -121,6 +125,61 @@ export default function Step3({ courseId, onNext, onPrev }: Step3Props) {
     setLoadingAll(false);
   };
 
+  const refineSinglePrompt = async (idx: number) => {
+    const s = sections[idx];
+    if (!s?.id) return;
+    setSections((prev) => prev.map((sec, i) => (i === idx ? { ...sec, refiningPrompt: true } : sec)));
+    try {
+      const res = await fetch(`/api/sections/${s.id}/refine-prompt`, { method: "POST" });
+      const data = await res.json();
+      if (res.ok) {
+        setSections((prev) => prev.map((sec, i) => (i === idx ? { ...sec, imagePrompt: data.imagePrompt, refiningPrompt: false, showPrompt: true } : sec)));
+        toast.success(`第 ${idx + 1} 段提示词已精调`);
+      } else {
+        toast.error(data.error || "精调失败");
+        setSections((prev) => prev.map((sec, i) => (i === idx ? { ...sec, refiningPrompt: false } : sec)));
+      }
+    } catch {
+      toast.error("精调失败");
+      setSections((prev) => prev.map((sec, i) => (i === idx ? { ...sec, refiningPrompt: false } : sec)));
+    }
+  };
+
+  const refineAllPrompts = async () => {
+    setRefiningAll(true);
+    try {
+      const res = await fetch(`/api/courses/${courseId}/refine-all-prompts`, { method: "POST" });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success(`已精调 ${data.successCount}/${data.total} 段提示词`);
+        // Refresh sections to get updated prompts
+        setLoaded(false);
+      } else {
+        toast.error(data.error || "批量精调失败");
+      }
+    } catch {
+      toast.error("批量精调失败");
+    }
+    setRefiningAll(false);
+  };
+
+  const savePromptEdit = async (idx: number) => {
+    const s = sections[idx];
+    if (!s?.id || !editingPromptText.trim()) return;
+    try {
+      await fetch(`/api/sections/${s.id}/save-prompt`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imagePrompt: editingPromptText }),
+      });
+      setSections((prev) => prev.map((sec, i) => (i === idx ? { ...sec, imagePrompt: editingPromptText } : sec)));
+      setEditingPromptIdx(null);
+      toast.success("提示词已保存");
+    } catch {
+      toast.error("保存失败");
+    }
+  };
+
   const hasAll = sections.length > 0 && sections.every((s) => s.imageUrl);
   const hasSome = sections.some((s) => s.imageUrl);
   const completedCount = sections.filter((s) => s.imageUrl).length;
@@ -143,14 +202,18 @@ export default function Step3({ courseId, onNext, onPrev }: Step3Props) {
             )}
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={regenerateAll} disabled={loadingAll}>
+        <div className="flex items-center gap-2 flex-wrap">
+          <Button variant="outline" size="sm" onClick={regenerateAll} disabled={loadingAll || refiningAll}>
               <RotateCcw className="w-3.5 h-3.5" />
               全部重新生成
             </Button>
+            <Button variant="outline" size="sm" onClick={refineAllPrompts} disabled={refiningAll || loadingAll}>
+              <Sparkles className="w-3.5 h-3.5" />
+              {refiningAll ? "精调中..." : "AI 精调提示词"}
+            </Button>
             <Button
               onClick={genAll}
-              disabled={loadingAll || hasAll}
+              disabled={loadingAll || hasAll || refiningAll}
             >
               {loadingAll ? "生成中..." : hasAll ? "全部完成 ✓" : "生成全部配图"}
             </Button>
@@ -259,17 +322,79 @@ export default function Step3({ courseId, onNext, onPrev }: Step3Props) {
                   {s.sectionNumber}
                 </div>
                 <h3 className="text-xs font-medium truncate flex-1">{s.title}</h3>
-                {!s.imageUrl && (
+                <div className="flex items-center gap-1 flex-shrink-0">
                   <button
-                    onClick={() => genImage(i)}
-                    disabled={imgGen !== null}
-                    className="px-2.5 py-1 rounded-md text-[10px] font-medium transition bg-neutral-100 text-neutral-500 hover:bg-primary-50 disabled:opacity-30 flex-shrink-0"
+                    onClick={() => {
+                      setSections((prev) => prev.map((sec, j) => (j === i ? { ...sec, showPrompt: !sec.showPrompt } : sec)));
+                    }}
+                    className="p-1 rounded-md text-neutral-400 hover:text-neutral-600 hover:bg-neutral-100 transition"
+                    title={s.showPrompt ? "收起提示词" : "查看提示词"}
                   >
-                    {imgGen === i ? <Loader2 className="w-3 h-3 animate-spin" /> : "生成"}
+                    {s.showPrompt ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
                   </button>
-                )}
+                  {!s.imageUrl && (
+                    <button
+                      onClick={() => genImage(i)}
+                      disabled={imgGen !== null}
+                      className="px-2.5 py-1 rounded-md text-[10px] font-medium transition bg-neutral-100 text-neutral-500 hover:bg-primary-50 disabled:opacity-30"
+                    >
+                      {imgGen === i ? <Loader2 className="w-3 h-3 animate-spin" /> : "生成"}
+                    </button>
+                  )}
+                </div>
               </div>
 
+              {/* Prompt preview/edit area */}
+              {s.showPrompt && (
+                <div className="space-y-2 pt-1 border-t border-neutral-100">
+                  {editingPromptIdx === i ? (
+                    <div className="space-y-2">
+                      <textarea
+                        value={editingPromptText}
+                        onChange={(e) => setEditingPromptText(e.target.value)}
+                        rows={3}
+                        className="w-full text-[11px] text-neutral-600 bg-neutral-50 border border-neutral-200 rounded-lg p-2 resize-none focus:outline-none focus:ring-1 focus:ring-primary-400/30"
+                      />
+                      <div className="flex items-center gap-2 justify-end">
+                        <button
+                          onClick={() => setEditingPromptIdx(null)}
+                          className="text-[10px] text-neutral-400 hover:text-neutral-500"
+                        >
+                          取消
+                        </button>
+                        <button
+                          onClick={() => savePromptEdit(i)}
+                          className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-medium bg-primary-500/10 text-primary-400 hover:bg-primary-500/20 transition"
+                        >
+                          <Save className="w-2.5 h-2.5" /> 保存
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="group/prompt relative">
+                      <p className="text-[10px] text-neutral-400 leading-relaxed line-clamp-3">
+                        {s.imagePrompt || "暂无提示词"}
+                      </p>
+                      <div className="flex items-center gap-2 mt-1.5">
+                        <button
+                          onClick={() => refineSinglePrompt(i)}
+                          disabled={s.refiningPrompt || refiningAll}
+                          className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-medium bg-accent-500/10 text-accent-400 hover:bg-accent-500/20 transition disabled:opacity-30"
+                        >
+                          {s.refiningPrompt ? <Loader2 className="w-2.5 h-2.5 animate-spin" /> : <Sparkles className="w-2.5 h-2.5" />}
+                          AI 精调
+                        </button>
+                        <button
+                          onClick={() => { setEditingPromptIdx(i); setEditingPromptText(s.imagePrompt || ""); }}
+                          className="text-[10px] text-neutral-400 hover:text-neutral-500 transition"
+                        >
+                          手动编辑
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         ))}

@@ -152,3 +152,93 @@ export async function generateImage(
   if (!imageUrl) throw new Error("No image URL in response");
   return imageUrl;
 }
+
+/**
+ * Subject-specific visual rules for image prompts.
+ */
+const SUBJECT_VISUAL_RULES: Record<string, string> = {
+  math: "Include mathematical formulas, geometric shapes, coordinate systems, graphs, or numerical diagrams. Show equations visually.",
+  physics: "Include experimental apparatus, force diagrams, energy transfer diagrams, wave patterns, or physical phenomena illustrations.",
+  chemistry: "Include molecular structures, chemical formulas, lab equipment, reaction diagrams, or periodic table elements.",
+  biology: "Include cell structures, organ diagrams, anatomy illustrations, ecosystem diagrams, or plant/animal features.",
+  history: "Include historical scenes, period-accurate architecture, cultural artifacts, portraits in historical context, or timeline illustrations.",
+  geography: "Include topographic maps, terrain cross-sections, climate zone diagrams, satellite views, or geographical feature illustrations.",
+  programming: "Include code editor interfaces, algorithm flowcharts, data structure visualizations, or system architecture diagrams.",
+  computer_science: "Include code editor interfaces, algorithm flowcharts, data structure visualizations, or system architecture diagrams.",
+  science: "Include scientific diagrams, experimental setups, natural phenomena illustrations, or data visualization charts.",
+  chinese: "Include Chinese calligraphy elements, classical architecture, literary scene illustrations, or cultural symbols.",
+  english: "Include language learning scenes, grammar diagrams, vocabulary illustrations, or Western literary scene illustrations.",
+  art: "Include art technique demonstrations, color theory diagrams, famous artwork references, or creative process illustrations.",
+  music: "Include musical notation, instrument diagrams, waveform visualizations, or performance scene illustrations.",
+  pe: "Include sports action scenes, exercise posture diagrams, athletic field illustrations, or fitness equipment illustrations.",
+  politics: "Include government structure diagrams, civic concept illustrations, debate scene illustrations, or organizational charts.",
+};
+
+const DEFAULT_SUBJECT_RULE = "Include clear diagrams, informative labels, and educational visual elements suitable for teaching materials.";
+
+/**
+ * Refine an image prompt for better generation accuracy.
+ * Independent call from script generation — focused solely on prompt quality.
+ */
+export async function refineImagePrompt(
+  sectionTitle: string,
+  sectionContent: string,
+  subject?: string,
+  visualStyle?: string
+): Promise<string> {
+  const styleKeywords = visualStyle || "clean educational illustration style, flat vector art, bright colors, white background";
+  const subjectKey = (subject || "").toLowerCase();
+  const subjectRule = SUBJECT_VISUAL_RULES[subjectKey] || DEFAULT_SUBJECT_RULE;
+
+  // Extract key concepts from content for more specific prompts
+  const contentExcerpt = sectionContent.slice(0, 300);
+
+  const messages: ChatMessage[] = [
+    {
+      role: "system",
+      content: `You are an expert educational image prompt engineer. Your task is to generate a precise, detailed English image generation prompt based on teaching content.
+
+Rules:
+1. English only, 80-120 words
+2. Must include SPECIFIC visual elements from the teaching content (not generic "educational illustration")
+3. Specify composition: main subject position, camera angle/viewpoint, background environment
+4. Specify style: ${styleKeywords}
+5. Include color palette description
+6. Subject-specific rules: ${subjectRule}
+7. NO abstract symbols, NO meaningless decorative elements
+8. The image should clearly convey the teaching concept visually
+9. Include text labels or annotations if they help explain the concept
+
+Output format: Output ONLY the image prompt text, nothing else. No explanation, no quotes.
+
+Example good prompt:
+"A detailed educational illustration showing the water cycle with clearly labeled stages: evaporation (blue arrows rising from ocean), condensation (gray cloud formation), precipitation (rain drops falling), and collection (river flowing back to ocean). Soft blue and green color palette, flat vector art style, centered composition on light blue background, with small text labels at each stage, clean textbook diagram aesthetic"`,
+    },
+    {
+      role: "user",
+      content: `Section title: ${sectionTitle}
+
+Section content (excerpt):
+${contentExcerpt}
+
+Generate a precise image generation prompt for this teaching section.`,
+    },
+  ];
+
+  const raw = await chatCompletion(messages, {
+    temperature: 0.6,
+    maxTokens: 256,
+  });
+
+  // Clean up quotes if present
+  let prompt = raw.trim();
+  if (prompt.startsWith('"') && prompt.endsWith('"')) {
+    prompt = prompt.slice(1, -1);
+  }
+  if (prompt.startsWith('\'') && prompt.endsWith('\'')) {
+    prompt = prompt.slice(1, -1);
+  }
+
+  log.info("Refined image prompt", { title: sectionTitle, promptLength: prompt.length });
+  return prompt;
+}
