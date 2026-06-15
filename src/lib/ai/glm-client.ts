@@ -5,9 +5,14 @@ const log = createLogger("glm-client");
 const API_KEY = process.env.GLM_API_KEY || "";
 const BASE_URL = process.env.GLM_BASE_URL || "https://open.bigmodel.cn/api/paas/v4";
 const LLM_MODEL = process.env.LLM_MODEL || "glm-4-flash";
-const IMAGE_MODEL = process.env.GLM_IMAGE_MODEL || "cogview-3-plus";
+// Image generation provider: "cogview" (智谱) or "wanx" (阿里万相)
+const IMAGE_PROVIDER = process.env.IMAGE_PROVIDER || "wanx";
+const IMAGE_MODEL = process.env.GLM_IMAGE_MODEL || "cogview-4";
 const IMAGE_API_KEY = process.env.IMAGE_API_KEY || API_KEY;
 const IMAGE_BASE_URL = process.env.IMAGE_BASE_URL || process.env.GLM_BASE_URL || "https://open.bigmodel.cn/api/paas/v4";
+const WANX_API_KEY = process.env.DASHSCOPE_API_KEY || "";
+const WANX_BASE_URL = process.env.DASHSCOPE_BASE_URL || "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation";
+const WANX_MODEL = process.env.WANX_MODEL || "wan2.7-image-pro";
 
 interface ChatMessage {
   role: "user" | "assistant" | "system";
@@ -120,9 +125,78 @@ ${outline ? `大纲参考：${outline}` : ""}
 }
 
 /**
- * Generate image using CogView-3-Plus.
+ * Generate teaching illustration image.
+ * Supports CogView (智谱) and Wanx (阿里万相) as image providers.
  */
 export async function generateImage(
+  prompt: string,
+  size: string = "1024x1024"
+): Promise<string> {
+  if (IMAGE_PROVIDER === "wanx" && WANX_API_KEY) {
+    return generateImageWanx(prompt, size);
+  }
+  return generateImageCogView(prompt, size);
+}
+
+/**
+ * Wanx (阿里万相) image generation — DPG-Bench SOTA
+ */
+async function generateImageWanx(
+  prompt: string,
+  size: string = "1024x1024"
+): Promise<string> {
+  const [w, h] = size.split("x").map(Number);
+  const totalPixels = w * h;
+  const wanxSize = totalPixels <= 1024 * 1024 ? "1K" : "2K";
+
+  const res = await fetch(WANX_BASE_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${WANX_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: WANX_MODEL,
+      input: {
+        messages: [
+          {
+            role: "user",
+            content: [{ text: prompt }],
+          },
+        ],
+      },
+      parameters: {
+        size: wanxSize,
+        n: 1,
+        watermark: false,
+      },
+    }),
+  });
+
+  if (!res.ok) {
+    const err = await res.text();
+    log.error(`Wanx API failed: ${res.status}`, { error: err });
+    // Fallback to CogView
+    log.warn("Falling back to CogView");
+    return generateImageCogView(prompt, size);
+  }
+
+  const data = await res.json();
+  const imageItem = data.output?.choices?.[0]?.message?.content?.find(
+    (c: any) => c.type === "image"
+  );
+  if (!imageItem?.image) {
+    log.warn("Wanx returned no image, falling back to CogView");
+    return generateImageCogView(prompt, size);
+  }
+
+  return imageItem.image;
+}
+
+/**
+ * CogView (智谱) image generation
+ */
+async function generateImageCogView(
   prompt: string,
   size: string = "1024x1024"
 ): Promise<string> {
@@ -138,12 +212,14 @@ export async function generateImage(
       model: IMAGE_MODEL,
       prompt,
       size,
+      watermark_enabled: false,
+      quality: "hd",
     }),
   });
 
   if (!res.ok) {
     const err = await res.text();
-    log.error(`Image generation failed: ${res.status}`, { error: err });
+    log.error(`CogView API failed: ${res.status}`, { error: err });
     throw new Error(`Image generation ${res.status}: ${err}`);
   }
 
