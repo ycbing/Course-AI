@@ -67,6 +67,7 @@ export async function uploadToCos(localPath: string, cosKey: string): Promise<st
           Bucket: BUCKET(), Region: REGION(), Key: cosKey,
           FilePath: localPath, SliceSize: 5 * 1024 * 1024,
           ContentType: contentType,
+          ACL: 'public-read',
         }, (err) => {
           if (err) { log.error("COS slice upload failed", { cosKey, error: err.message }); reject(err); }
           else resolve(getCosUrl(cosKey));
@@ -76,6 +77,7 @@ export async function uploadToCos(localPath: string, cosKey: string): Promise<st
           client.putObject({
             Bucket: BUCKET(), Region: REGION(), Key: cosKey,
             Body: buffer, ContentType: contentType,
+            ACL: 'public-read',
           }, (err) => {
             if (err) { log.error("COS upload failed", { cosKey, error: err.message }); reject(err); }
             else resolve(getCosUrl(cosKey));

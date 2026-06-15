@@ -18,23 +18,28 @@ if (fs.existsSync(envFile)) {
   }
 }
 
-// Pre-deploy: copy static assets into standalone (Next.js requires this)
-const standaloneStatic = path.resolve(__dirname, '.next/standalone/.next/static');
-const buildStatic = path.resolve(__dirname, '.next/static');
-if (fs.existsSync(buildStatic) && !(fs.existsSync(standaloneStatic))) {
-  fs.cpSync(buildStatic, standaloneStatic, { recursive: true });
-  console.log('[pre-deploy] Copied .next/static → .next/standalone/.next/static');
-} else if (fs.existsSync(buildStatic)) {
-  // Always refresh to pick up new CSS/JS hashes after rebuild
-  fs.rmSync(standaloneStatic, { recursive: true, force: true });
-  fs.cpSync(buildStatic, standaloneStatic, { recursive: true });
-  console.log('[pre-deploy] Refreshed .next/static in standalone');
-}
-const standalonePublic = path.resolve(__dirname, '.next/standalone/public');
-const buildPublic = path.resolve(__dirname, 'public');
-if (fs.existsSync(buildPublic) && !fs.existsSync(standalonePublic)) {
-  fs.cpSync(buildPublic, standalonePublic, { recursive: true });
-  console.log('[pre-deploy] Copied public → .next/standalone/public');
+const standalone = path.resolve(__dirname, '.next/standalone');
+const buildRoot = __dirname;
+
+// Use symlinks for static/public (never cpSync which breaks symlinks)
+const links = [
+  { target: `${buildRoot}/.next/static`, link: `${standalone}/.next/static` },
+  { target: `${buildRoot}/public`, link: `${standalone}/public` },
+  { target: `${buildRoot}/node_modules/bcryptjs`, link: `${standalone}/node_modules/bcryptjs` },
+];
+
+for (const { target, link } of links) {
+  if (fs.existsSync(target)) {
+    if (fs.existsSync(link)) {
+      const stat = fs.lstatSync(link);
+      if (!stat.isSymbolicLink()) {
+        fs.rmSync(link, { recursive: true, force: true });
+      } else {
+        fs.unlinkSync(link);
+      }
+    }
+    fs.symlinkSync(target, link);
+  }
 }
 
 module.exports = {

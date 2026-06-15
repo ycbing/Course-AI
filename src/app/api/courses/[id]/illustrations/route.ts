@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
         [courseId]
       );
 
-      const imageUrl = await generateImage(imagePrompt, "1024x1024");
+      const imageUrl = await generateImage(imagePrompt, "1344x768");
 
       // Persist to COS for permanent storage
       const storedUrl = await persistImage(imageUrl, courseId, sectionIndex + 1);
@@ -146,7 +146,7 @@ export async function POST(req: NextRequest) {
       const prompt = section.image_prompt || `Educational illustration about ${course.title}, section ${i + 1}, detailed and clear, teaching material style`;
 
       try {
-        const imageUrl = await generateImage(prompt, "1024x1024");
+        const imageUrl = await generateImage(prompt, "1344x768");
 
         // Persist to COS
         const storedUrl = await persistImage(imageUrl, courseId, section.section_number);

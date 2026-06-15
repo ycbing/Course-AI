@@ -95,7 +95,6 @@ export async function POST(
     ];
 
     const raw = await chatCompletion(messages, {
-      model: "glm-4-flash",
       temperature: 0.5,
       maxTokens: 4096,
     });

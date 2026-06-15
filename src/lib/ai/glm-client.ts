@@ -5,11 +5,7 @@ const log = createLogger("glm-client");
 const API_KEY = process.env.GLM_API_KEY || "";
 const BASE_URL = process.env.GLM_BASE_URL || "https://open.bigmodel.cn/api/paas/v4";
 const LLM_MODEL = process.env.LLM_MODEL || "glm-4-flash";
-// Image generation provider: "cogview" (智谱) or "wanx" (阿里万相)
-const IMAGE_PROVIDER = process.env.IMAGE_PROVIDER || "wanx";
-const IMAGE_MODEL = process.env.GLM_IMAGE_MODEL || "cogview-4";
-const IMAGE_API_KEY = process.env.IMAGE_API_KEY || API_KEY;
-const IMAGE_BASE_URL = process.env.IMAGE_BASE_URL || process.env.GLM_BASE_URL || "https://open.bigmodel.cn/api/paas/v4";
+// Wanx (阿里万相) image generation
 const WANX_API_KEY = process.env.DASHSCOPE_API_KEY || "";
 const WANX_BASE_URL = process.env.DASHSCOPE_BASE_URL || "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation";
 const WANX_MODEL = process.env.WANX_MODEL || "wan2.7-image-pro";
@@ -125,17 +121,16 @@ ${outline ? `大纲参考：${outline}` : ""}
 }
 
 /**
- * Generate teaching illustration image.
- * Supports CogView (智谱) and Wanx (阿里万相) as image providers.
+ * Generate teaching illustration image using Wanx (阿里万相).
  */
 export async function generateImage(
   prompt: string,
   size: string = "1024x1024"
 ): Promise<string> {
-  if (IMAGE_PROVIDER === "wanx" && WANX_API_KEY) {
-    return generateImageWanx(prompt, size);
+  if (!WANX_API_KEY) {
+    throw new Error("DASHSCOPE_API_KEY not configured");
   }
-  return generateImageCogView(prompt, size);
+  return generateImageWanx(prompt, size);
 }
 
 /**
@@ -143,90 +138,73 @@ export async function generateImage(
  */
 async function generateImageWanx(
   prompt: string,
-  size: string = "1024x1024"
+  size: string = "1024x1024",
+  retries: number = 2
 ): Promise<string> {
   const [w, h] = size.split("x").map(Number);
   const totalPixels = w * h;
   const wanxSize = totalPixels <= 1024 * 1024 ? "1K" : "2K";
 
-  const res = await fetch(WANX_BASE_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${WANX_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: WANX_MODEL,
-      input: {
-        messages: [
-          {
-            role: "user",
-            content: [{ text: prompt }],
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(WANX_BASE_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${WANX_API_KEY}`,
+        },
+        signal: AbortSignal.timeout(120_000), // 120s timeout for image generation
+        body: JSON.stringify({
+          model: WANX_MODEL,
+          input: {
+            messages: [
+              {
+                role: "user",
+                content: [{ text: prompt }],
+              },
+            ],
           },
-        ],
-      },
-      parameters: {
-        size: wanxSize,
-        n: 1,
-        watermark: false,
-      },
-    }),
-  });
+          parameters: {
+            size: wanxSize,
+            n: 1,
+            watermark: false,
+          },
+        }),
+      });
 
-  if (!res.ok) {
-    const err = await res.text();
-    log.error(`Wanx API failed: ${res.status}`, { error: err });
-    // Fallback to CogView
-    log.warn("Falling back to CogView");
-    return generateImageCogView(prompt, size);
+      if (!res.ok) {
+        const err = await res.text();
+        log.error(`Wanx API failed: ${res.status} (attempt ${attempt + 1}/${retries + 1})`, { error: err });
+        if (attempt === retries) {
+          throw new Error(`Wanx API failed after ${retries + 1} attempts: ${res.status}`);
+        }
+        continue;
+      }
+
+      const data = await res.json();
+      const imageItem = data.output?.choices?.[0]?.message?.content?.find(
+        (c: any) => c.type === "image"
+      );
+      if (!imageItem?.image) {
+        log.warn(`Wanx returned no image (attempt ${attempt + 1}/${retries + 1})`);
+        if (attempt === retries) {
+          throw new Error("Wanx returned no image after all retries");
+        }
+        continue;
+      }
+
+      log.info(`Wanx image generated successfully (attempt ${attempt + 1})`);
+      return imageItem.image;
+    } catch (err: any) {
+      log.error(`Wanx fetch error (attempt ${attempt + 1}/${retries + 1}): ${err.message}`);
+      if (attempt === retries) {
+        throw new Error(`Wanx generation failed: ${err.message}`);
+      }
+      await new Promise(r => setTimeout(r, 2000));
+    }
   }
 
-  const data = await res.json();
-  const imageItem = data.output?.choices?.[0]?.message?.content?.find(
-    (c: any) => c.type === "image"
-  );
-  if (!imageItem?.image) {
-    log.warn("Wanx returned no image, falling back to CogView");
-    return generateImageCogView(prompt, size);
-  }
-
-  return imageItem.image;
-}
-
-/**
- * CogView (智谱) image generation
- */
-async function generateImageCogView(
-  prompt: string,
-  size: string = "1024x1024"
-): Promise<string> {
-  const url = `${IMAGE_BASE_URL}/images/generations`;
-
-  const res = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${IMAGE_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: IMAGE_MODEL,
-      prompt,
-      size,
-      watermark_enabled: false,
-      quality: "hd",
-    }),
-  });
-
-  if (!res.ok) {
-    const err = await res.text();
-    log.error(`CogView API failed: ${res.status}`, { error: err });
-    throw new Error(`Image generation ${res.status}: ${err}`);
-  }
-
-  const data = await res.json();
-  const imageUrl = data.data?.[0]?.url;
-  if (!imageUrl) throw new Error("No image URL in response");
-  return imageUrl;
+  throw new Error("Wanx generation failed after all retries");
 }
 
 /**
@@ -262,7 +240,16 @@ export async function refineImagePrompt(
   subject?: string,
   visualStyle?: string
 ): Promise<string> {
-  const styleKeywords = visualStyle || "clean educational illustration style, flat vector art, bright colors, white background";
+  // PPT-style visual keywords by style name
+  const STYLE_MAP: Record<string, string> = {
+    classic: "professional PowerPoint slide design, clean corporate presentation style, white background with subtle blue accent bar at top, clear layout with title area and content area, modern sans-serif typography aesthetic, professional infographic quality, 16:9 aspect ratio composition",
+    modern: "modern minimalist presentation slide, clean white background, geometric accent shapes (circles, rounded rectangles), vibrant primary colors with ample white space, flat infographic icons, Material Design inspired, clean hierarchy with bold titles and structured content blocks",
+    vibrant: "vibrant colorful presentation slide, gradient backgrounds (blue to purple or teal to blue), bold white typography, dynamic layout with icons and data visualization elements, energetic and engaging visual style, modern infographic poster quality",
+    minimal: "minimalist clean presentation slide, pure white background with thin elegant accent lines, single accent color (navy or teal), generous whitespace, simple line icons, Swiss design inspired, ultra-clean typography, understated professional look",
+    elegant: "elegant presentation slide, soft muted color palette (dusty blue, sage green, warm gray), refined serif headings with clean sans-serif body text, subtle watercolor-style decorative accents, premium professional feel, sophisticated infographic quality",
+  };
+
+  const styleKeywords = STYLE_MAP[visualStyle || ""] || STYLE_MAP["modern"] || "professional PowerPoint slide design, clean corporate presentation style, white background, modern infographic quality";
   const subjectKey = (subject || "").toLowerCase();
   const subjectRule = SUBJECT_VISUAL_RULES[subjectKey] || DEFAULT_SUBJECT_RULE;
 
@@ -272,23 +259,24 @@ export async function refineImagePrompt(
   const messages: ChatMessage[] = [
     {
       role: "system",
-      content: `You are an expert educational image prompt engineer. Your task is to generate a precise, detailed English image generation prompt based on teaching content.
+      content: `You are an expert educational image prompt engineer. Your task is to generate a precise, detailed English image generation prompt for creating PowerPoint-style courseware illustrations.
 
 Rules:
 1. English only, 80-120 words
 2. Must include SPECIFIC visual elements from the teaching content (not generic "educational illustration")
-3. Specify composition: main subject position, camera angle/viewpoint, background environment
-4. Specify style: ${styleKeywords}
+3. Layout: 16:9 widescreen PowerPoint slide composition with clear visual hierarchy
+4. Style: ${styleKeywords}
 5. Include color palette description
 6. Subject-specific rules: ${subjectRule}
-7. NO abstract symbols, NO meaningless decorative elements
-8. The image should clearly convey the teaching concept visually
-9. Include text labels or annotations if they help explain the concept
+7. NO abstract symbols, NO meaningless decorative elements, NO clip-art style icons
+8. The image should clearly convey the teaching concept visually, suitable for projection in classroom
+9. Include text labels, formulas, or annotations if they help explain the concept
+10. Text elements must be clearly readable (white text on dark background or dark text on light background)
 
 Output format: Output ONLY the image prompt text, nothing else. No explanation, no quotes.
 
 Example good prompt:
-"A detailed educational illustration showing the water cycle with clearly labeled stages: evaporation (blue arrows rising from ocean), condensation (gray cloud formation), precipitation (rain drops falling), and collection (river flowing back to ocean). Soft blue and green color palette, flat vector art style, centered composition on light blue background, with small text labels at each stage, clean textbook diagram aesthetic"`,
+"A professional PowerPoint slide illustration showing the water cycle with clearly labeled stages: evaporation (blue gradient arrow rising from ocean surface), condensation (gray cloud formation with rain icon), precipitation (rain drops with splash effect), and collection (river flowing back to ocean). Clean white background, corporate blue color scheme with accent bar at top. Large bold title 'Water Cycle' at top. Flat infographic icons at each stage with connecting arrows. 16:9 widescreen layout, professional presentation quality, clean sans-serif labels."`,
     },
     {
       role: "user",
@@ -297,13 +285,13 @@ Example good prompt:
 Section content (excerpt):
 ${contentExcerpt}
 
-Generate a precise image generation prompt for this teaching section.`,
+Generate a precise PowerPoint-style image generation prompt for this teaching section.`,
     },
   ];
 
   const raw = await chatCompletion(messages, {
     temperature: 0.6,
-    maxTokens: 256,
+    maxTokens: 512,
   });
 
   // Clean up quotes if present

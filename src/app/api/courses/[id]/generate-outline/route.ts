@@ -65,7 +65,6 @@ ${grade ? `年级：${grade}` : ""}
     ];
 
     const raw = await chatCompletion(messages, {
-      model: "glm-4-flash",
       temperature: 0.6,
       maxTokens: 2048,
     });
