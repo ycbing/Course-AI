@@ -6,13 +6,15 @@ export async function GET() {
   try {
     const userId = await getSessionUserId();
     if (!userId) return NextResponse.json({ error: "未登录" }, { status: 401 });
-    const user = await queryOne<any>(
-      `SELECT id, email, name, credits, created_at FROM users WHERE id = $1`,
+
+    const user = await queryOne<{ credits: number }>(
+      `SELECT credits FROM users WHERE id = $1`,
       [userId]
     );
-    return NextResponse.json({ user });
+
+    return NextResponse.json({ credits: user?.credits ?? 0 });
   } catch (err) {
-    console.error("Get user error:", err);
-    return NextResponse.json({ error: "获取失败" }, { status: 500 });
+    console.error("Get credits error:", err);
+    return NextResponse.json({ error: "获取积分失败" }, { status: 500 });
   }
 }

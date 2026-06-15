@@ -11,6 +11,7 @@ function maskKey(key: string): string {
 export async function GET() {
   try {
     const userId = await getSessionUserId();
+    if (!userId) return NextResponse.json({ error: "未登录" }, { status: 401 });
     const rows = await query<any>(
       `SELECT id, category, provider, model_name, api_key, base_url, config, created_at
        FROM user_model_configs WHERE user_id = $1 ORDER BY category`,
@@ -28,6 +29,7 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const userId = await getSessionUserId();
+    if (!userId) return NextResponse.json({ error: "未登录" }, { status: 401 });
     const { category, provider, modelName, apiKey, baseUrl, config } = await req.json();
 
     if (!category || !provider || !modelName || !apiKey) {
@@ -52,6 +54,7 @@ export async function POST(req: NextRequest) {
 export async function PUT(req: NextRequest) {
   try {
     const userId = await getSessionUserId();
+    if (!userId) return NextResponse.json({ error: "未登录" }, { status: 401 });
     const { id, category, provider, modelName, apiKey, baseUrl, config } = await req.json();
 
     if (!id) {
@@ -96,6 +99,7 @@ export async function PUT(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   try {
     const userId = await getSessionUserId();
+    if (!userId) return NextResponse.json({ error: "未登录" }, { status: 401 });
     const { id } = await req.json();
 
     if (!id) {

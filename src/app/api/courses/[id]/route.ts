@@ -13,6 +13,7 @@ export async function GET(
   try {
     const { id } = await params;
     const userId = await getSessionUserId();
+    if (!userId) return NextResponse.json({ error: "未登录" }, { status: 401 });
 
     const course = await queryOne<any>(
       `SELECT * FROM courses WHERE id = $1 AND user_id = $2`,
@@ -42,6 +43,7 @@ export async function PATCH(
   try {
     const { id } = await params;
     const userId = await getSessionUserId();
+    if (!userId) return NextResponse.json({ error: "未登录" }, { status: 401 });
     const body = await req.json();
 
     // Verify ownership
@@ -93,6 +95,7 @@ export async function DELETE(
   try {
     const { id } = await params;
     const userId = await getSessionUserId();
+    if (!userId) return NextResponse.json({ error: "未登录" }, { status: 401 });
 
     const existing = await queryOne<{ id: string }>(
       `SELECT id FROM courses WHERE id = $1 AND user_id = $2`,

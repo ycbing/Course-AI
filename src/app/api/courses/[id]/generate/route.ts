@@ -10,6 +10,7 @@ const log = createLogger("api-generate");
 export async function POST(req: NextRequest) {
   try {
     const userId = await getSessionUserId();
+    if (!userId) return NextResponse.json({ error: "未登录" }, { status: 401 });
     const { courseId, sectionCount } = await req.json();
 
     if (!courseId) {

@@ -12,6 +12,7 @@ export async function POST(
 ) {
   try {
     const userId = await getSessionUserId();
+    if (!userId) return NextResponse.json({ error: "未登录" }, { status: 401 });
     const { id: sectionId } = await params;
 
     if (!sectionId) {

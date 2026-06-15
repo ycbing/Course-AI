@@ -11,6 +11,7 @@ export async function PUT(
 ) {
   try {
     const userId = await getSessionUserId();
+    if (!userId) return NextResponse.json({ error: "未登录" }, { status: 401 });
     const { id: sectionId } = await params;
     const { imagePrompt } = await req.json();
 

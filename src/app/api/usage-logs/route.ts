@@ -5,6 +5,7 @@ import { query } from "@/lib/db";
 export async function GET(req: NextRequest) {
   try {
     const userId = await getSessionUserId();
+    if (!userId) return NextResponse.json({ error: "未登录" }, { status: 401 });
     const url = req.nextUrl;
     const page = parseInt(url.searchParams.get("page") || "1", 10);
     const limit = parseInt(url.searchParams.get("limit") || "50", 10);

@@ -11,6 +11,7 @@ const log = createLogger("api-courses");
 export async function GET(req: NextRequest) {
   try {
     const userId = await getSessionUserId();
+    if (!userId) return NextResponse.json({ error: "未登录" }, { status: 401 });
     const rows = await query<any>(
       `SELECT c.id, c.title, c.subject, c.grade, c.status, c.progress_step, c.section_count,
               COALESCE(NULLIF(c.cover_url, ''), first_img.image_url) as cover_url,
@@ -36,6 +37,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const userId = await getSessionUserId();
+    if (!userId) return NextResponse.json({ error: "未登录" }, { status: 401 });
     const { title, subject, grade, outline, voiceName, textbookTemplateId, chapterIndices, visualStyle } = await req.json();
 
     if (!title?.trim()) {

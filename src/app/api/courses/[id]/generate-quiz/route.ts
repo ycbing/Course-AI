@@ -14,6 +14,7 @@ export async function POST(
   try {
     const { id: courseId } = await params;
     const userId = await getSessionUserId();
+    if (!userId) return NextResponse.json({ error: "未登录" }, { status: 401 });
 
     // Verify ownership
     const course = await queryOne<any>(

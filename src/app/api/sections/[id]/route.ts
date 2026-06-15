@@ -9,6 +9,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
   try {
     const { id } = await params;
     const userId = await getSessionUserId();
+    if (!userId) return NextResponse.json({ error: "未登录" }, { status: 401 });
     const body = await req.json();
 
     // Verify ownership via course
@@ -55,6 +56,7 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
   try {
     const { id } = await params;
     const userId = await getSessionUserId();
+    if (!userId) return NextResponse.json({ error: "未登录" }, { status: 401 });
 
     const section = await queryOne<{ id: string; course_id: string; section_number: number }>(
       `SELECT cs.id, cs.course_id, cs.section_number FROM course_sections cs
@@ -100,6 +102,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   try {
     const { id } = await params;
     const userId = await getSessionUserId();
+    if (!userId) return NextResponse.json({ error: "未登录" }, { status: 401 });
     const { newSortOrder } = await req.json();
 
     if (newSortOrder === undefined || typeof newSortOrder !== "number") {
